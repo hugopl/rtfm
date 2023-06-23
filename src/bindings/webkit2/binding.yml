@@ -1,0 +1,6 @@
+namespace: WebKit2
+version: "5.0"
+
+types:
+  EditorTypingAttributes:
+    ignore: true

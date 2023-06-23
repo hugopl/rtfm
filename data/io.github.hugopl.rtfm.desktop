@@ -1,0 +1,14 @@
+[Desktop Entry]
+Type=Application
+Exec=rtfm
+Name=Rtfm
+GenericName=Offline documentation browser
+Terminal=false
+Icon=io.github.hugopl.rtfm
+Categories=Development;
+Keywords=documentation;information;manual;developer;api;dash;docset;
+Actions=new-window;
+
+[Desktop Action new-window]
+Name=New Window
+Exec=rtfm

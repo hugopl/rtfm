@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gresources>
+  <gresource prefix="/io/github/hugopl/Rtfm">
+    <file preprocess="xml-stripblanks">ui/application_window.ui</file>
+    <file preprocess="xml-stripblanks">ui/doc_page.ui</file>
+    <file preprocess="xml-stripblanks">ui/locator.ui</file>
+
+    <file>icons/hicolor/scalable/actions/lang-alias-symbolic.svg</file>
+    <file>icons/hicolor/scalable/actions/lang-class-symbolic.svg</file>
+    <file>icons/hicolor/scalable/actions/lang-enum-symbolic.svg</file>
+    <file>icons/hicolor/scalable/actions/lang-enum-value-symbolic.svg</file>
+    <file>icons/hicolor/scalable/actions/lang-function-symbolic.svg</file>
+    <file>icons/hicolor/scalable/actions/lang-macro-symbolic.svg</file>
+    <file>icons/hicolor/scalable/actions/lang-method-symbolic.svg</file>
+    <file>icons/hicolor/scalable/actions/lang-namespace-symbolic.svg</file>
+    <file>icons/hicolor/scalable/actions/lang-struct-field-symbolic.svg</file>
+    <file>icons/hicolor/scalable/actions/lang-struct-symbolic.svg</file>
+    <file>icons/hicolor/scalable/actions/lang-union-symbolic.svg</file>
+    <file>icons/hicolor/scalable/actions/lang-unknown-symbolic.svg</file>
+
+  </gresource>
+</gresources>
