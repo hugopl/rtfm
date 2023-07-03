@@ -7,8 +7,6 @@ authors:
 targets:
   rtfm:
     main: src/main.cr
-  create_crystal_docset:
-    main: src/create_crystal_docset.cr
 
 dependencies:
   fzy:

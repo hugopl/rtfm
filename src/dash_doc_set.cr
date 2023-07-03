@@ -2,9 +2,10 @@ require "sqlite3"
 
 class DashDocSet < DocSet
   class_property lookup_dirs = [
-    Path.new("./data"),
     GLib.user_data_dir.join("rtfm/docsets"),
-    GLib.user_data_dir.join("Zeal/Zeal/docsets"),
+    Path.new("/usr/local/share/rtfm/docsets"),
+    Path.new("/usr/share/rtfm/docsets"),
+    GLib.user_data_dir.join("Zeal/Zeal/docsets"), # Read Zeal docsets too
   ]
 
   @documents_dir : Path

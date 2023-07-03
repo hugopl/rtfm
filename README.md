@@ -31,7 +31,32 @@ Things to do after first release:
 
 ## Installation
 
-TODO: Write installation instructions here
+Dependencies:
+
+- [Crystal compiler](https://github.com/crystal-lang/crystal).
+- [Shards dependency manager](https://github.com/crystal-lang/shards).
+- [SQLite3](https://sqlite.org/index.html).
+- [GTK4](https://www.gtk.org/)
+- [Webkit2-5.0](https://webkitgtk.org/) (a.k.a. WebKit2 for GTK4)
+- [GObject-introspection](https://gi.readthedocs.io/en/latest/) packages for all GTK related dependencies.
+
+There are no packages for any distro yet.
+
+```
+$ shards install
+$ ./bin/gi-crystal
+$ make
+$ make install
+```
+
+Then you need to run some commands to let Gnome Shell update the application cache and start show Rtfm, but
+if you don't remember these commands, just reinstall some Gnome application like gnome-calculator and it's done 😅️.
+
+You can uninstall it later with:
+
+```
+$ make uninstall
+```
 
 ## Contributing
 
