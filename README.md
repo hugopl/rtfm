@@ -10,16 +10,15 @@ Tasks before it get the first release:
 - [x] Base UI defined and implemented.
 - [x] Create docset reader/indexer.
 - [x] Fuzzy search and show docset results.
-- [ ] Docset chooser widget.
+- [x] Docset chooser widget.
+- [ ] Open docset by double click it.
 - [ ] Save session.
 - [ ] Fix scrollbar to be always on top after search results change.
-- [ ] Initial welcome page.
+- [x] Initial welcome page.
 - [ ] About dialog.
 - [ ] Focus webpage after open a doc page.
 - [ ] Have screenshots in this README.
-- [ ] New tabs use the same docset of previous selected tab.
 - [ ] Create GTK docsets based on offline GTK docs + GIR info.
-- [ ] Select new tab after create it.
 - [ ] Archlinux AUR package.
 - [ ] Ubuntu package.
 

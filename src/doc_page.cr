@@ -1,24 +1,35 @@
 require "./doc_set"
 
-@[Gtk::UiTemplate(resource: "/io/github/hugopl/Rtfm/ui/doc_page.ui", children: %w(web_view))]
-class DocPage < Gtk::Box
-  include Gtk::WidgetTemplate
+require "./new_page"
 
-  @web_view : WebKit2::WebView
-  @docset : DocSet
+class DocPage < Adw::Bin
+  @[GObject::Property]
+  property title : String = "Choose a DocSet"
 
-  def initialize(@docset = DocSet.default)
-    super()
-    @web_view = WebKit2::WebView.cast(template_child("web_view"))
+  @web_view : WebKit2::WebView?
 
-    @web_view.load_uri("file:///usr/share/doc/crystal/api/index.html")
+  def initialize
+    super(hexpand: true, vexpand: true)
+    self.child = NewPage.new
   end
 
-  delegate grab_focus, to: @web_view
+  def grab_focus
+    @web_view.try(&.grab_focus)
+  end
+
+  def load_uri(uri : String)
+    web_view = @web_view
+    if web_view.nil?
+      @web_view = web_view = WebKit2::WebView.new
+      web_view.bind_property("title", self, "title", :default)
+      self.child = web_view
+    end
+
+    web_view.load_uri(uri)
+  end
+
   delegate load_uri, to: @web_view
 
   def bind_properties(page : Adw::TabPage)
-    @web_view.bind_property("title", page, "title", :default)
-    @web_view.bind_property("is-loading", page, "loading", :default)
   end
 end

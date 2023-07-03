@@ -2,7 +2,7 @@
 <gresources>
   <gresource prefix="/io/github/hugopl/Rtfm">
     <file preprocess="xml-stripblanks">ui/application_window.ui</file>
-    <file preprocess="xml-stripblanks">ui/doc_page.ui</file>
+    <file preprocess="xml-stripblanks">ui/new_page.ui</file>
     <file preprocess="xml-stripblanks">ui/locator.ui</file>
 
     <file>icons/hicolor/scalable/actions/lang-alias-symbolic.svg</file>
@@ -17,6 +17,5 @@
     <file>icons/hicolor/scalable/actions/lang-struct-symbolic.svg</file>
     <file>icons/hicolor/scalable/actions/lang-union-symbolic.svg</file>
     <file>icons/hicolor/scalable/actions/lang-unknown-symbolic.svg</file>
-
   </gresource>
 </gresources>

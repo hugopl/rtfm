@@ -1,6 +1,6 @@
 require "fzy"
 
-require "./dash_doc_set"
+require "./doc_set"
 require "./search_result_model"
 
 @[Gtk::UiTemplate(resource: "/io/github/hugopl/Rtfm/ui/locator.ui", children: %w(results_view locator_entry popover results_scrolled_wnd docset_btn))]
@@ -10,14 +10,14 @@ class Locator < Adw::Bin
   @entry : Gtk::Entry
   @results_view : Gtk::ListView
   @popover : Gtk::Popover
-  @docset : DocSet
+  property docset : DocSet
   @search_result_model : SearchResultModel
   @search_selection_model : Gtk::SingleSelection
 
   def initialize
     super()
 
-    @docset = DocSet.default
+    @docset = DocSet.new
     @search_result_model = SearchResultModel.new
 
     @popover = Gtk::Popover.cast(template_child("popover"))
