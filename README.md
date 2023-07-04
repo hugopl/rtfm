@@ -15,7 +15,7 @@ Tasks before it get the first release:
 - [ ] Save session.
 - [ ] Fix scrollbar to be always on top after search results change.
 - [x] Initial welcome page.
-- [ ] About dialog.
+- [x] About dialog.
 - [ ] Focus webpage after open a doc page.
 - [ ] Have screenshots in this README.
 - [ ] Create GTK docsets based on offline GTK docs + GIR info.
@@ -26,7 +26,6 @@ Things to do after first release:
 
 - [ ] Have button/shortcut to enable/disable fuzzy search.
 - [ ] Add UI to download docset.
-- [ ] Accept if someone creates a flatpack 🤢️ package.
 
 ## Installation
 

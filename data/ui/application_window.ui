@@ -2,6 +2,16 @@
 <interface>
   <requires lib="gtk" version="4.10"/>
   <requires lib="libadwaita" version="1.4"/>
+
+  <menu id="primary_menu">
+    <section>
+      <item>
+        <attribute name="label" translatable="yes">_About Rtfm</attribute>
+        <attribute name="action">app.about</attribute>
+      </item>
+    </section>
+  </menu>
+
   <template class="ApplicationWindow" parent="AdwApplicationWindow">
     <property name="width-request">960</property>
     <property name="height-request">700</property>
@@ -26,6 +36,13 @@
                     <property name="placeholder-text">Press Ctrl+P to find a formidable documentation</property>
                   </object>
                 </property>
+                <child type="end">
+                  <object class="GtkMenuButton" id="primary_menu">
+                    <property name="tooltip-text" translatable="yes">Main Menu</property>
+                    <property name="menu-model">primary_menu</property>
+                    <property name="icon-name">open-menu-symbolic</property>
+                  </object>
+                </child>
                 <child type="end">
                   <object class="GtkButton">
                     <property name="icon-name">view-grid-symbolic</property>
