@@ -43,6 +43,7 @@ class Locator < Adw::Bin
     @search_selection_model.autoselect = false
     @results_view.model = @search_selection_model
     @results_view.factory = view_factory
+    @results_view.activate_signal.connect(&->entry_activated(UInt32))
     @popover.parent = self
 
     self.docset = @docset # just to update the button label
@@ -128,8 +129,16 @@ class Locator < Adw::Bin
   end
 
   private def entry_activated
+    entry_activated(@search_selection_model.selected)
+  end
+
+  private def entry_activated(pos : UInt32)
+    doc = @search_result_model.get_item(pos)
+    entry_activated(doc) if doc
+  end
+
+  private def entry_activated(doc : Doc)
     hide_popover
-    doc = @search_selection_model.selected_item.as(Doc)
     html_path = @docset.path(doc)
     activate_action("win.open_page", "file://#{html_path}")
   end

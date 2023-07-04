@@ -11,7 +11,7 @@ Tasks before it get the first release:
 - [x] Create docset reader/indexer.
 - [x] Fuzzy search and show docset results.
 - [x] Docset chooser widget.
-- [ ] Open docset by double click it.
+- [x] Open docset by double click it.
 - [ ] Save session.
 - [ ] Fix scrollbar to be always on top after search results change.
 - [x] Initial welcome page.
