@@ -1,4 +1,4 @@
-@[Gtk::UiTemplate(resource: "/io/github/hugopl/Rtfm/ui/new_page.ui", children: %w(docsets))]
+@[Gtk::UiTemplate(resource: "/io/github/hugopl/rtfm/ui/new_page.ui", children: %w(docsets))]
 class NewPage < Adw::Bin
   include Gtk::WidgetTemplate
 

@@ -17,7 +17,7 @@
                   <object class="GtkLabel">
                     <property name="label">Available DocSets</property>
                     <style>
-                      <class name="title-1"/>
+                      <class name="large-title"/>
                     </style>
                   </object>
                 </child>

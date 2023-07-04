@@ -3,7 +3,7 @@ require "fzy"
 require "./doc_set"
 require "./search_result_model"
 
-@[Gtk::UiTemplate(resource: "/io/github/hugopl/Rtfm/ui/locator.ui", children: %w(results_view locator_entry popover results_scrolled_wnd docset_btn))]
+@[Gtk::UiTemplate(resource: "/io/github/hugopl/rtfm/ui/locator.ui", children: %w(results_view locator_entry popover results_scrolled_wnd docset_btn))]
 class Locator < Adw::Bin
   include Gtk::WidgetTemplate
 

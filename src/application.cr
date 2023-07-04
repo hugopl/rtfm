@@ -4,7 +4,7 @@ class Application < Adw::Application
   @window : ApplicationWindow?
 
   def initialize
-    super(application_id: "hugo.github.io.rtfm", flags: Gio::ApplicationFlags::None)
+    super(application_id: "io.github.hugopl.rtfm", flags: Gio::ApplicationFlags::None)
 
     action = Gio::SimpleAction.new("activate", nil)
     action.activate_signal.connect { activate }

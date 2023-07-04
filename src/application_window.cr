@@ -1,7 +1,7 @@
 require "./doc_page"
 require "./locator"
 
-@[Gtk::UiTemplate(resource: "/io/github/hugopl/Rtfm/ui/application_window.ui", children: %w(view header_bar))]
+@[Gtk::UiTemplate(resource: "/io/github/hugopl/rtfm/ui/application_window.ui", children: %w(view header_bar))]
 class ApplicationWindow < Adw::ApplicationWindow
   include Gtk::WidgetTemplate
 
