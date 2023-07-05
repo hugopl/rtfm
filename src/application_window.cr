@@ -67,6 +67,8 @@ class ApplicationWindow < Adw::ApplicationWindow
     doc_page.bind_property("title", page, "title", :default)
     page.title = doc_page.title
     page.live_thumbnail = true
+
+    @tab_view.selected_page = page
   end
 
   private def close_tab : Nil
