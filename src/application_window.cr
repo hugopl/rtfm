@@ -8,19 +8,26 @@ class ApplicationWindow < Adw::ApplicationWindow
   @tab_view : Adw::TabView
   @locator : Locator
 
-  # I need to store this, otherwise GC will eat the Crystal object
-  # This need to be fixed at GICrystal level.
-  # FIXME: See https://github.com/hugopl/gi-crystal/issues/105
-  @doc_pages = [] of DocPage
+  @go_back_action : Gio::SimpleAction
+  @go_forward_action : Gio::SimpleAction
 
   def initialize(application : Application)
     super(application: application)
 
     @tab_view = Adw::TabView.cast(template_child("view"))
+    @tab_view.notify_signal["selected-page"].connect(->on_selected_page_change(GObject::ParamSpec))
     @locator = Locator.new
     Adw::HeaderBar.cast(template_child("header_bar")).title_widget = @locator
-    new_tab
+
     setup_actions
+    @go_back_action = Gio::SimpleAction.new("go_back", nil)
+    @go_back_action.activate_signal.connect { go_back }
+    add_action(@go_back_action)
+    @go_forward_action = Gio::SimpleAction.new("go_forward", nil)
+    @go_forward_action.activate_signal.connect { go_forward }
+    add_action(@go_forward_action)
+
+    new_tab
   end
 
   private def setup_actions
@@ -51,9 +58,12 @@ class ApplicationWindow < Adw::ApplicationWindow
 
   private def new_tab : Nil
     doc_page = DocPage.new
-    # FIXME: See https://github.com/hugopl/gi-crystal/issues/105
-    @doc_pages << doc_page
     page = @tab_view.append(doc_page)
+    # FIXME: This doesn't crash because this signal connection holds a reference to doc_page, so it's
+    # never collected, otherwise it would crash: See https://github.com/hugopl/gi-crystal/issues/105
+    #
+    # FIXME: Disconect signals when closing a tab, so GC collects the DocPage instance.
+    doc_page.notify_signal["title"].connect { on_doc_page_change(doc_page) }
     doc_page.bind_property("title", page, "title", :default)
     page.title = doc_page.title
     page.live_thumbnail = true
@@ -64,8 +74,37 @@ class ApplicationWindow < Adw::ApplicationWindow
     @tab_view.close_page(page) if page
   end
 
+  def on_doc_page_change(doc_page : DocPage)
+    return if doc_page != selected_doc_page
+
+    update_ui_for_page_change(doc_page)
+  end
+
+  def on_selected_page_change(_param_spec)
+    doc_page = selected_doc_page
+    update_ui_for_page_change(doc_page)
+  end
+
+  def update_ui_for_page_change(doc_page : DocPage?)
+    if doc_page.nil?
+      @go_back_action.enabled = false
+      @go_forward_action.enabled = false
+    else
+      @go_back_action.enabled = doc_page.can_go_back?
+      @go_forward_action.enabled = doc_page.can_go_forward?
+    end
+  end
+
   private def focus_locator : Nil
     @locator.grab_focus
+  end
+
+  private def go_back
+    selected_doc_page.try(&.go_back)
+  end
+
+  private def go_forward
+    selected_doc_page.try(&.go_forward)
   end
 
   private def focus_page : Nil

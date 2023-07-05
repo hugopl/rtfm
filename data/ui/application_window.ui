@@ -36,6 +36,26 @@
                     <property name="icon-name">window-new-symbolic</property>
                   </object>
                 </child>
+                <child type="start">
+                  <object class="GtkBox">
+                    <property name="orientation">GTK_ORIENTATION_HORIZONTAL</property>
+                    <style>
+                      <class name="linked"/>
+                    </style>
+                    <child>
+                      <object class="GtkButton">
+                        <property name="action-name">win.go_back</property>
+                        <property name="icon-name">go-previous-symbolic</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkButton">
+                        <property name="action-name">win.go_forward</property>
+                        <property name="icon-name">go-next-symbolic</property>
+                      </object>
+                    </child>
+                  </object>
+                </child>
                 <property name="title-widget">
                   <object class="GtkEntry" id="search_entry">
                     <property name="width-request">450</property>

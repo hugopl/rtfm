@@ -14,7 +14,7 @@ Tasks needed to be done before I ask anyone to use this:
 - [x] Fuzzy search and show docset results.
 - [ ] Have button/shortcut to enable/disable fuzzy search.
 - [x] Open docset by double click it.
-- [ ] Add back/foward buttons.
+- [x] Add back/foward buttons.
 - [ ] Save session.
 - [ ] Page search.
 - [ ] Tabs memorize theirs docsets.

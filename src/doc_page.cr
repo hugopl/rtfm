@@ -13,8 +13,26 @@ class DocPage < Adw::Bin
     self.child = NewPage.new
   end
 
+  delegate load_uri, to: @web_view
+
   def grab_focus
     @web_view.try(&.grab_focus)
+  end
+
+  def go_back : Nil
+    @web_view.try(&.go_back)
+  end
+
+  def can_go_back? : Bool
+    @web_view.try(&.can_go_back) || false
+  end
+
+  def go_forward : Nil
+    @web_view.try(&.go_forward)
+  end
+
+  def can_go_forward? : Bool
+    @web_view.try(&.can_go_forward) || false
   end
 
   def load_uri(uri : String)
@@ -26,10 +44,5 @@ class DocPage < Adw::Bin
     end
 
     web_view.load_uri(uri)
-  end
-
-  delegate load_uri, to: @web_view
-
-  def bind_properties(page : Adw::TabPage)
   end
 end
