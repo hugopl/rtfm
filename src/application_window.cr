@@ -54,6 +54,7 @@ class ApplicationWindow < Adw::ApplicationWindow
   delegate go_back, to: selected_doc_page
   delegate go_forward, to: selected_doc_page
   delegate focus_page, to: selected_doc_page
+  delegate page_search, to: selected_doc_page
 
   private def setup_actions(settings : Gio::Settings)
     app = application.not_nil!
@@ -62,6 +63,7 @@ class ApplicationWindow < Adw::ApplicationWindow
       {name: "close_tab", shortcut: "<primary>W", closure: ->close_tab},
       {name: "focus_locator", shortcut: "<primary>P", closure: ->focus_locator},
       {name: "focus_page", shortcut: nil, closure: ->focus_page},
+      {name: "page_search", shortcut: "<primary>F", closure: ->page_search},
     }
 
     actions.each do |action|

@@ -18,7 +18,7 @@ Tasks needed to be done before I ask anyone to use this:
 - [x] Open docset by double click it.
 - [x] Add back/foward buttons.
 - [x] Save session.
-- [ ] Page search.
+- [x] Page search.
 - [x] Tabs memorize theirs docsets.
 - [x] Fix scrollbar to be always on top after search results change.
 - [x] Initial welcome page.
