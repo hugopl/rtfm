@@ -4,15 +4,20 @@ It's a dash/docset reader with built in documentation for Crystal and GTK
 APIs. It's written in [Crystal](https://crystal-lang.org/) using
 [GTK4 bindings](https://github.com/hugopl/gtk4.cr).
 
-Tasks before it get the first release:
+Tasks needed to be done before I ask anyone to use this:
 
 - [x] Create better Crystal docset files.
 - [x] Base UI defined and implemented.
 - [x] Create docset reader/indexer.
-- [x] Fuzzy search and show docset results.
 - [x] Docset chooser widget.
+- [ ] Add UI to download docset.
+- [x] Fuzzy search and show docset results.
+- [ ] Have button/shortcut to enable/disable fuzzy search.
 - [x] Open docset by double click it.
+- [ ] Add back/foward buttons.
 - [ ] Save session.
+- [ ] Page search.
+- [ ] Tabs memorize theirs docsets.
 - [ ] Fix scrollbar to be always on top after search results change.
 - [x] Initial welcome page.
 - [x] About dialog.
@@ -21,11 +26,6 @@ Tasks before it get the first release:
 - [ ] Create GTK docsets based on offline GTK docs + GIR info.
 - [ ] Archlinux AUR package.
 - [ ] Ubuntu package.
-
-Things to do after first release:
-
-- [ ] Have button/shortcut to enable/disable fuzzy search.
-- [ ] Add UI to download docset.
 
 ## Installation
 
