@@ -57,7 +57,7 @@ class ApplicationWindow < Adw::ApplicationWindow
   end
 
   private def new_tab : Nil
-    doc_page = DocPage.new
+    doc_page = DocPage.new(@locator.docset)
     page = @tab_view.append(doc_page)
     # FIXME: This doesn't crash because this signal connection holds a reference to doc_page, so it's
     # never collected, otherwise it would crash: See https://github.com/hugopl/gi-crystal/issues/105
@@ -85,6 +85,7 @@ class ApplicationWindow < Adw::ApplicationWindow
   def on_selected_page_change(_param_spec)
     doc_page = selected_doc_page
     update_ui_for_page_change(doc_page)
+    change_docset(GLib::Variant.new(doc_page.docset.name)) if doc_page
   end
 
   def update_ui_for_page_change(doc_page : DocPage?)
@@ -117,6 +118,7 @@ class ApplicationWindow < Adw::ApplicationWindow
     return if variant.nil?
 
     @locator.docset = DocSet.new(variant.as_s)
+    selected_doc_page.try(&.docset=(DocSet.new(variant.as_s)))
     change_action_state("change_docset", variant)
   end
 

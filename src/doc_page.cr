@@ -5,10 +5,11 @@ require "./new_page"
 class DocPage < Adw::Bin
   @[GObject::Property]
   property title : String = "Choose a DocSet"
+  property docset : DocSet
 
   @web_view : WebKit2::WebView?
 
-  def initialize
+  def initialize(@docset)
     super(hexpand: true, vexpand: true)
     self.child = NewPage.new
   end
