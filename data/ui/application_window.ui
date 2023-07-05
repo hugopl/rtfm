@@ -6,7 +6,13 @@
   <menu id="primary_menu">
     <section>
       <item>
-        <attribute name="label" translatable="yes">_About Rtfm</attribute>
+        <attribute name="label" translatable="yes">_Add DocSet</attribute>
+        <attribute name="action">app.add_docset</attribute>
+      </item>
+    </section>
+    <section>
+      <item>
+        <attribute name="label" translatable="yes">A_bout Rtfm</attribute>
         <attribute name="action">app.about</attribute>
       </item>
     </section>

@@ -9,14 +9,18 @@ class Application < Adw::Application
   def initialize
     super(application_id: "io.github.hugopl.rtfm", flags: Gio::ApplicationFlags::None)
 
-    action = Gio::SimpleAction.new("activate", nil)
-    action.activate_signal.connect { activate }
-    add_action(action)
-    set_accels_for_action("app.activate", {"<primary>N"})
-
-    action = Gio::SimpleAction.new("about", nil)
-    action.activate_signal.connect { show_about_dlg }
-    add_action(action)
+    actions = {
+      {name: "activate", shortcut: "<primary>N", closure: ->activate},
+      {name: "add_docset", shortcut: nil, closure: ->add_docset},
+      {name: "about", shortcut: nil, closure: ->show_about_dlg},
+    }
+    actions.each do |action|
+      g_action = Gio::SimpleAction.new(action[:name], nil)
+      g_action.activate_signal.connect { action[:closure].call }
+      add_action(g_action)
+      shortcut = action[:shortcut]
+      set_accels_for_action("app.#{action[:name]}", {shortcut}) if shortcut
+    end
   end
 
   @[GObject::Virtual]
@@ -25,7 +29,21 @@ class Application < Adw::Application
     window.present
   end
 
-  ABOUT_DLG_COMMENTS = <<-EOT
+  private def add_docset
+    title = "Not yet implemented"
+    text = %q(<span size="xx-large">🧌</span>)
+    secondary = "UI to add docsets isn't implemented nether a priority right now.\n\n" \
+                "So to add a docset you will need to copy the docset (<tt>Foo.docset</tt> directory)" \
+                "under one of these directories:\n\n" \
+                "<tt>~/.local/share/rtfm/docsets\n" \
+                "~/.local/share/Zeal/Zeal/docsets\n" \
+                "../share/rtfm/docsets (relative to rtfm binary)\n" \
+                "</tt>\n\n" \
+                "Sorry for the inconvenience 😁️"
+    Gtk::MessageDialog.ok(title: title, text: text, use_markup: true, secondary_text: secondary, secondary_use_markup: true, transient_for: @window, modal: true) { }
+  end
+
+  private ABOUT_DLG_COMMENTS = <<-EOT
     Rtfm means <i>Read the formidable documentation</i>.
 
     It's a Gnome Dash DocSet Reader written in Crystal written with ❤️.
