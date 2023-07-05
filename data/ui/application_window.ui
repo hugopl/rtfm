@@ -19,8 +19,6 @@
   </menu>
 
   <template class="ApplicationWindow" parent="AdwApplicationWindow">
-    <property name="width-request">960</property>
-    <property name="height-request">700</property>
     <property name="content">
       <object class="AdwTabOverview" id="tab_overview">
         <property name="view">view</property>

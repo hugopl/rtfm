@@ -28,6 +28,10 @@ class ApplicationWindow < Adw::ApplicationWindow
     @go_forward_action.activate_signal.connect { go_forward }
     add_action(@go_forward_action)
 
+    settings = application.settings
+    settings.bind("window-width", self, "default-width", :default)
+    settings.bind("window-height", self, "default-height", :default)
+    settings.bind("window-maximized", self, "maximized", :default)
     new_tab
   end
 

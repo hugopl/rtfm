@@ -1,0 +1,23 @@
+<schemalist gettext-domain="text-viewer">
+  <schema id="io.github.hugopl.rtfm" path="/io/github/hugopl/rtfm/">
+    <key name="window-width" type="i">
+      <default>960</default>
+    </key>
+    <key name="window-height" type="i">
+      <default>700</default>
+    </key>
+    <key name="window-maximized" type="b">
+      <default>false</default>
+    </key>
+    <key name="style-variant" type="s">
+      <choices>
+        <choice value="follow"/>
+        <choice value="light"/>
+        <choice value="dark"/>
+      </choices>
+      <default>'follow'</default>
+      <summary>Style Variant</summary>
+      <description>Use the light or dark theme variant.</description>
+    </key>
+  </schema>
+</schemalist>

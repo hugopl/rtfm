@@ -15,7 +15,7 @@ install:
 	install -D -m 0644 data/io.github.hugopl.rtfm.desktop $(DESTDIR)$(PREFIX)/share/applications/io.github.hugopl.rtfm.desktop
 	install -D -m 0644 data/icons/hicolor/scalable/apps/io.github.hugopl.rtfm.svg $(DESTDIR)$(PREFIX)/share/icons/hicolor/scalable/apps/io.github.hugopl.rtfm.svg
 	# Settings schema
-	# install -D -m644 data/gschema.xml $(DESTDIR)$(PREFIX)share/glib-2.0/schemas/io.github.hugopl.rtfm.gschema.xml
+	install -D -m644 data/io.github.hugopl.rtfm.gschema.xml $(DESTDIR)$(PREFIX)/share/glib-2.0/schemas/io.github.hugopl.rtfm.gschema.xml
 	# docsets
 	mkdir -p $(DESTDIR)$(PREFIX)/share/rtfm/docsets/
 	cp -rv data/Crystal.docset $(DESTDIR)$(PREFIX)/share/rtfm/docsets/

@@ -4,10 +4,12 @@ VERSION = {{ `shards version #{__DIR__}`.strip.stringify }}
 LICENSE = {{ run("./macros/license.cr").stringify }}
 
 class Application < Adw::Application
+  getter settings : Gio::Settings
   @window : ApplicationWindow?
 
   def initialize
     super(application_id: "io.github.hugopl.rtfm", flags: Gio::ApplicationFlags::None)
+    @settings = Gio::Settings.new("io.github.hugopl.rtfm")
 
     actions = {
       {name: "activate", shortcut: "<primary>N", closure: ->activate},
