@@ -16,6 +16,7 @@ class ApplicationWindow < Adw::ApplicationWindow
 
     @tab_view = Adw::TabView.cast(template_child("view"))
     @tab_view.notify_signal["selected-page"].connect(->on_selected_page_change(GObject::ParamSpec))
+    @tab_view.close_page_signal.connect(->on_close_page(Adw::TabPage))
     @locator = Locator.new
     Adw::HeaderBar.cast(template_child("header_bar")).title_widget = @locator
 
@@ -74,6 +75,11 @@ class ApplicationWindow < Adw::ApplicationWindow
   private def close_tab : Nil
     page = @tab_view.selected_page
     @tab_view.close_page(page) if page
+  end
+
+  def on_close_page(page : Adw::TabPage) : Bool
+    @tab_view.close_page_finish(page, true) if @tab_view.n_pages > 1
+    Gdk::EVENT_STOP
   end
 
   def on_doc_page_change(doc_page : DocPage)
