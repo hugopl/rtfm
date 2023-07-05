@@ -52,7 +52,7 @@ class ApplicationWindow < Adw::ApplicationWindow
     g_action.activate_signal.connect(->open_page(GLib::Variant?))
     add_action(g_action)
 
-    g_action = Gio::SimpleAction.new_stateful("change_docset", GLib::VariantType.new("s"), DocSet.default)
+    g_action = Gio::SimpleAction.new_stateful("change_docset", GLib::VariantType.new("s"), DocSet.default_id)
     g_action.activate_signal.connect(->change_docset(GLib::Variant?))
     add_action(g_action)
   end
@@ -91,7 +91,7 @@ class ApplicationWindow < Adw::ApplicationWindow
   def on_selected_page_change(_param_spec)
     doc_page = selected_doc_page
     update_ui_for_page_change(doc_page)
-    change_docset(GLib::Variant.new(doc_page.docset.name)) if doc_page
+    change_docset(GLib::Variant.new(doc_page.docset.id)) if doc_page
   end
 
   def update_ui_for_page_change(doc_page : DocPage?)

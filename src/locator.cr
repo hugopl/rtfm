@@ -70,7 +70,7 @@ class Locator < Adw::Bin
   end
 
   def docset=(@docset : DocSet)
-    Gtk::Button.cast(template_child("docset_btn")).label = @docset.name
+    Gtk::Button.cast(template_child("docset_btn")).label = @docset.title
   end
 
   private def hide_popover

@@ -27,11 +27,21 @@ module CrystalDoc2Dash
         @db.exec("COMMIT;")
         @db.close
       end
-
-      copy_html_extras
     end
 
-    private def copy_html_extras
+    def save_metadata
+      contents = <<-EOD
+      {
+          "name": "Crystal",
+          "revision": "0",
+          "title": "Crystal",
+          "version": "#{Crystal::VERSION}"
+      }
+      EOD
+      File.write("data/Crystal.docset/meta.json", contents)
+    end
+
+    def copy_html_extras
       Dir.mkdir_p(DOCSET_PATH.join("css"))
       css_src = @doc_source.join("css", "style.css")
       css_dest = DOCSET_PATH.join("css", "style.css")
@@ -151,11 +161,10 @@ module CrystalDoc2Dash
 
     docset = DocSet.new(doc_source)
     repository.dump(docset, "")
-    puts "#{docset.count} entries indexed!"
-  end
+    docset.copy_html_extras
+    docset.save_metadata
 
-  def insert(db, *triple)
-    puts triple
+    puts "#{docset.count} entries indexed!"
   end
 
   def main

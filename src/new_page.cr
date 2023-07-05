@@ -6,8 +6,9 @@ class NewPage < Adw::Bin
     super()
 
     box = Gtk::FlowBox.cast(template_child("docsets"))
-    DocSet.available_docsets.each do |docset_name|
-      btn = Gtk::ToggleButton.new(label: docset_name, action_name: "win.change_docset", action_target: GLib::Variant.new(docset_name))
+    DocSet.available_docsets.each_value do |metadata|
+      label = "#{metadata.title} v#{metadata.version}"
+      btn = Gtk::ToggleButton.new(label: label, action_name: "win.change_docset", action_target: GLib::Variant.new(metadata.id))
       box.append(btn)
     end
   end
