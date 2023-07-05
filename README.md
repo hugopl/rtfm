@@ -15,7 +15,7 @@ Tasks needed to be done before I ask anyone to use this:
 - [ ] Have button/shortcut to enable/disable fuzzy search.
 - [x] Open docset by double click it.
 - [x] Add back/foward buttons.
-- [ ] Save session.
+- [x] Save session.
 - [ ] Page search.
 - [x] Tabs memorize theirs docsets.
 - [ ] Fix scrollbar to be always on top after search results change.

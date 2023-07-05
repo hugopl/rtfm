@@ -19,5 +19,11 @@
       <summary>Style Variant</summary>
       <description>Use the light or dark theme variant.</description>
     </key>
+    <key name="open-tabs" type="s">
+      <default>''</default>
+    </key>
+    <key name="selected-tab" type="i">
+      <default>-1</default>
+    </key>
   </schema>
 </schemalist>

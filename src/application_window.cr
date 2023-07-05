@@ -1,6 +1,16 @@
 require "./doc_page"
 require "./locator"
 
+struct OpenTab
+  include JSON::Serializable
+
+  getter docset_id : String
+  getter uri : String?
+
+  def initialize(@docset_id, @uri)
+  end
+end
+
 @[Gtk::UiTemplate(resource: "/io/github/hugopl/rtfm/ui/application_window.ui", children: %w(view header_bar))]
 class ApplicationWindow < Adw::ApplicationWindow
   include Gtk::WidgetTemplate
@@ -32,8 +42,13 @@ class ApplicationWindow < Adw::ApplicationWindow
     settings.bind("window-width", self, "default-width", :default)
     settings.bind("window-height", self, "default-height", :default)
     settings.bind("window-maximized", self, "maximized", :default)
-    new_tab
+
+    restore_tabs(settings)
   end
+
+  delegate go_back, to: selected_doc_page
+  delegate go_forward, to: selected_doc_page
+  delegate focus_page, to: selected_doc_page
 
   private def setup_actions
     app = application.not_nil!
@@ -61,8 +76,54 @@ class ApplicationWindow < Adw::ApplicationWindow
     add_action(g_action)
   end
 
+  @[GObject::Virtual]
+  def close_request : Bool
+    save_open_tabs
+    false
+  end
+
+  private def save_open_tabs
+    settings = application.not_nil!.as(Application).settings
+    open_tabs = [] of OpenTab
+
+    @tab_view.n_pages.times do |pos|
+      doc_page = doc_page(pos)
+      next if doc_page.nil?
+
+      uri = doc_page.uri
+      open_tabs << OpenTab.new(doc_page.docset.id, uri)
+    end
+
+    settings.set_string("open-tabs", open_tabs.to_json)
+    settings.set_int("selected-tab", @tab_view.page_position(@tab_view.selected_page.not_nil!))
+  end
+
+  private def restore_tabs(settings)
+    has_tabs_to_restore = false
+
+    json = settings.string("open-tabs")
+    return if json.empty?
+
+    open_tabs = Array(OpenTab).from_json(json)
+    has_tabs_to_restore = open_tabs.size > 0
+
+    open_tabs.each do |tab|
+      docset = DocSet.new(tab.docset_id)
+      doc_page = DocPage.new(docset, tab.uri)
+      add_tab(doc_page)
+    end
+    pos = settings.int("selected-tab")
+    @tab_view.selected_page = @tab_view.nth_page(pos)
+  ensure
+    new_tab unless has_tabs_to_restore
+  end
+
   private def new_tab : Nil
     doc_page = DocPage.new(@locator.docset)
+    add_tab(doc_page)
+  end
+
+  private def add_tab(doc_page : DocPage)
     page = @tab_view.append(doc_page)
     # FIXME: This doesn't crash because this signal connection holds a reference to doc_page, so it's
     # never collected, otherwise it would crash: See https://github.com/hugopl/gi-crystal/issues/105
@@ -112,18 +173,6 @@ class ApplicationWindow < Adw::ApplicationWindow
     @locator.grab_focus
   end
 
-  private def go_back
-    selected_doc_page.try(&.go_back)
-  end
-
-  private def go_forward
-    selected_doc_page.try(&.go_forward)
-  end
-
-  private def focus_page : Nil
-    selected_doc_page.try(&.grab_focus)
-  end
-
   private def change_docset(variant : GLib::Variant?)
     return if variant.nil?
 
@@ -133,18 +182,29 @@ class ApplicationWindow < Adw::ApplicationWindow
   end
 
   private def open_page(variant : GLib::Variant?)
-    return if variant.nil?
+    open_page(variant.as_s) if variant
+  end
 
-    doc_page = selected_doc_page
-    if doc_page
-      doc_page.load_uri(variant.as_s)
-      activate_action("win.focus_page", nil)
+  private def open_page(uri : String)
+    if @tab_view.n_pages.zero?
+      doc_page = DocPage.new(@locator.docset, uri)
+      add_tab(doc_page)
+    else
+      doc_page = selected_doc_page
+      doc_page.load_uri(uri)
     end
   end
 
-  private def selected_doc_page : DocPage?
+  private def doc_page(pos : Int32) : DocPage
+    adw_page = @tab_view.nth_page(pos)
+    raise IndexError.new if adw_page.nil?
+
+    adw_page.child.as(DocPage)
+  end
+
+  private def selected_doc_page : DocPage
     adw_page = @tab_view.selected_page
-    return if adw_page.nil?
+    raise IndexError.new if adw_page.nil?
 
     adw_page.child.as(DocPage)
   end

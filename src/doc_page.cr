@@ -9,14 +9,20 @@ class DocPage < Adw::Bin
 
   @web_view : WebKit2::WebView?
 
-  def initialize(@docset)
+  def initialize(@docset, uri : String? = nil)
     super(hexpand: true, vexpand: true)
-    self.child = NewPage.new
+    if uri
+      load_uri(uri)
+    else
+      self.child = NewPage.new
+    end
   end
 
-  delegate load_uri, to: @web_view
+  def uri : String?
+    @web_view.try(&.uri)
+  end
 
-  def grab_focus
+  def focus_page
     @web_view.try(&.grab_focus)
   end
 
