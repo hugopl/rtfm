@@ -5,11 +5,18 @@ LICENSE = {{ run("./macros/license.cr").stringify }}
 
 class Application < Adw::Application
   getter settings : Gio::Settings
+
+  @system_color_scheme : Adw::ColorScheme
   @window : ApplicationWindow?
 
   def initialize
     super(application_id: "io.github.hugopl.rtfm", flags: Gio::ApplicationFlags::None)
     @settings = Gio::Settings.new("io.github.hugopl.rtfm")
+
+    style_manager = Adw::StyleManager.default
+    @system_color_scheme = style_manager.color_scheme
+    @settings.changed_signal["style-variant"].connect(->theme_changed(String))
+    theme_changed
 
     actions = {
       {name: "activate", shortcut: "<primary>N", closure: ->activate},
@@ -63,5 +70,17 @@ class Application < Adw::Application
       license: LICENSE,
       developer_name: "Hugo Parente Lima <hugo.pl@gmail.com>",
       developers: {"Hugo Parente Lima <hugo.pl@gmail.com>"})
+  end
+
+  private def theme_changed(_unused = nil)
+    theme = @settings.string("style-variant")
+    style_manager = Adw::StyleManager.default
+    color_scheme = case theme
+                   when "light" then Adw::ColorScheme::ForceLight
+                   when "dark"  then Adw::ColorScheme::ForceDark
+                   else
+                     @system_color_scheme
+                   end
+    style_manager.color_scheme = color_scheme
   end
 end

@@ -1,5 +1,6 @@
 require "./doc_page"
 require "./locator"
+require "./theme_selector"
 
 struct OpenTab
   include JSON::Serializable
@@ -11,7 +12,7 @@ struct OpenTab
   end
 end
 
-@[Gtk::UiTemplate(resource: "/io/github/hugopl/rtfm/ui/application_window.ui", children: %w(view header_bar))]
+@[Gtk::UiTemplate(resource: "/io/github/hugopl/rtfm/ui/application_window.ui", children: %w(view header_bar primary_menu))]
 class ApplicationWindow < Adw::ApplicationWindow
   include Gtk::WidgetTemplate
 
@@ -30,7 +31,12 @@ class ApplicationWindow < Adw::ApplicationWindow
     @locator = Locator.new
     Adw::HeaderBar.cast(template_child("header_bar")).title_widget = @locator
 
-    setup_actions
+    primary_menu = Gtk::MenuButton.cast(template_child("primary_menu"))
+    popover_primary_menu = Gtk::PopoverMenu.cast(primary_menu.popover.not_nil!)
+    popover_primary_menu.add_child(ThemeSelector.new, "theme")
+
+    settings = application.settings
+    setup_actions(settings)
     @go_back_action = Gio::SimpleAction.new("go_back", nil)
     @go_back_action.activate_signal.connect { go_back }
     add_action(@go_back_action)
@@ -38,7 +44,6 @@ class ApplicationWindow < Adw::ApplicationWindow
     @go_forward_action.activate_signal.connect { go_forward }
     add_action(@go_forward_action)
 
-    settings = application.settings
     settings.bind("window-width", self, "default-width", :default)
     settings.bind("window-height", self, "default-height", :default)
     settings.bind("window-maximized", self, "maximized", :default)
@@ -50,7 +55,7 @@ class ApplicationWindow < Adw::ApplicationWindow
   delegate go_forward, to: selected_doc_page
   delegate focus_page, to: selected_doc_page
 
-  private def setup_actions
+  private def setup_actions(settings : Gio::Settings)
     app = application.not_nil!
     actions = {
       {name: "new_tab", shortcut: "<primary>T", closure: ->new_tab},
@@ -74,6 +79,11 @@ class ApplicationWindow < Adw::ApplicationWindow
     g_action = Gio::SimpleAction.new_stateful("change_docset", GLib::VariantType.new("s"), DocSet.default_id)
     g_action.activate_signal.connect(->change_docset(GLib::Variant?))
     add_action(g_action)
+
+    group = Gio::SimpleActionGroup.new
+    action = settings.create_action("style-variant")
+    group.add_action(action)
+    insert_action_group("settings", group)
   end
 
   @[GObject::Virtual]
