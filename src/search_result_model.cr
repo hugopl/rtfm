@@ -22,12 +22,7 @@ class SearchResultModel < GObject::Object
 
   @[GObject::Virtual]
   def get_item(pos : UInt32) : GObject::Object?
-    obj = @data[pos]?
-    return if obj.nil?
-
-    # FIXME: https://github.com/hugopl/gi-crystal/issues/102
-    LibGObject.g_object_ref(obj)
-    obj
+    @data[pos]?
   end
 
   @[GObject::Virtual]
