@@ -3,4 +3,5 @@
 /bin/
 /.shards/
 /data/Crystal.docset/
+/.ccls-cache/
 *.dwarf
