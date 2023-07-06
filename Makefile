@@ -32,3 +32,4 @@ uninstall:
 	rm -rf $(DESTDIR)$(PREFIX)/share/rtfm
 	rm -rf $(DESTDIR)$(PREFIX)/share/licenses/rtfm
 	rm -rf $(DESTDIR)$(PREFIX)/share/doc/rtfm
+	rm -f $(DESTDIR)$(PREFIX)/share/glib-2.0/schemas/io.github.hugopl.rtfm.gschema.xml
