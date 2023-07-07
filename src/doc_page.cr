@@ -7,7 +7,7 @@ class DocPage < Adw::Bin
   property title : String = "Choose a DocSet"
   property docset : DocSet
 
-  @web_view : WebKit2::WebView?
+  @web_view : WebKit::WebView?
 
   def initialize(@docset, uri : String? = nil)
     super(hexpand: true, vexpand: true)
@@ -45,7 +45,7 @@ class DocPage < Adw::Bin
   def load_uri(uri : String)
     web_view = @web_view
     if web_view.nil?
-      @web_view = web_view = WebKit2::WebView.new
+      @web_view = web_view = WebKit::WebView.new
       web_view.bind_property("title", self, "title", :default)
       self.child = web_view
     end

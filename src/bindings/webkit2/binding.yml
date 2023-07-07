@@ -1,5 +1,5 @@
-namespace: WebKit2
-version: "5.0"
+namespace: WebKit
+version: "6.0"
 
 types:
   EditorTypingAttributes:

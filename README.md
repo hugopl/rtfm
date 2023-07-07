@@ -37,7 +37,7 @@ Dependencies:
 - [Shards dependency manager](https://github.com/crystal-lang/shards).
 - [SQLite3](https://sqlite.org/index.html).
 - [GTK4](https://www.gtk.org/)
-- [Webkit2-5.0](https://webkitgtk.org/) (a.k.a. WebKit2 for GTK4)
+- [GTK Webkit-6.0](https://webkitgtk.org/)
 - [GObject-introspection](https://gi.readthedocs.io/en/latest/) packages for all GTK related dependencies.
 
 There are no packages for any distro yet.
