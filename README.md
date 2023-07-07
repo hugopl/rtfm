@@ -4,6 +4,8 @@ It's a dash/docset reader with built in documentation for Crystal and GTK
 APIs. It's written in [Crystal](https://crystal-lang.org/) using
 [GTK4 bindings](https://github.com/hugopl/gtk4.cr).
 
+<img align="center" src="./screenshots/prerelease.png" />
+
 Tasks needed to be done before I ask anyone to use this:
 
 - [x] Create better Crystal docset files.
@@ -22,7 +24,7 @@ Tasks needed to be done before I ask anyone to use this:
 - [x] Initial welcome page.
 - [x] About dialog.
 - [ ] Focus webpage after open a doc page.
-- [ ] Have screenshots in this README.
+- [x] Have screenshots in this README.
 - [ ] Create GTK docsets based on offline GTK docs + GIR info.
 - [ ] Archlinux AUR package.
 - [ ] Ubuntu package.
