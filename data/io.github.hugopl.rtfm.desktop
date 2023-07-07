@@ -1,7 +1,7 @@
 [Desktop Entry]
 Type=Application
 Exec=rtfm
-Name=Rtfm
+Name=Read the Formidable Manual
 GenericName=Offline documentation browser
 Terminal=false
 Icon=io.github.hugopl.rtfm

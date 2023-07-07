@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop">
+  <id>io.github.hugopl.rtfm</id>
+  <name>Read the Formidable Manual</name>
+  <project_license>MIT</project_license>
+  <developer_name translatable="no">Hugo Parente Lima</developer_name>
+  <summary>GNOME dash docset documentation reader</summary>
+  <metadata_license>CC0-1.0</metadata_license>
+  <url type="homepage">https://github.com/hugopl/rtfm</url>
+  <url type="bugtracker">https://github.com/hugopl/rtfm/issues</url>
+  <url type="donation">https://github.com/sponsors/hugopl</url>
+  <description>
+    <p>
+      A dash/docset reader with built in documentation for Crystal and GTK APIs
+    </p>
+  </description>
+  <screenshots>
+    <screenshot type="default">
+      <image type="source">https://raw.githubusercontent.com/hugopl/rtfm/main/screenshots/prerelease.png</image>
+    </screenshot>
+  </screenshots>
+  <releases>
+    <release version="0.1.0" date="2023-07-07">
+      <description>
+        <ul>
+          <li>Initial Release</li>
+        </ul>
+      </description>
+    </release>
+  </releases>
+  <content_rating type="oars-1.1" />
+  <translation type="gettext">io.github.hugopl.rtfm</translation>
+  <custom>
+    <value key="Purism::form_factor">workstation</value>
+    <!-- <value key="Purism::form_factor">mobile</value> -->
+  </custom>
+  <requires>
+    <display_length compare="ge">816</display_length>
+    <!-- <display_length compare="ge">360</display_length> -->
+  </requires>
+  <recommends>
+    <control>keyboard</control>
+    <control>pointing</control>
+    <!-- <control>touch</control> -->
+  </recommends>
+</component>
