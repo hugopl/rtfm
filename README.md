@@ -26,10 +26,28 @@ Tasks needed to be done before I ask anyone to use this:
 - [ ] Focus webpage after open a doc page.
 - [x] Have screenshots in this README.
 - [ ] Create GTK docsets based on offline GTK docs + GIR info.
-- [ ] Archlinux AUR package.
+- [x] Archlinux AUR package.
 - [ ] Ubuntu package.
 
 ## Installation
+
+## ArchLinux
+
+There's a AUR package, it's named `gnome-rtfm` because there's already a `rtfm` package there for another project.
+
+```
+yay -S gnome-rtfm
+```
+
+## Ubuntu
+
+Waiting for you to submit a package 😉️.
+
+## Flatpack
+
+Waiting for you to submit a package 😉️.
+
+## Compiling from source
 
 Dependencies:
 
