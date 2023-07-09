@@ -32,6 +32,7 @@ class Locator < Adw::Bin
 
     focus_ctl = Gtk::EventControllerFocus.new
     focus_ctl.enter_signal.connect(&->on_focus_in)
+    focus_ctl.leave_signal.connect(&->on_focus_out)
     @entry.add_controller(focus_ctl)
 
     view_factory = Gtk::SignalListItemFactory.new
@@ -102,6 +103,11 @@ class Locator < Adw::Bin
 
   private def on_focus_in
     @popover.visible = true
+    false
+  end
+
+  private def on_focus_out
+    hide_popover
     false
   end
 
