@@ -25,7 +25,7 @@ Tasks needed to be done before I ask anyone to use this:
 - [x] About dialog.
 - [ ] Focus webpage after open a doc page.
 - [x] Have screenshots in this README.
-- [ ] Create GTK docsets based on offline GTK docs + GIR info.
+- [x] Create GTK docsets based on offline GTK docs + ~GIR info.~.
 - [x] Archlinux AUR package.
 - [ ] Ubuntu package.
 
@@ -57,12 +57,12 @@ Dependencies:
 - [GTK4](https://www.gtk.org/)
 - [GTK Webkit-6.0](https://webkitgtk.org/)
 - [GObject-introspection](https://gi.readthedocs.io/en/latest/) packages for all GTK related dependencies.
+- Offline crystal api documentation for Crystal docset generation.
+- Offline Gtk api documentation for Gtk4, Gdk4, Gsk4, libAdwaita and Pango libraries for GTK4 libraries docset generation.
 
 There are no packages for any distro yet.
 
 ```
-$ shards install
-$ ./bin/gi-crystal
 $ make
 $ make install
 ```
