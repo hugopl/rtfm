@@ -49,7 +49,6 @@ class Locator < Adw::Bin
 
     self.docset = @docset # just to update the button label
 
-
     docset_btn = Gtk::MenuButton.cast(template_child("docset_btn"))
     menu = Gio::Menu.new
     DocSet.available_docsets.each do |name, metadata|
