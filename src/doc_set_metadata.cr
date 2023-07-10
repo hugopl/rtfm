@@ -12,6 +12,10 @@ class DocSetMetadata
 
   def_equals @title, @version, @revision
 
+  def label : String
+    "#{@title} v#{@version}"
+  end
+
   def id : String
     String.build do |str|
       str << @title << "-" << @version << "r" << @revision
