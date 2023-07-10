@@ -20,7 +20,7 @@ Tasks needed to be done before I ask anyone to use this:
 - [x] Save session.
 - [ ] Page search.
 - [x] Tabs memorize theirs docsets.
-- [ ] Fix scrollbar to be always on top after search results change.
+- [x] Fix scrollbar to be always on top after search results change.
 - [x] Initial welcome page.
 - [x] About dialog.
 - [ ] Focus webpage after open a doc page.

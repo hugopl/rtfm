@@ -119,21 +119,22 @@ class Locator < Adw::Bin
     # GTK emit search_changed signal for no reasons at begining, so we need this check here.
     return if text.empty? && !@popover.visible
 
-    wnd = Gtk::ScrolledWindow.cast(template_child("results_scrolled_wnd"))
-    wnd_vadj = wnd.vadjustment
-    wnd_vadj.value = 0 if wnd_vadj
-
     results = @docset.search(text)
     @search_result_model.data = results
     @search_selection_model.selected = 0
 
-    # vadjustment = @results_view.vadjustment
-    # pp! vadjustment
-    # pp! vadjustment.try(&.value)
-    # vadjustment.value = 0 if vadjustment
-    # pp! vadjustment.try(&.value)
-    # pp! @results_view.vadjustment.try(&.value)
+    scroll_results_to_top
     @popover.visible = true
+  end
+
+  private def scroll_results_to_top
+    # For sure I believe this isn't the right way to fix this, but it works for me.
+    GLib.timeout(10.milliseconds) do
+      wnd = Gtk::ScrolledWindow.cast(template_child("results_scrolled_wnd"))
+      vadjustment = wnd.vadjustment
+      vadjustment.value = 0 if vadjustment
+      false
+    end
   end
 
   private def entry_activated
