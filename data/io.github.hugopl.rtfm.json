@@ -115,7 +115,7 @@
                 {
                     "type": "git",
                     "url": "https://github.com/hugopl/gi-crystal.git",
-                    "commit": "4b38b6597fa9fc0e77028c5ed9ea31be9795a6d8",
+                    "commit": "9ebef9964b52a2646533c8a8c1a6730492f78674",
                     "dest": "lib/gi-crystal"
                 },
                 {
