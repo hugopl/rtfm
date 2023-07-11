@@ -14,9 +14,22 @@ module Doc2Dash
       namespace = repo.meta.ns
       insert(namespace, :section, copy_doc("index.html", "api/#{namespace}/index.html"))
 
+      copy_html_extras(namespace)
       repo.symbols.each do |symbol|
         save_symbol(repo, symbol)
         hide_sidebar(copy_doc("style.css", "api/#{namespace}/style.css"))
+      end
+    end
+
+    private def copy_html_extras(namespace : String)
+      sources = [] of String
+      Dir.cd(doc_source) do
+        {"*.png", "*.css", "*.woff"}.each do |glob|
+          sources.concat(Dir[glob])
+        end
+      end
+      sources.each do |source|
+        copy_doc(source, "api/#{namespace}/#{source}")
       end
     end
 
