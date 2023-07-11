@@ -1,11 +1,20 @@
-.PHONY: all test install uninstall docsets configure
+.PHONY: all rtfm docsets crystal-docset gtk-docset test install uninstall
 PREFIX ?= /usr
 
-all: docsets
+all: rtfm docsets
+
+rtfm:
+	shards install
+	./bin/gi-crystal
 	shards build --release -s rtfm
 
-docsets:
+docsets: crystal-docset gtk-docset
+
+crystal-docset:
 	crystal run src/create_crystal_docset.cr
+
+gtk-docset:
+	crystal run src/create_gtk_docset.cr
 
 test:
 	crystal spec
@@ -19,6 +28,7 @@ install:
 	# docsets
 	mkdir -p $(DESTDIR)$(PREFIX)/share/rtfm/docsets/
 	cp -rv data/Crystal.docset $(DESTDIR)$(PREFIX)/share/rtfm/docsets/
+	cp -rv data/Gtk4.docset $(DESTDIR)$(PREFIX)/share/rtfm/docsets/
 	# License
 	install -D -m0644 LICENSE $(DESTDIR)$(PREFIX)/share/licenses/rtfm/LICENSE
 	# Changelog

@@ -1,35 +1,14 @@
-require "sqlite3"
 require "json"
 
-module CrystalDoc2Dash
-  class DocSet
-    getter count = 0
-    @db : DB::Database
-    @doc_source : Path
+require "./doc2dash/doc_set_builder"
 
-    DOCSET_PATH = Path.new("data/Crystal.docset/Contents/Resources/Documents/api")
-
-    def initialize(@doc_source : Path)
-      Dir.mkdir_p(DOCSET_PATH)
-      @db = DB.open "sqlite3://./data/Crystal.docset/Contents/Resources/docSet.dsidx"
-      @db.exec("DROP TABLE IF EXISTS searchIndex;")
-      sql = <<-EOT
-      CREATE TABLE searchIndex(
-        id INTEGER PRIMARY KEY,
-        name TEXT NOT NULL,
-        type TEXT NOT NULL,
-        path TEXT NOT NULL
-      );
-      EOT
-      @db.exec("BEGIN TRANSACTION;")
-      @db.exec(sql)
-      at_exit do
-        @db.exec("COMMIT;")
-        @db.close
-      end
+module Doc2Dash
+  class CrystalDocSetBuilder < DocSetBuilder
+    def initialize(doc_source)
+      super("Crystal", doc_source)
     end
 
-    def save_metadata
+    def metadata : String
       contents = <<-EOD
       {
           "name": "Crystal",
@@ -38,50 +17,16 @@ module CrystalDoc2Dash
           "version": "#{Crystal::VERSION}"
       }
       EOD
-      File.write("data/Crystal.docset/meta.json", contents)
     end
 
-    def copy_html_extras
-      Dir.mkdir_p(DOCSET_PATH.join("css"))
-      css_src = @doc_source.join("css", "style.css")
-      css_dest = DOCSET_PATH.join("css", "style.css")
-      File.copy(css_src, css_dest)
+    def create_index
+      json = File.open(doc_source.join("index.json"))
+      repository = Doc2Dash::CrystalRepository.from_json(json)
 
-      # Hide sidebar
-      File.open(css_dest, "a") do |file|
-        file.seek(0, :end)
-        file.puts("\n.sidebar { display: none; }")
-      end
+      repository.dump(self, "")
+      hide_sidebar(copy_doc("css/style.css", "api/css/style.css"))
+      save_metadata
     end
-
-    def insert(name : String, kind : Kind, path : String)
-      path = "api/#{path}"
-      @db.exec("INSERT INTO searchIndex (name, type, path) VALUES(?, ?, ?)", name, kind.to_s.downcase, path)
-      @count += 1
-    end
-
-    def copy_html(source : String)
-      original = @doc_source.join(source)
-      raise "Invalid doc" unless File.exists?(original)
-
-      dest = DOCSET_PATH.join(source)
-      Dir.mkdir_p(dest.dirname) if source.includes?(File::SEPARATOR)
-      File.copy(original, dest)
-    end
-  end
-
-  enum Kind
-    Class
-    Method
-    ClassMethod
-    Constant
-    Constructor
-    Macro
-    Struct
-    Module
-    Alias
-    Enum
-    Annotation
   end
 
   class Callable
@@ -90,14 +35,14 @@ module CrystalDoc2Dash
     getter html_id : String
     getter name : String
 
-    def dump(docset : DocSet, kind : Kind, namespace : String, path : String)
+    def dump(docset : DocSetBuilder, kind : Kind, namespace : String, path : String)
       name = if namespace.empty?
                @name
              else
                separator = kind.class_method? ? '.' : '#'
                "#{namespace}#{separator}#{@name}"
              end
-      docset.insert(name, kind, "#{path}##{@html_id}")
+      docset.insert(name, kind, "api/#{path}##{@html_id}")
     end
   end
 
@@ -107,9 +52,9 @@ module CrystalDoc2Dash
     getter id : String
     getter name : String
 
-    def dump(docset : DocSet, namespace : String, path : String)
+    def dump(docset : DocSetBuilder, namespace : String, path : String)
       name = namespace.empty? ? @name : "#{namespace}::#{@name}"
-      docset.insert(name, :constant, "#{path}##{@id}")
+      docset.insert(name, :constant, "api/#{path}##{@id}")
     end
   end
 
@@ -128,14 +73,12 @@ module CrystalDoc2Dash
     getter macros : Array(Callable)?
     getter types : Array(Type)?
 
-    def dump(docset : DocSet, namespace : String)
-      if @program
-        name = ""
-      else
-        name = namespace.empty? ? @name : "#{namespace}::#{@name}"
-        docset.insert(name, Kind.parse(@kind), @path)
-      end
-
+    def dump(docset : DocSetBuilder, namespace : String)
+      name = if @program
+               ""
+             else
+               namespace.empty? ? @name : "#{namespace}::#{@name}"
+             end
       constants.try(&.each(&.dump(docset, name, path)))
       constructors.try(&.each(&.dump(docset, :constructor, name, @path)))
       class_methods.try(&.each(&.dump(docset, :class_method, name, @path)))
@@ -143,37 +86,23 @@ module CrystalDoc2Dash
       macros.try(&.each(&.dump(docset, :macro, name, path)))
       types.try(&.each(&.dump(docset, name)))
 
-      docset.copy_html(@path)
+      docset.insert(name, Kind.parse(@kind), docset.copy_doc(@path, "api/#{path}"))
     end
   end
 
-  class Repository
+  class CrystalRepository
     include JSON::Serializable
 
     getter program : Type
 
     delegate dump, to: program
   end
-
-  def create_docset(doc_source : Path)
-    json = File.open(doc_source.join("index.json"))
-    repository = Repository.from_json(json)
-
-    docset = DocSet.new(doc_source)
-    repository.dump(docset, "")
-    docset.copy_html_extras
-    docset.save_metadata
-
-    puts "#{docset.count} entries indexed!"
-  end
-
-  def main
-    crystal_doc_dir = ARGV[0]? || "/usr/share/doc/crystal/api"
-    create_docset(Path.new(crystal_doc_dir))
-  end
-
-  extend self
 end
 
-CrystalDoc2Dash.main if PROGRAM_NAME == __FILE__ ||
-                        PROGRAM_NAME.ends_with?("/crystal-run-create_crystal_docset.tmp")
+# Main
+
+doc_source = Path.new(ARGV[0]? || "/usr/share/doc/crystal/api")
+docset = Doc2Dash::CrystalDocSetBuilder.new(doc_source)
+docset.create_index
+
+puts "#{docset.count} entries indexed!"

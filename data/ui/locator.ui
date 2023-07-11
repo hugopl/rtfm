@@ -30,11 +30,7 @@
           <class name="linked"/>
         </style>
         <child>
-          <object class="GtkButton" id="docset_btn">
-              <style>
-                <class name="suggested-action"/>
-              </style>
-          </object>
+          <object class="GtkMenuButton" id="docset_btn" />
         </child>
         <child>
           <object class="GtkEntry" id="locator_entry">

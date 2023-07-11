@@ -2,6 +2,7 @@ require "colorize"
 require "libadwaita"
 GICrystal.require("WebKit", "6.0")
 
+require "./monkey_patches"
 require "./application"
 
 Gio.register_resource("data/resources.xml", source_dir: "data")

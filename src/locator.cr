@@ -47,6 +47,14 @@ class Locator < Adw::Bin
     @popover.parent = self
 
     self.docset = @docset # just to update the button label
+
+    docset_btn = Gtk::MenuButton.cast(template_child("docset_btn"))
+    menu = Gio::Menu.new
+    DocSet.available_docsets.each do |name, metadata|
+      variant = GLib::Variant.new(name)
+      menu.append(metadata.label, "win.change_docset(#{variant})")
+    end
+    docset_btn.menu_model = menu
   end
 
   delegate grab_focus, to: @entry
@@ -70,7 +78,7 @@ class Locator < Adw::Bin
   end
 
   def docset=(@docset : DocSet)
-    Gtk::Button.cast(template_child("docset_btn")).label = @docset.title
+    Gtk::MenuButton.cast(template_child("docset_btn")).label = @docset.title
   end
 
   private def hide_popover

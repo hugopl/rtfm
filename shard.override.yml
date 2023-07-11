@@ -1,7 +1,7 @@
 dependencies:
   gi-crystal:
     github: hugopl/gi-crystal
-    branch: main
+    commit: 9ebef9964b52a2646533c8a8c1a6730492f78674
   gtk4:
     github: hugopl/gtk4.cr
     branch: main
