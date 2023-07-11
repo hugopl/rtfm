@@ -78,8 +78,7 @@ class DocPage < Adw::Bin
   end
 
   private def create_web_view : WebKit::WebView
-    box = Gtk::Box.new(:vertical, 0)
-    box.vexpand = true
+    box = Gtk::Box.new(orientation: :vertical, hexpand: true, vexpand: true, spacing: 0)
     self.child = box
 
     @search_bar = search_bar = Gtk::SearchBar.new
@@ -97,7 +96,7 @@ class DocPage < Adw::Bin
 
     box.append(search_bar)
 
-    @web_view = web_view = WebKit::WebView.new(vexpand: true)
+    @web_view = web_view = WebKit::WebView.new(vexpand: true, hexpand: true)
     web_view.bind_property("title", self, "title", :default)
     box.append(web_view)
 
