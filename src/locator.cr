@@ -109,7 +109,7 @@ class Locator < Adw::Bin
   end
 
   private def on_focus_in
-    @popover.visible = true
+    @popover.visible = true if @search_result_model.get_n_items > 0
     false
   end
 
