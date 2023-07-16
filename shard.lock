@@ -9,9 +9,9 @@ shards:
     git: https://github.com/hugopl/fzy.git
     version: 0.5.5
 
-  gi-crystal: # Overridden
+  gi-crystal:
     git: https://github.com/hugopl/gi-crystal.git
-    version: 0.16.0+git.commit.9ebef9964b52a2646533c8a8c1a6730492f78674
+    version: 0.17.0
 
   gio:
     git: https://github.com/hugopl/gio.cr.git
@@ -19,7 +19,7 @@ shards:
 
   gtk4: # Overridden
     git: https://github.com/hugopl/gtk4.cr.git
-    version: 0.14.0+git.commit.83c6921fc6b9916f3ff43e27d8b9d8ecda5f85d1
+    version: 0.15.0
 
   harfbuzz:
     git: https://github.com/hugopl/harfbuzz.cr.git

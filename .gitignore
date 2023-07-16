@@ -1,7 +1,10 @@
-/docs/
-/lib/
-/bin/
-/.shards/
-/data/*.docset/
+/bin/compare-api
+/bin/gi-crystal
+/bin/rtfm
 /.ccls-cache/
+/data/*.docset/
+/docs/
+/.flatpak-builder/
+/lib/
+/.shards/
 *.dwarf
