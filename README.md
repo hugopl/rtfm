@@ -45,7 +45,12 @@ Waiting for you to submit a package 😉️.
 
 ## Flatpack
 
-Waiting for you to submit a package 😉️.
+Not on flathub yet, but you can build the package by doing:
+
+```
+$ flatpak-builder ./build ./data/io.github.hugopl.rtfm.json --user --install --force-clean
+$ flatpak run io.github.hugopl.rtfm
+```
 
 ## Compiling from source
 
