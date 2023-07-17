@@ -23,7 +23,7 @@ shards:
 
   harfbuzz:
     git: https://github.com/hugopl/harfbuzz.cr.git
-    version: 0.1.0
+    version: 0.2.0
 
   libadwaita:
     git: https://github.com/geopjr/libadwaita.cr.git
