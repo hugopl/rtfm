@@ -20,6 +20,26 @@
     </screenshot>
   </screenshots>
   <releases>
+    <release version="0.2.1" date="2023-07-17">
+      <description>
+        <ul>
+          <li>Fixed compilation with Harfbuzz 8.0</li>
+          <li>Fixed makefile for parallel builds</li>
+        </ul>
+      </description>
+    </release>
+    <release version="0.2.0" date="2023-07-17">
+      <description>
+        <ul>
+          <li>Added built in GTK docsets (GLib, Gio and GObject still missing)</li>
+          <li>Added locator menu to change current docset</li>
+          <li>Page search on Ctrl+F or any input when webview is focused</li>
+          <li>Added flatpak package</li>
+          <li>Search results scroll bar stay always on top after a search change</li>
+          <li>Only show search results popover if there are results to show</li>
+        </ul>
+      </description>
+    </release>
     <release version="0.1.0" date="2023-07-07">
       <description>
         <ul>
