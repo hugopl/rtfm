@@ -1,11 +1,13 @@
-.PHONY: all rtfm docsets crystal-docset gtk-docset test install uninstall
+.PHONY: all configure rtfm docsets crystal-docset gtk-docset test install uninstall
 PREFIX ?= /usr
 
-all: rtfm docsets
+all: configure .WAIT rtfm docsets
 
-rtfm:
+configure:
 	shards install
 	./bin/gi-crystal
+
+rtfm:
 	shards build --release -s rtfm
 
 docsets: crystal-docset gtk-docset
