@@ -3,6 +3,10 @@ require "sqlite3"
 
 require "./doc"
 require "./doc_set_metadata"
+require "./rtfm_error.cr"
+
+class DocSetError < RtfmError
+end
 
 class DocSet
   class_property lookup_dirs = [
@@ -20,7 +24,10 @@ class DocSet
   @@loaded_docsets = Hash(String, DocSet).new
 
   def initialize(id : String)
-    @metadata = DocSet.available_docsets[id]
+    metadata = DocSet.available_docsets[id]?
+    raise DocSetError.new("#{id} not found.") if metadata.nil?
+
+    @metadata = metadata
     @documents_dir = @metadata.path.join("Contents", "Resources", "Documents").expand
     load_docset
   end
