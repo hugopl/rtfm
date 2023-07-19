@@ -114,20 +114,29 @@ class ApplicationWindow < Adw::ApplicationWindow
     has_tabs_to_restore = false
 
     json = settings.string("open-tabs")
-    return if json.empty?
+    if json.empty?
+      new_tab
+      return
+    end
 
     open_tabs = Array(OpenTab).from_json(json)
-    has_tabs_to_restore = open_tabs.size > 0
+    pos = settings.int("selected-tab")
+    restored_tabs = 0
 
-    open_tabs.each do |tab|
+    open_tabs.each.with_index do |tab, i|
       docset = DocSet.new(tab.docset_id)
       doc_page = DocPage.new(docset, tab.uri)
       add_tab(doc_page)
+      restored_tabs += 1
+    rescue e : DocSetError
+      Log.warn { "Error loading docset #{tab.docset_id} for #{tab.uri}." }
+      pos -= 1 if i <= pos
     end
-    pos = settings.int("selected-tab")
-    @tab_view.selected_page = @tab_view.nth_page(pos)
-  ensure
-    new_tab unless has_tabs_to_restore
+    if restored_tabs > 0
+      @tab_view.selected_page = @tab_view.nth_page(pos) if 0 <= pos < restored_tabs
+    else
+      new_tab
+    end
   end
 
   private def new_tab : Nil
