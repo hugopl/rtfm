@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.2] - 2023-07-23
+### Fixed
+- Don't refuse to start if there are removed docsets in the saved session.
+- Remove use of GTK deprecated API.
+
 ## [0.2.1] - 2023-07-17
 ### Fixed
 - Fixed compilation with Harfbuzz 8.0.
