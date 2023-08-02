@@ -20,6 +20,14 @@
     </screenshot>
   </screenshots>
   <releases>
+    <release version="0.2.2" date="2023-07-23">
+      <description>
+        <ul>
+          <li>Don't refuse to start if there are removed docsets in the saved session</li>
+          <li>Remove use of GTK deprecated API.</li>
+        </ul>
+      </description>
+    </release>
     <release version="0.2.1" date="2023-07-17">
       <description>
         <ul>
