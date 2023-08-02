@@ -82,7 +82,7 @@ class Locator < Adw::Bin
   end
 
   private def hide_popover
-    @popover.hide
+    @popover.visible = false
     activate_action("win.focus_page", nil)
   end
 

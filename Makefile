@@ -29,8 +29,8 @@ install:
 	install -D -m644 data/io.github.hugopl.rtfm.gschema.xml $(DESTDIR)$(PREFIX)/share/glib-2.0/schemas/io.github.hugopl.rtfm.gschema.xml
 	# docsets
 	mkdir -p $(DESTDIR)$(PREFIX)/share/rtfm/docsets/
-	cp -rv data/Crystal.docset $(DESTDIR)$(PREFIX)/share/rtfm/docsets/
-	cp -rv data/Gtk4.docset $(DESTDIR)$(PREFIX)/share/rtfm/docsets/
+	cp -r data/Crystal.docset $(DESTDIR)$(PREFIX)/share/rtfm/docsets/
+	cp -r data/Gtk4.docset $(DESTDIR)$(PREFIX)/share/rtfm/docsets/
 	# License
 	install -D -m0644 LICENSE $(DESTDIR)$(PREFIX)/share/licenses/rtfm/LICENSE
 	# Changelog

@@ -1,0 +1,2 @@
+class RtfmError < RuntimeError
+end

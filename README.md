@@ -43,7 +43,31 @@ yay -S gnome-rtfm
 
 Waiting for you to submit a package 😉️.
 
-## Flatpack
+## Nix
+### The easiest way to install package
+
+Install `nix` package manager:
+```bash
+sh <(curl -L https://nixos.org/nix/install) --daemon
+```
+
+Add `unstable` channel:
+```bash
+nix-channel --add https://nixos.org/channels/nixpkgs-unstable unstable
+nix-channel --update
+```
+Install `rtfm` package:
+```bash
+nix-env -iA unstable.rtfm
+```
+Run:
+```bash
+rtfm
+```
+### The best way to install package
+If you want the best experience and all the features of nix, you need to follow a few steps described in [this](https://github.com/sund3RRR/nix-on-generic-linux) repository.
+
+## Flatpak
 
 Not on flathub yet, but you can build the package by doing:
 
