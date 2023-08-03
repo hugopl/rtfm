@@ -46,7 +46,12 @@ class DocSet
   delegate id, to: @metadata
 
   def self.default_id : String
-    "Crystal-#{Crystal::VERSION}r0"
+    @@default_id ||= begin
+      docsets = available_docsets
+      return "Crystal-#{Crystal::VERSION}r0" if docsets["Crystal-#{Crystal::VERSION}r0"]?
+
+      available_docsets.first_key? || "NO DOCSET FOUND" # a better crypt error
+    end
   end
 
   def self.available_docsets : Hash(String, DocSetMetadata)
