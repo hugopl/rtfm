@@ -1,4 +1,0 @@
-dependencies:
-  gtk4:
-    github: hugopl/gtk4.cr
-    version: ~> 0.15.0
