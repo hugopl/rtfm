@@ -1,4 +1,5 @@
 require "./application_window"
+require "./rtfm_log_format"
 
 VERSION = {{ `shards version #{__DIR__}`.strip.stringify }}
 LICENSE = {{ run("./macros/license.cr").stringify }}
@@ -34,12 +35,35 @@ class Application < Adw::Application
       shortcut = action[:shortcut]
       set_accels_for_action("app.#{action[:name]}", {shortcut}) if shortcut
     end
+
+    add_main_option("version", 0, :none, :none, "Show version information and exit", nil)
+    add_main_option("license", 0, :none, :none, "Show license information and exit", nil)
+    add_main_option("log-level", 0, :none, :string, "Log level to be used", nil)
   end
 
   @[GObject::Virtual]
   def activate
     @window = window = ApplicationWindow.new(self)
     window.present
+  end
+
+  @[GObject::Virtual]
+  def handle_local_options(options : GLib::VariantDict) : Int32
+    if options.remove("version")
+      puts "RTFM version #{VERSION} build with Crystal #{Crystal::VERSION}."
+      return 0
+    elsif options.remove("license")
+      puts LICENSE.gsub(/<\/?(big|tt)>/, "")
+      return 0
+    end
+
+    log_level = options.lookup_value("log-level", GLib::VariantType.new("s")).try(&.as_s?)
+    setup_logger(log_level)
+
+    -1
+  rescue e : ArgumentError
+    STDERR.puts(e.message)
+    0
   end
 
   private def add_docset
@@ -86,5 +110,20 @@ class Application < Adw::Application
                      @system_color_scheme
                    end
     style_manager.color_scheme = color_scheme
+  end
+
+  private def setup_logger(log_level : String?)
+    level = log_level ? Log::Severity.parse(log_level) : Log::Severity::Info
+
+    log_io = begin
+      {% if flag?(:release) %}
+        File.open(File.join(Dir.tempdir, "rtfm.log"), "a")
+      {% else %}
+        STDOUT
+      {% end %}
+    end
+    backend = Log::IOBackend.new(io: log_io, formatter: RtfmLogFormat, dispatcher: Log::DispatchMode::Direct)
+    Log.setup(level, backend)
+    Log.info { "RTFM v#{VERSION} started at #{Time.local}, pid: #{Process.pid}, log level: #{level}" }
   end
 end
