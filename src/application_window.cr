@@ -49,6 +49,9 @@ class ApplicationWindow < Adw::ApplicationWindow
     settings.bind("window-maximized", self, "maximized", :default)
 
     restore_tabs(settings)
+    {% unless flag?(:release) %}
+      add_css_class("devel")
+    {% end %}
   end
 
   delegate go_back, to: selected_doc_page

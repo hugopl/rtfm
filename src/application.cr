@@ -10,7 +10,11 @@ class Application < Adw::Application
   @window : ApplicationWindow?
 
   def initialize
-    super(application_id: "io.github.hugopl.rtfm", flags: Gio::ApplicationFlags::None)
+    flags = Gio::ApplicationFlags::None
+    {% unless flag?(:release) %}
+      flags |= Gio::ApplicationFlags::NonUnique
+    {% end %}
+    super(application_id: "io.github.hugopl.rtfm", flags: flags)
     @settings = Gio::Settings.new("io.github.hugopl.rtfm")
 
     style_manager = Adw::StyleManager.default
