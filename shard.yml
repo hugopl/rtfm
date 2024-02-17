@@ -14,7 +14,7 @@ dependencies:
     version: ~> 0.5
   libadwaita:
     github: GeopJr/libadwaita.cr
-    commit: cffabb56e911d2a90c53c2fd14d6bd08bf5ac446
+    branch: main
   sqlite3:
     github: crystal-lang/crystal-sqlite3
     version: ~>0.20.0
