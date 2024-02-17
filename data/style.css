@@ -2,6 +2,33 @@ listview {
   background-color: @popover_bg_color;
 }
 
+locator listview row:selected {
+  color: @accent_fg_color;
+  background-color: @accent_bg_color;
+}
+
+docpage locator listview {
+  background-color: @window_bg_color;
+}
+
+docpage popover locator listview {
+  background-color: @popover_bg_color;
+}
+
+
+docpage {
+  background-color: @window_bg_color;
+}
+
+.locator-example {
+  font-size: 120%;
+  background-color: @sidebar_bg_color;
+  padding: 3px 6px 3px 6px;
+  margin-top: 6px;
+  border-radius: 6px;
+  border: none;
+}
+
 themeselector {
   margin: 9px;
 }

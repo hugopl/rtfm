@@ -1,18 +1,18 @@
 require "json"
 
-require "./doc2dash/doc_set_builder"
+require "./docset_builder"
 
 module Doc2Dash
-  class CrystalDocSetBuilder < DocSetBuilder
+  class CrystalDocsetBuilder < DocsetBuilder
     def initialize(doc_source)
       super("Crystal", doc_source)
     end
 
     def metadata : String
-      contents = <<-EOD
+      <<-EOD
       {
           "name": "Crystal",
-          "revision": "0",
+          "revision": 0,
           "title": "Crystal",
           "version": "#{Crystal::VERSION}"
       }
@@ -35,12 +35,11 @@ module Doc2Dash
     getter html_id : String
     getter name : String
 
-    def dump(docset : DocSetBuilder, kind : Kind, namespace : String, path : String)
+    def dump(docset : DocsetBuilder, kind : Doc::Kind, namespace : String, path : String)
       name = if namespace.empty?
                @name
              else
-               separator = kind.class_method? ? '.' : '#'
-               "#{namespace}#{separator}#{@name}"
+               "#{namespace}.#{@name}"
              end
       docset.insert(name, kind, "api/#{path}##{@html_id}")
     end
@@ -52,7 +51,7 @@ module Doc2Dash
     getter id : String
     getter name : String
 
-    def dump(docset : DocSetBuilder, namespace : String, path : String)
+    def dump(docset : DocsetBuilder, namespace : String, path : String)
       name = namespace.empty? ? @name : "#{namespace}::#{@name}"
       docset.insert(name, :constant, "api/#{path}##{@id}")
     end
@@ -73,7 +72,7 @@ module Doc2Dash
     getter macros : Array(Callable)?
     getter types : Array(Type)?
 
-    def dump(docset : DocSetBuilder, namespace : String)
+    def dump(docset : DocsetBuilder, namespace : String)
       name = if @program
                ""
              else
@@ -81,12 +80,18 @@ module Doc2Dash
              end
       constants.try(&.each(&.dump(docset, name, path)))
       constructors.try(&.each(&.dump(docset, :constructor, name, @path)))
-      class_methods.try(&.each(&.dump(docset, :class_method, name, @path)))
+      class_methods.try(&.each(&.dump(docset, :method, name, @path)))
       instance_methods.try(&.each(&.dump(docset, :method, name, @path)))
       macros.try(&.each(&.dump(docset, :macro, name, path)))
       types.try(&.each(&.dump(docset, name)))
 
-      docset.insert(name, Kind.parse(@kind), docset.copy_doc(@path, "api/#{path}"))
+      kind = if @kind == "alias"
+               Doc::Kind::Class
+             else
+               Doc::Kind.parse(@kind)
+             end
+
+      docset.insert(name, kind, docset.copy_doc(@path, "api/#{path}"))
     end
   end
 
@@ -102,7 +107,7 @@ end
 # Main
 
 doc_source = Path.new(ARGV[0]? || "/usr/share/doc/crystal/api")
-docset = Doc2Dash::CrystalDocSetBuilder.new(doc_source)
+docset = Doc2Dash::CrystalDocsetBuilder.new(doc_source)
 docset.create_index
 
 puts "#{docset.count} entries indexed!"

@@ -1,28 +1,65 @@
-require "./doc_set"
-
-require "./new_page"
+require "./docset"
+require "./locator"
 
 class DocPage < Adw::Bin
+  Log = ::Log.for(DocPage)
+
   @[GObject::Property]
-  property title : String = "Choose a DocSet"
-  property docset : DocSet
+  property title : String = "Choose a Docset"
 
   @web_view : WebKit::WebView?
   @search_bar : Gtk::SearchBar?
   @search_count_label : Gtk::Label?
   @search_ready = false
+  @locator : Locator
+  @locator_popover : Gtk::Popover = Gtk::Popover.new(has_arrow: false)
 
-  def initialize(@docset, uri : String? = nil)
+  def initialize(default_provider : LocatorProvider?)
+    @locator = Locator.new(default_provider)
+    super(css_name: "docpage", child: @locator)
+
+    setup_actions
+  end
+
+  def initialize(docset_id : String, uri : String? = nil)
+    @locator = Locator.new(default_provider)
     super(hexpand: true, vexpand: true)
+
+    @locator.select_docset(docset_id)
     if uri
       load_uri(uri)
     else
-      self.child = NewPage.new
+      self.child = @locator
     end
+    setup_actions
   end
+
+  def setup_actions
+    group = Gio::SimpleActionGroup.new
+    action = Gio::SimpleAction.new("load_uri", GLib::VariantType.new("s"))
+    action.activate_signal.connect(->load_uri(GLib::Variant))
+    group.add_action(action)
+
+    action = Gio::SimpleAction.new("show_locator", nil)
+    action.activate_signal.connect(->show_locator(GLib::Variant?))
+    group.add_action(action)
+
+    insert_action_group("page", group)
+  end
+
+  def self._class_init(klass : Pointer(LibGObject::TypeClass), user_data : Pointer(Void)) : Nil
+    previous_def
+    LibGtk.gtk_widget_class_add_binding_action(klass, Gdk::KEY_P, Gdk::ModifierType::ControlMask, "page.show_locator", nil)
+  end
+
+  delegate current_locator_provider, to: @locator
 
   def uri : String?
     @web_view.try(&.uri)
+  end
+
+  def grab_focus
+    (@web_view || @locator).grab_focus
   end
 
   def focus_page
@@ -50,15 +87,28 @@ class DocPage < Adw::Bin
     search_bar.search_mode = true if search_bar
   end
 
+  def load_uri(variant : GLib::Variant)
+    load_uri(variant.as_s)
+  end
+
   def load_uri(uri : String)
+    Log.info { "Loading URI: #{uri}" }
     web_view = @web_view || create_web_view
     web_view.load_uri(uri)
   end
 
+  def show_locator(_variant : GLib::Variant?)
+    @locator_popover.popup
+    @locator.grab_focus
+  end
+
   private def search_started(entry : Gtk::SearchEntry) : Nil
+    web_view = @web_view
+    return if web_view.nil?
+
     text = entry.text
     entry.remove_css_class("error") if text.empty?
-    find_controller = web_view = @web_view.not_nil!.find_controller
+    find_controller = web_view.find_controller
     find_controller.search(text, WebKit::FindOptions::CaseInsensitive.to_u32, 1000)
     find_controller.count_matches(text, WebKit::FindOptions::CaseInsensitive.to_u32, 1000)
   end
@@ -66,7 +116,6 @@ class DocPage < Adw::Bin
   private def search_stopped
     @search_ready = false
     @web_view.try(&.find_controller.search_finish)
-    search_count_label = @search_count_label
   end
 
   private def search_next : Nil
@@ -104,6 +153,10 @@ class DocPage < Adw::Bin
     search_bar.key_capture_widget = self
 
     setup_search_signals(web_view, entry, search_count_label, prev_btn, next_btn)
+
+    @locator_popover.child = @locator
+    @locator_popover.parent = ApplicationWindow.cast(root.not_nil!).title_widget
+
     web_view
   end
 

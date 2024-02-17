@@ -11,7 +11,7 @@
     </section>
     <section>
       <item>
-        <attribute name="label" translatable="yes">_Add DocSet...</attribute>
+        <attribute name="label" translatable="yes">_Add Docset...</attribute>
         <attribute name="action">app.add_docset</attribute>
       </item>
     </section>
@@ -32,7 +32,7 @@
           <object class="GtkBox">
             <property name="orientation">vertical</property>
             <child>
-              <object class="AdwHeaderBar" id="header_bar">
+              <object class="AdwHeaderBar">
                 <child type="start">
                   <object class="GtkButton">
                     <property name="action-name">app.activate</property>
@@ -60,9 +60,8 @@
                   </object>
                 </child>
                 <property name="title-widget">
-                  <object class="GtkEntry" id="search_entry">
-                    <property name="width-request">450</property>
-                    <property name="placeholder-text">Press Ctrl+P to find a formidable documentation</property>
+                  <object class="AdwWindowTitle" id="title">
+                    <property name="title">Rtfm</property>
                   </object>
                 </property>
                 <child type="end">

@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <requires lib="gtk" version="4.0"/>
+
+  <template class="Locator" parent="AdwBin">
+    <property name="name">locator</property>
+    <property name="halign">center</property>
+    <property name="valign">center</property>
+    <property name="width-request">600</property>
+    <property name="height-request">400</property>
+    <child>
+      <object class="AdwNavigationSplitView">
+        <property name="sidebar">
+          <object class="AdwNavigationPage">
+            <property name="title" translatable="yes">Sidebar</property>
+            <property name="child">
+              <object class="GtkScrolledWindow">
+                <property name="vexpand">1</property>
+                <property name="child">
+                  <object class="GtkListView" id="providers_view">
+                    <style><class name="navigation-sidebar" /></style>
+                    <property name="factory">
+                          <object class="GtkBuilderListItemFactory">
+                            <property name="bytes"><![CDATA[
+                              <interface>
+                                  <template class="GtkListItem">
+                                    <property name="child">
+                                      <object class="GtkBox">
+                                        <child>
+                                          <object class="GtkImage">
+                                            <property name="margin-end">6</property>
+                                            <property name="icon-size">large</property>
+                                            <binding name="file">
+                                              <lookup name="icon_path" type="LocatorProvider">
+                                                <lookup name="item">GtkListItem</lookup>
+                                              </lookup>
+                                            </binding>
+                                          </object>
+                                        </child>
+                                        <child>
+                                          <object class="GtkLabel">
+                                            <property name="xalign">0</property>
+                                            <property name="ellipsize">1</property>
+                                            <binding name="label">
+                                              <lookup name="title" type="LocatorProvider">
+                                                <lookup name="item">GtkListItem</lookup>
+                                              </lookup>
+                                            </binding>
+                                            <style><class name="dim-label"/><class name="caption"/></style>
+                                          </object>
+                                        </child>
+                                      </object>
+                                    </property>
+                                  </template>
+                                </interface>
+                            ]]></property>
+                          </object>
+                        </property>
+                  </object>
+                </property>
+              </object>
+            </property>
+          </object>
+        </property>
+        <property name="content">
+          <object class="AdwNavigationPage">
+            <property name="title" translatable="yes">Content</property>
+            <property name="child">
+              <object class="GtkBox">
+                <property name="orientation">vertical</property>
+                <property name="margin-start">6</property>
+                <property name="margin-top">6</property>
+                <property name="margin-bottom">6</property>
+                <child>
+                  <object class="GtkSearchEntry" id="entry">
+                    <property name="valign">center</property>
+                    <property name="focusable">1</property>
+                    <property name="receives-default">1</property>
+                    <property name="placeholder-text">Search for types and methods.</property>
+                    <property name="search-delay">0</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkBox" id="locator_help">
+                    <property name="orientation">vertical</property>
+                    <property name="halign">center</property>
+                    <property name="margin-top">6</property>
+                    <child>
+                      <object class="GtkLabel">
+                        <property name="label">How to use this?</property>
+                        <property name="hexpand">1</property>
+                        <style><class name="title" /><class name="title-1" /></style>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkLabel">
+                        <property name="label">Foo</property>
+                        <property name="halign">start</property>
+                        <style><class name="locator-example" /></style>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkLabel">
+                        <property name="label">Looks for anything that matches "Foo"</property>
+                        <property name="halign">start</property>
+                        <style><class name="body" /></style>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkLabel">
+                        <property name="label">c Foo</property>
+                        <property name="halign">start</property>
+                        <style><class name="locator-example" /></style>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkLabel">
+                        <property name="label">Looks for classes that matches "Foo"</property>
+                        <property name="halign">start</property>
+                        <style><class name="body" /></style>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkLabel">
+                        <property name="label">. foo</property>
+                        <property name="halign">start</property>
+                        <style><class name="locator-example" /></style>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkLabel">
+                        <property name="label">Looks for methods that matches "Bar"</property>
+                        <property name="halign">start</property>
+                        <style><class name="body" /></style>
+                      </object>
+                    </child>
+                    <!--
+                    <child>
+                      <object class="GtkLabel">
+                        <property name="label">c Foo . bar</property>
+                        <property name="halign">start</property>
+                        <style><class name="locator-example" /></style>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkLabel">
+                        <property name="label">Looks for classes that matches "Foo", then use the result
+to look for methods that matches "bar"</property>
+                        <property name="halign">start</property>
+                        <style><class name="body" /></style>
+                      </object>
+                    </child>
+                    -->
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkScrolledWindow" id="locator_results">
+                    <property name="vexpand">1</property>
+                    <property name="visible">0</property>
+                    <property name="child">
+                      <object class="GtkListView" id="results_view">
+                        <style><class name="navigation-sidebar" /></style>
+                        <property name="factory">
+                          <object class="GtkBuilderListItemFactory">
+                            <property name="bytes"><![CDATA[
+                              <interface>
+                                  <template class="GtkListItem">
+                                    <property name="child">
+                                      <object class="GtkBox">
+                                        <child>
+                                          <object class="GtkImage">
+                                            <property name="margin-end">6</property>
+                                            <property name="icon-size">large</property>
+                                            <binding name="icon-name">
+                                              <lookup name="icon_name" type="LocatorItem">
+                                                <lookup name="item">GtkListItem</lookup>
+                                              </lookup>
+                                            </binding>
+                                          </object>
+                                        </child>
+                                        <child>
+                                          <object class="GtkBox">
+                                            <property name="orientation">vertical</property>
+                                            <child>
+                                              <object class="GtkLabel">
+                                                <property name="xalign">0</property>
+                                                <property name="ellipsize">1</property>
+                                                <binding name="label">
+                                                  <lookup name="name" type="LocatorItem">
+                                                    <lookup name="item">GtkListItem</lookup>
+                                                  </lookup>
+                                                </binding>
+                                              </object>
+                                            </child>
+                                            <child>
+                                              <object class="GtkLabel">
+                                                <property name="xalign">0</property>
+                                                <property name="ellipsize">1</property>
+                                                <binding name="label">
+                                                  <lookup name="description" type="LocatorItem">
+                                                    <lookup name="item">GtkListItem</lookup>
+                                                  </lookup>
+                                                </binding>
+                                                <style><class name="dim-label"/><class name="caption"/></style>
+                                              </object>
+                                            </child>
+                                          </object>
+                                        </child>
+                                      </object>
+                                    </property>
+                                  </template>
+                                </interface>
+                            ]]></property>
+                          </object>
+                        </property>
+                      </object>
+                    </property>
+                  </object>
+                </child>
+              </object>
+            </property>
+          </object>
+        </property>
+      </object>
+    </child>
+  </template>
+</interface>

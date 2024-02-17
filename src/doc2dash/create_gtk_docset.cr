@@ -1,13 +1,13 @@
 require "json"
 
-require "./doc2dash/doc_set_builder"
+require "./docset_builder"
 
 private MODULES = {"gdk4", "gsk4", "gtk4", "libadwaita-1", "Pango"}
 
 module Doc2Dash
-  class GtkDocSetBuilder < DocSetBuilder
+  class GtkDocsetBuilder < DocsetBuilder
     def initialize
-      super("Gtk4", Path.new)
+      super("Gtk", Path.new)
     end
 
     def create_index(repo : Doc2Dash::GtkDocRepository)
@@ -34,10 +34,10 @@ module Doc2Dash
     end
 
     def metadata : String
-      contents = <<-EOD
+      <<-EOD
       {
           "name": "Gtk",
-          "revision": "0",
+          "revision": 0,
           "title": "Gtk libraries",
           "version": "4"
       }
@@ -46,7 +46,7 @@ module Doc2Dash
 
     def save_symbol(repo, symbol : GtkDocSymbol)
       name : String? = nil
-      kind : Kind? = nil
+      kind : Doc::Kind? = nil
       source : String? = nil
       namespace = repo.meta.ns
 
@@ -69,7 +69,6 @@ module Doc2Dash
       when "content"
         name = symbol.name
         kind = :guide
-        path = symbol.href
       else
         STDERR.puts("Unknown symbol type: #{symbol.type}.")
       end
@@ -87,17 +86,16 @@ module Doc2Dash
       STDERR.puts(e.message)
     end
 
-    private def gtkdoc_type_to_kind(type : String) : Kind
+    private def gtkdoc_type_to_kind(type : String) : Doc::Kind
       case type
-      when "vfunc"                     then Kind::VirtualMethod
-      when "function_macro"            then Kind::Macro
-      when "record"                    then Kind::Struct
-      when "ctor"                      then Kind::Constructor
-      when "bitfield"                  then Kind::Flags
-      when "class_method", "type_func" then Kind::Method
-      when "domain"                    then Kind::Class
+      when "function_macro"                     then Doc::Kind::Macro
+      when "record"                             then Doc::Kind::Struct
+      when "ctor"                               then Doc::Kind::Constructor
+      when "bitfield"                           then Doc::Kind::Enum
+      when "class_method", "vfunc", "type_func" then Doc::Kind::Method
+      when "domain", "alias"                    then Doc::Kind::Class
       else
-        Kind.parse(type)
+        Doc::Kind.parse(type)
       end
     end
 
@@ -108,7 +106,7 @@ module Doc2Dash
       return "func" if type.in?("function", "function_macro")
       return "flags" if type == "bitfield"
       return "error" if type == "domain"
-      return type
+      type
     end
   end
 
@@ -150,7 +148,7 @@ def find_modules : Array(Path)
 end
 
 # Main
-docset = Doc2Dash::GtkDocSetBuilder.new
+docset = Doc2Dash::GtkDocsetBuilder.new
 find_modules.each do |mod_path|
   File.open(mod_path.join("index.json")) do |file|
     repo = Doc2Dash::GtkDocRepository.from_json(file)

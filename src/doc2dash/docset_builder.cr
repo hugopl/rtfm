@@ -1,9 +1,9 @@
 require "sqlite3"
-require "./kind"
+require "../doc"
 
 module Doc2Dash
   # A helper class to create docsets.
-  abstract class DocSetBuilder
+  abstract class DocsetBuilder
     getter count = 0
     @name : String
     @db : DB::Database
@@ -32,7 +32,7 @@ module Doc2Dash
       end
     end
 
-    def insert(name : String, kind : Kind, path : String)
+    def insert(name : String, kind : Doc::Kind, path : String)
       @db.exec("INSERT INTO searchIndex (name, type, path) VALUES(?, ?, ?)", name, kind.to_s.downcase, path)
       @count += 1
     end
@@ -58,6 +58,7 @@ module Doc2Dash
 
     def save_metadata
       File.write("data/#{@name}.docset/meta.json", metadata)
+      File.copy("data/#{@name}.svg", "data/#{@name}.docset/icon.svg")
     end
   end
 end

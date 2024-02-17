@@ -1,28 +1,122 @@
-class Doc < GObject::Object
+class Doc
+  enum Kind
+    Annotation
+    Attribute
+    Binding
+    Builtin
+    Callback
+    Category
+    Class
+    Command
+    Component
+    Constant
+    Constructor
+    Define
+    Delegate
+    Diagram
+    Directive
+    Element
+    Entry
+    Enum
+    Environment
+    Error
+    Event
+    Exception
+    Extension
+    Field
+    File
+    Filter
+    Framework
+    Function
+    Global
+    Guide
+    Hook
+    Instance
+    Instruction
+    Interface
+    Keyword
+    Library
+    Literal
+    Macro
+    Method
+    Mixin
+    Modifier
+    Module
+    Namespace
+    Notation
+    Object
+    Operator
+    Option
+    Package
+    Parameter
+    Plugin
+    Procedure
+    Property
+    Protocol
+    Provider
+    Provisioner
+    Query
+    Record
+    Resource
+    Sample
+    Section
+    Service
+    Setting
+    Shortcut
+    Statement
+    Struct
+    Style
+    Subroutine
+    Tag
+    Test
+    Trait
+    Type
+    Union
+    Value
+    Variable
+    Word
+
+    # RTFM additions
+    Signal
+    Unknown
+  end
+
+  getter key : String
   getter name : String
-  getter kind : String
+
+  # TODO: Replace kind by a enum  with https://kapeli.com/docsets#supportedentrytypes values
+  getter kind : Kind
   getter path : String
 
-  def initialize(@kind, @name, @path)
-    super()
+  def initialize(@key, @name, kind : String, @path)
+    @kind = Kind.parse?(kind) || guess_kind(kind)
   end
 
   def icon_name : String
-    # TODO: This is temporary a mess until I find icons for everything
-    case kind
-    when "union"                   then "lang-union-symbolic"
-    when "alias"                   then "lang-alias-symbolic"
-    when "class"                   then "lang-class-symbolic"
-    when "macro", "constant"       then "lang-macro-symbolic"
-    when "enum"                    then "lang-enum-symbolic"
-    when "enumvalue"               then "lang-enum-value-symbolic"
-    when "function", "constructor" then "lang-function-symbolic"
-    when "method", "classmethod"   then "lang-method-symbolic"
-    when "module", "namespace"     then "lang-namespace-symbolic"
-    when "struct"                  then "lang-struct-symbolic"
-    when "structfield"             then "lang-struct-field-symbolic"
+    # TODO: Have nice icons 😎️
+    "dialog-question-symbolic"
+  end
+
+  private def guess_kind(kind : String) : Kind
+    case kind.underscore
+    # GLib
+    when "cat"     then Kind::Category
+    when "func"    then Kind::Function
+    when "tdef"    then Kind::Type
+    when "clconst" then Kind::Variable
+      # Postgres
+    when "view" then Kind::Section
+      # Puppet
+    when "report" then Kind::Guide
+      # Rails
+    when "cl"           then Kind::Class
+    when "instm", "clm" then Kind::Method
     else
-      "lang-unknown-symbolic"
+      {% if flag?(:release) %}
+        Kind::Unknown
+      {% else %}
+        raise ArgumentError.new("Unknown kind: #{kind} for #{name} pointing to #{@path}")
+      {% end %}
     end
   end
 end

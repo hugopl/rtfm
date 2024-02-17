@@ -1,4 +1,4 @@
-@[Gtk::UiTemplate(resource: "/io/github/hugopl/rtfm/ui/theme_selector.ui")]
+@[Gtk::UiTemplate(file: "#{__DIR__}/theme_selector.ui")]
 class ThemeSelector < Gtk::Box
   include Gtk::WidgetTemplate
 
