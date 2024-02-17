@@ -1,11 +1,11 @@
 require "json"
 
-require "./doc2dash/doc_set_builder"
+require "./docset_builder"
 
 private MODULES = {"gdk4", "gsk4", "gtk4", "libadwaita-1", "Pango"}
 
 module Doc2Dash
-  class GtkDocSetBuilder < DocSetBuilder
+  class GtkDocsetBuilder < DocsetBuilder
     def initialize
       super("Gtk4", Path.new)
     end
@@ -150,7 +150,7 @@ def find_modules : Array(Path)
 end
 
 # Main
-docset = Doc2Dash::GtkDocSetBuilder.new
+docset = Doc2Dash::GtkDocsetBuilder.new
 find_modules.each do |mod_path|
   File.open(mod_path.join("index.json")) do |file|
     repo = Doc2Dash::GtkDocRepository.from_json(file)

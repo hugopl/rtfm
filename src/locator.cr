@@ -1,89 +1,61 @@
 require "fzy"
 
-require "./doc_set"
-require "./search_result_model"
+require "./locator_item"
+require "./locator_provider"
+require "./locator_providers_model"
 
-@[Gtk::UiTemplate(resource: "/io/github/hugopl/rtfm/ui/locator.ui", children: %w(results_view locator_entry popover results_scrolled_wnd docset_btn))]
+@[Gtk::UiTemplate(file: "#{__DIR__}/locator.ui", children: %w(entry locator_help locator_results providers_view results_view))]
 class Locator < Adw::Bin
   include Gtk::WidgetTemplate
+  include Gio::ListModel
 
-  @entry : Gtk::Entry
+  Log = ::Log.for(Locator)
+
+  @locator_providers = [] of LocatorProvider
+  getter current_locator_provider : LocatorProvider
+  @providers_selection_model : Gtk::SingleSelection
+  @current_channel : Channel(Int32)?
+
+  @previous_search_text : String = ""
+
+  @entry : Gtk::SearchEntry
   @results_view : Gtk::ListView
-  @popover : Gtk::Popover
-  property docset : DocSet
-  @search_result_model : SearchResultModel
-  @search_selection_model : Gtk::SingleSelection
+  @selection_model : Gtk::SingleSelection
 
-  def initialize
-    super()
+  @result_items = [] of LocatorItem
+  @result_size = 0
 
-    @docset = DocSet.new
-    @search_result_model = SearchResultModel.new
+  def initialize(selected_provider : LocatorProvider?)
+    super(css_name: "locator")
 
-    @popover = Gtk::Popover.cast(template_child("popover"))
-
-    @entry = Gtk::Entry.cast(template_child("locator_entry"))
+    @results_view = Gtk::ListView.cast(template_child("results_view"))
+    @results_view.model = @selection_model = Gtk::SingleSelection.new
+    @entry = Gtk::SearchEntry.cast(template_child("entry"))
     @entry.activate_signal.connect(&->entry_activated)
-    @entry.changed_signal.connect(&->search_changed)
+    @entry.search_changed_signal.connect(&->search_changed)
+
+    providers_model = LocatorProvidersModel.instance
+    @providers_selection_model = Gtk::SingleSelection.new(model: providers_model)
+    @providers_selection_model.notify_signal["selected"].connect { on_providers_view_selected }
+    providers_view = Gtk::ListView.cast(template_child("providers_view"))
+    providers_view.model = @providers_selection_model
+
+    @current_locator_provider = selected_provider || LocatorProvidersModel.instance.default
+    @providers_selection_model.selected = providers_model.index_of(@current_locator_provider)
 
     key_ctl = Gtk::EventControllerKey.new
     key_ctl.key_pressed_signal.connect(&->entry_key_pressed(UInt32, UInt32, Gdk::ModifierType))
     @entry.add_controller(key_ctl)
 
-    focus_ctl = Gtk::EventControllerFocus.new
-    focus_ctl.enter_signal.connect(&->on_focus_in)
-    @entry.add_controller(focus_ctl)
-
-    view_factory = Gtk::SignalListItemFactory.new
-    view_factory.setup_signal.connect(->setup_locator_entry(GObject::Object))
-    view_factory.bind_signal.connect(->bind_locator_entry(GObject::Object))
-
-    @results_view = Gtk::ListView.cast(template_child("results_view"))
-    @search_selection_model = Gtk::SingleSelection.new(@search_result_model)
-    @search_selection_model.autoselect = false
-    @results_view.model = @search_selection_model
-    @results_view.factory = view_factory
-    @results_view.activate_signal.connect(&->entry_activated(UInt32))
-    @popover.parent = self
-
-    self.docset = @docset # just to update the button label
-
-    docset_btn = Gtk::MenuButton.cast(template_child("docset_btn"))
-    menu = Gio::Menu.new
-    DocSet.available_docsets.each do |name, metadata|
-      variant = GLib::Variant.new(name)
-      menu.append(metadata.label, "win.change_docset(#{variant})")
-    end
-    docset_btn.menu_model = menu
+    @selection_model.model = self
+    @results_view.activate_signal.connect(->row_activated(UInt32))
   end
 
   delegate grab_focus, to: @entry
 
-  private def setup_locator_entry(obj : GObject::Object) : Nil
-    list_item = Gtk::ListItem.cast(obj)
-    box = Gtk::Box.new(:horizontal, 6)
-    icon = Gtk::Image.new
-    label = Gtk::Label.new
-    box.append(icon)
-    box.append(label)
-    list_item.child = box
-  end
-
-  private def bind_locator_entry(obj : GObject::Object)
-    list_item = Gtk::ListItem.cast(obj)
-    box = Gtk::Box.cast(list_item.child)
-    doc = Doc.cast(list_item.item)
-    Gtk::Image.cast(box.first_child).icon_name = doc.icon_name
-    Gtk::Label.cast(box.last_child).label = doc.name
-  end
-
-  def docset=(@docset : DocSet)
-    Gtk::MenuButton.cast(template_child("docset_btn")).label = @docset.title
-  end
-
-  private def hide_popover
-    @popover.visible = false
-    activate_action("win.focus_page", nil)
+  def on_providers_view_selected
+    @current_locator_provider = @providers_selection_model.selected_item.as(LocatorProvider)
+    search_changed
   end
 
   def text=(text : String)
@@ -91,64 +63,120 @@ class Locator < Adw::Bin
     @entry.position = text.size
   end
 
-  private def entry_key_pressed(key_val : UInt32, _key_code : UInt32, _modifier : Gdk::ModifierType)
-    if key_val == Gdk::KEY_Escape
-      hide_popover
-      return false
-    end
+  def show(*, select_text : Bool, view : View?)
+    @current_view = view
+    @entry.grab_focus
+    @entry.select_region(0, -1) if select_text
+    popup
+  end
 
-    selected = @search_selection_model.selected
-    if key_val == Gdk::KEY_Up && selected > 0
-      @search_selection_model.selected = @search_selection_model.selected - 1
+  private def entry_key_pressed(key_val : UInt32, _key_code : UInt32, _modifier : Gdk::ModifierType)
+    if key_val == Gdk::KEY_Up
+      selected = @selection_model.selected
+      return false if selected.zero?
+
+      @results_view.scroll_to(selected - 1, :select, nil)
       return true
-    elsif key_val == Gdk::KEY_Down && selected < Int32::MAX
-      @search_selection_model.selected = @search_selection_model.selected + 1
+    elsif key_val == Gdk::KEY_Down
+      return true if @result_size < 2 # First item is already selected...
+
+      selected = @selection_model.selected + 1
+      @results_view.scroll_to(selected, :select, nil) if selected < @result_size
+
       return true
     end
     false
   end
 
-  private def on_focus_in
-    @popover.visible = true if @search_result_model.get_n_items > 0
-    false
+  private def show_help
+    Gtk::Widget.cast(template_child("locator_help")).visible = true
+    Gtk::Widget.cast(template_child("locator_results")).visible = false
+  end
+
+  private def hide_help
+    Gtk::Widget.cast(template_child("locator_help")).visible = false
+    Gtk::Widget.cast(template_child("locator_results")).visible = true
   end
 
   private def search_changed
-    text = @entry.text
-    # Due to https://gitlab.gnome.org/GNOME/gtk/-/issues/5340
-    # GTK emit search_changed signal for no reasons at begining, so we need this check here.
-    return if text.empty? && !@popover.visible
+    @current_channel.try(&.close)
 
-    results = @docset.search(text)
-    @search_result_model.data = results
-    @search_selection_model.selected = 0
+    search_text = @entry.text
+    if search_text.empty?
+      show_help
+      return
+    end
 
-    scroll_results_to_top
-    @popover.visible = true
+    hide_help if @previous_search_text.empty?
+
+    # TODO: Check search_text.starts_with?(@previous_search_text) to improve fzy search.
+    #       But I need to improve fzy.cr shard first 😅️
+    result = @current_locator_provider.search_changed(search_text)
+
+    old_size = @result_size
+    @result_size = result.as?(Int32) || 0
+    items_changed(0, old_size, @result_size)
+
+    if result.is_a?(Channel)
+      @current_channel = result
+      read_provider_channel_async(result)
+    end
+    @results_view.scroll_to(0, :select, nil)
+  ensure
+    @previous_search_text = search_text if search_text
   end
 
-  private def scroll_results_to_top
-    # For sure I believe this isn't the right way to fix this, but it works for me.
-    GLib.timeout(10.milliseconds) do
-      wnd = Gtk::ScrolledWindow.cast(template_child("results_scrolled_wnd"))
-      vadjustment = wnd.vadjustment
-      vadjustment.value = 0 if vadjustment
-      false
+  private def read_provider_channel_async(channel : Channel) : Nil
+    spawn(name: "locator.update") do
+      old_size = 0
+      while !channel.closed?
+        value = channel.receive
+        break if value.zero?
+
+        GLib.idle_add do
+          unless channel.closed?
+            @result_size = old_size + value
+            items_changed(old_size, 0, value)
+            old_size += value
+          end
+          false
+        end
+      end
+    rescue e : Channel::ClosedError
+      nil
     end
   end
 
   private def entry_activated
-    entry_activated(@search_selection_model.selected)
+    return if @entry.text.empty?
+
+    row_activated(@selection_model.selected)
   end
 
-  private def entry_activated(pos : UInt32)
-    doc = @search_result_model.get_item(pos)
-    entry_activated(doc) if doc
+  private def row_activated(index : UInt32)
+    @current_locator_provider.activate(self, index)
   end
 
-  private def entry_activated(doc : Doc)
-    hide_popover
-    html_path = @docset.path(doc)
-    activate_action("win.open_page", "file://#{html_path}")
+  @[GObject::Virtual]
+  def get_n_items : UInt32
+    @result_size.to_u32
+  end
+
+  @[GObject::Virtual]
+  def get_item(pos : UInt32) : GObject::Object?
+    return if pos >= @result_size
+
+    while @result_items.size <= pos
+      @result_items << LocatorItem.new
+    end
+
+    item = @result_items[pos]
+    @current_locator_provider.bind(item, pos.to_i32)
+    item
+  end
+
+  @[GObject::Virtual]
+  def get_item_type : UInt64
+    LocatorItem.g_type
   end
 end

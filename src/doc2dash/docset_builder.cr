@@ -3,7 +3,7 @@ require "./kind"
 
 module Doc2Dash
   # A helper class to create docsets.
-  abstract class DocSetBuilder
+  abstract class DocsetBuilder
     getter count = 0
     @name : String
     @db : DB::Database

@@ -1,28 +1,47 @@
-require "./doc_set"
-
-require "./new_page"
+require "./docset"
+require "./locator"
 
 class DocPage < Adw::Bin
   @[GObject::Property]
-  property title : String = "Choose a DocSet"
-  property docset : DocSet
+  property title : String = "Choose a Docset"
 
   @web_view : WebKit::WebView?
   @search_bar : Gtk::SearchBar?
   @search_count_label : Gtk::Label?
   @search_ready = false
+  @locator : Locator
 
-  def initialize(@docset, uri : String? = nil)
+  def initialize(default_provider : LocatorProvider?)
+    @locator = Locator.new(default_provider)
+    super(child: @locator)
+
+    group = Gio::SimpleActionGroup.new
+    action = Gio::SimpleAction.new("load_uri", GLib::VariantType.new("s"))
+    action.activate_signal.connect(->load_uri(GLib::Variant))
+    group.add_action(action)
+    insert_action_group("page", group)
+  end
+
+  def initialize(docset_id : String, uri : String? = nil)
+    @locator = Locator.new(default_provider)
     super(hexpand: true, vexpand: true)
+
+    @locator.select_docset(docset_id)
     if uri
       load_uri(uri)
     else
-      self.child = NewPage.new
+      self.child = @locator
     end
   end
 
+  delegate current_locator_provider, to: @locator
+
   def uri : String?
     @web_view.try(&.uri)
+  end
+
+  def grab_focus
+    (@web_view || @locator).grab_focus
   end
 
   def focus_page
@@ -50,7 +69,12 @@ class DocPage < Adw::Bin
     search_bar.search_mode = true if search_bar
   end
 
+  def load_uri(variant : GLib::Variant)
+    load_uri(variant.as_s)
+  end
+
   def load_uri(uri : String)
+    Log.info { "Loading URI: #{uri}" }
     web_view = @web_view || create_web_view
     web_view.load_uri(uri)
   end

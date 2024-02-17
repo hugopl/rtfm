@@ -1,4 +1,4 @@
-class Doc < GObject::Object
+class Doc
   getter name : String
   getter kind : String
   getter path : String

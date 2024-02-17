@@ -12,12 +12,15 @@
   end
 {% end %}
 
+{% raise "Rtfm requires -Dpreview_mt compiler option." unless flag?(:preview_mt) %}
+
 require "colorize"
 require "libadwaita"
 GICrystal.require("WebKit", "6.0")
 
 require "./monkey_patches"
 require "./application"
+require "./docset_repository"
 
 Gio.register_resource("data/resources.xml", source_dir: "data")
 
@@ -25,7 +28,14 @@ Gio.register_resource("data/resources.xml", source_dir: "data")
 WebKit::WebView.g_type
 
 {% if flag?(:debug) %}
-  DocSet.lookup_dirs.unshift(Path.new("./data"))
+  DocsetRepository.lookup_dirs.unshift(Path.new("./data"))
 {% end %}
 
-exit(Application.new.run)
+channel = Channel(Int32).new
+Thread.new do
+  app = Application.new
+  channel.send(app.run)
+end
+code = channel.receive
+Log.info { "Rtfm quiting with exit code #{code}." }
+exit(code)

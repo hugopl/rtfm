@@ -83,7 +83,7 @@ class Application < Adw::Application
   private ABOUT_DLG_COMMENTS = <<-EOT
     Rtfm means <i>Read the formidable documentation</i>.
 
-    It's a Gnome Dash DocSet Reader written in Crystal written with ❤️.
+    It's a Gnome Dash Docset Reader written in Crystal written with ❤️.
   EOT
 
   private def show_about_dlg
