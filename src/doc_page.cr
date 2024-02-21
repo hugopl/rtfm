@@ -10,16 +10,13 @@ class DocPage < Adw::Bin
   @search_count_label : Gtk::Label?
   @search_ready = false
   @locator : Locator
+  @locator_popover : Gtk::Popover = Gtk::Popover.new
 
   def initialize(default_provider : LocatorProvider?)
     @locator = Locator.new(default_provider)
     super(child: @locator)
 
-    group = Gio::SimpleActionGroup.new
-    action = Gio::SimpleAction.new("load_uri", GLib::VariantType.new("s"))
-    action.activate_signal.connect(->load_uri(GLib::Variant))
-    group.add_action(action)
-    insert_action_group("page", group)
+    setup_actions
   end
 
   def initialize(docset_id : String, uri : String? = nil)
@@ -32,6 +29,25 @@ class DocPage < Adw::Bin
     else
       self.child = @locator
     end
+    setup_actions
+  end
+
+  def setup_actions
+    group = Gio::SimpleActionGroup.new
+    action = Gio::SimpleAction.new("load_uri", GLib::VariantType.new("s"))
+    action.activate_signal.connect(->load_uri(GLib::Variant))
+    group.add_action(action)
+
+    action = Gio::SimpleAction.new("show_locator", nil)
+    action.activate_signal.connect(->show_locator(GLib::Variant?))
+    group.add_action(action)
+
+    insert_action_group("page", group)
+  end
+
+  def self._class_init(klass : Pointer(LibGObject::TypeClass), user_data : Pointer(Void)) : Nil
+    previous_def
+    LibGtk.gtk_widget_class_add_binding_action(klass, Gdk::KEY_P, Gdk::ModifierType::ControlMask, "page.show_locator", nil)
   end
 
   delegate current_locator_provider, to: @locator
@@ -77,6 +93,11 @@ class DocPage < Adw::Bin
     Log.info { "Loading URI: #{uri}" }
     web_view = @web_view || create_web_view
     web_view.load_uri(uri)
+  end
+
+  def show_locator(_variant : GLib::Variant?)
+    Log.info { "show locator" }
+    @locator_popover.popup
   end
 
   private def search_started(entry : Gtk::SearchEntry) : Nil
@@ -128,6 +149,10 @@ class DocPage < Adw::Bin
     search_bar.key_capture_widget = self
 
     setup_search_signals(web_view, entry, search_count_label, prev_btn, next_btn)
+
+    @locator_popover.child = @locator
+    @locator_popover.parent = self
+
     web_view
   end
 
