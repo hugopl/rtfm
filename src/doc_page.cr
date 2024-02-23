@@ -98,6 +98,8 @@ class DocPage < Adw::Bin
   end
 
   def show_locator(_variant : GLib::Variant?)
+    return if @web_view.nil?
+
     @locator_popover.popup
     @locator.grab_focus
   end
