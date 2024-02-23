@@ -34,7 +34,7 @@ class ApplicationWindow < Adw::ApplicationWindow
     settings.bind("window-height", self, "default-height", :default)
     settings.bind("window-maximized", self, "maximized", :default)
 
-    restore_tabs(settings)
+    new_tab
     {% unless flag?(:release) %}
       add_css_class("devel")
     {% end %}
@@ -68,29 +68,6 @@ class ApplicationWindow < Adw::ApplicationWindow
     action = settings.create_action("style-variant")
     group.add_action(action)
     insert_action_group("settings", group)
-  end
-
-  @[GObject::Virtual]
-  def close_request : Bool
-    save_open_tabs
-    false
-  end
-
-  private def save_open_tabs
-    settings = application.not_nil!.as(Application).settings
-
-    open_tabs = @tab_view.n_pages.times.compact_map do |pos|
-      doc_page = doc_page(pos)
-      Log.info { "Not implemented!" }
-    end
-    settings.set_string("open-tabs", open_tabs.to_json)
-    settings.set_int("selected-tab", @tab_view.page_position(@tab_view.selected_page.not_nil!))
-  end
-
-  private def restore_tabs(settings)
-    new_tab
-    # json = settings.string("open-tabs")
-    # open_tabs = Array(NamedTuple(docset_id: String, uri: String?)).from_json(json)
   end
 
   private def new_tab : Nil
