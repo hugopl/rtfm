@@ -8,25 +8,10 @@ APIs. It's written in [Crystal](https://crystal-lang.org/) using
 
 Tasks needed to be done before I ask anyone to use this:
 
-- [x] Create better Crystal docset files.
-- [x] Base UI defined and implemented.
-- [x] Create docset reader/indexer.
-- [x] Docset chooser widget.
+- [ ] Refactor Fzy API to remove some bad and slow stuff I wrote just to have something working.
 - [ ] Add UI to download docset.
-- [x] Fuzzy search and show docset results.
+- [ ] Have a nice set of icons.
 - [ ] Have button/shortcut to enable/disable fuzzy search.
-- [x] Open docset by double click it.
-- [x] Add back/foward buttons.
-- [x] Save session.
-- [x] Page search.
-- [x] Tabs memorize theirs docsets.
-- [x] Fix scrollbar to be always on top after search results change.
-- [x] Initial welcome page.
-- [x] About dialog.
-- [ ] Focus webpage after open a doc page.
-- [x] Have screenshots in this README.
-- [x] Create GTK docsets based on offline GTK docs + ~GIR info.~.
-- [x] Archlinux AUR package.
 - [ ] Ubuntu package.
 
 ## Installation
