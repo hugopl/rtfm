@@ -4,6 +4,7 @@ require "./theme_selector"
 
 @[Gtk::UiTemplate(file: "#{__DIR__}/application_window.ui", children: %w(view primary_menu title))]
 class ApplicationWindow < Adw::ApplicationWindow
+  Log = ::Log.for(ApplicationWindow)
   include Gtk::WidgetTemplate
 
   @tab_view : Adw::TabView
@@ -37,6 +38,11 @@ class ApplicationWindow < Adw::ApplicationWindow
     new_tab
     {% unless flag?(:release) %}
       add_css_class("devel")
+
+      notify_signal["focus-widget"].connect do
+        widget = self.focus_widget
+        Log.info { "Focus Widget: #{widget}" }
+      end
     {% end %}
   end
 
