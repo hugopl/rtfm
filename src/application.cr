@@ -70,8 +70,8 @@ class Application < Adw::Application
     title = "Not yet implemented"
     text = %q(<span size="xx-large">🧌</span>)
     secondary = "UI to add docsets isn't implemented nether a priority right now.\n\n" \
-                "So to add a docset you will need to copy the docset (<tt>Foo.docset</tt> directory)" \
-                "under one of these directories:\n\n" \
+                "So to add a docset you will need to copy the docset " \
+                "to one of these directories:\n\n" \
                 "<tt>~/.local/share/rtfm/docsets\n" \
                 "~/.local/share/Zeal/Zeal/docsets\n" \
                 "../share/rtfm/docsets (relative to rtfm binary)\n" \
