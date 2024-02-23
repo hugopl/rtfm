@@ -113,7 +113,7 @@ class Locator < Adw::Bin
 
     # TODO: Check search_text.starts_with?(@previous_search_text) to improve fzy search.
     #       But I need to improve fzy.cr shard first 😅️
-    result = @current_locator_provider.search_changed(search_text)
+    result = @current_locator_provider.search_changed(*parse_search_text(search_text))
 
     old_size = @result_size
     @result_size = result.as?(Int32) || 0
@@ -126,6 +126,24 @@ class Locator < Adw::Bin
     @results_view.scroll_to(0, :select, nil)
   ensure
     @previous_search_text = search_text if search_text
+  end
+
+  private def parse_search_text(text : String) : {String, Doc::Kind?}
+    cmd = nil
+    term = nil
+    text.split(" ", 2) do |word|
+      term ||= word if cmd
+      cmd ||= word
+    end
+    return {text, nil.as(Doc::Kind?)} if term.nil?
+
+    kind = case cmd
+           when "c" then Doc::Kind::Class
+           when "." then Doc::Kind::Method
+           else
+             return {text, nil.as(Doc::Kind?)}
+           end
+    {term, kind}
   end
 
   private def read_provider_channel_async(channel : Channel) : Nil

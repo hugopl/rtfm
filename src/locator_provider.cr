@@ -16,7 +16,7 @@ abstract class LocatorProvider < GObject::Object
   # For assync providers, send 0 (zero) as last value to inform there's no more data.
   #
   # See `#bind`.
-  abstract def search_changed(search_text : String) : Result
+  abstract def search_changed(search_text : String, kind : Doc::Kind?) : Result
 
   # Bind locator data to a Locatoritem that will be used as backend on ListView.
   abstract def bind(item : LocatorItem, pos : Int32) : Nil
