@@ -154,7 +154,7 @@ class Locator < Adw::Bin
   end
 
   private def row_activated(index : UInt32)
-    @current_locator_provider.activate(self, index)
+    self.visible = false if @current_locator_provider.activate(self, index)
   end
 
   @[GObject::Virtual]

@@ -37,11 +37,13 @@
                   <object class="GtkButton">
                     <property name="action-name">app.activate</property>
                     <property name="icon-name">window-new-symbolic</property>
+                    <property name="can-focus">0</property>
                   </object>
                 </child>
                 <child type="start">
                   <object class="GtkBox">
                     <property name="orientation">GTK_ORIENTATION_HORIZONTAL</property>
+                    <property name="can-focus">0</property>
                     <style>
                       <class name="linked"/>
                     </style>
@@ -69,6 +71,7 @@
                     <property name="tooltip-text" translatable="yes">Main Menu</property>
                     <property name="menu-model">primary_menu</property>
                     <property name="icon-name">open-menu-symbolic</property>
+                    <property name="can-focus">0</property>
                   </object>
                 </child>
                 <child type="end">
@@ -76,12 +79,14 @@
                     <property name="icon-name">view-grid-symbolic</property>
                     <property name="tooltip-text" translatable="yes">View Open Tabs</property>
                     <property name="action-name">overview.open</property>
+                    <property name="can-focus">0</property>
                   </object>
                 </child>
                 <child type="end">
                   <object class="GtkButton">
                     <property name="action-name">win.new_tab</property>
                     <property name="icon-name">tab-new-symbolic</property>
+                    <property name="can-focus">0</property>
                   </object>
                 </child>
               </object>

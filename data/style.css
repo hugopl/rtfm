@@ -7,14 +7,11 @@ locator listview row:selected {
   background-color: @accent_bg_color;
 }
 
-docpage locator listview {
-  background-color: @window_bg_color;
-}
-
-docpage popover locator listview {
+docpage overlay locator {
   background-color: @popover_bg_color;
+  border-radius: 6pt;
+  padding: 6pt;
 }
-
 
 docpage {
   background-color: @window_bg_color;

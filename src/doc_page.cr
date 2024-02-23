@@ -12,25 +12,13 @@ class DocPage < Adw::Bin
   @search_count_label : Gtk::Label?
   @search_ready = false
   @locator : Locator
-  @locator_popover : Gtk::Popover = Gtk::Popover.new(has_arrow: false)
+  @overlay = Gtk::Overlay.new
 
   def initialize(default_provider : LocatorProvider?)
     @locator = Locator.new(default_provider)
-    super(css_name: "docpage", child: @locator)
+    super(css_name: "docpage", child: @overlay)
+    @overlay.child = @locator
 
-    setup_actions
-  end
-
-  def initialize(docset_id : String, uri : String? = nil)
-    @locator = Locator.new(default_provider)
-    super(hexpand: true, vexpand: true)
-
-    @locator.select_docset(docset_id)
-    if uri
-      load_uri(uri)
-    else
-      self.child = @locator
-    end
     setup_actions
   end
 
@@ -100,7 +88,7 @@ class DocPage < Adw::Bin
   def show_locator(_variant : GLib::Variant?)
     return if @web_view.nil?
 
-    @locator_popover.popup
+    @locator.visible = true
     @locator.grab_focus
   end
 
@@ -130,7 +118,8 @@ class DocPage < Adw::Bin
 
   private def create_web_view : WebKit::WebView
     box = Gtk::Box.new(orientation: :vertical, hexpand: true, vexpand: true, spacing: 0)
-    self.child = box
+    @overlay.child = box
+    @overlay.add_overlay(Adw::Bin.new(child: @locator))
 
     @search_bar = search_bar = Gtk::SearchBar.new
     search_box = Gtk::Box.new(:horizontal, 6)
@@ -155,9 +144,6 @@ class DocPage < Adw::Bin
     search_bar.key_capture_widget = self
 
     setup_search_signals(web_view, entry, search_count_label, prev_btn, next_btn)
-
-    @locator_popover.child = @locator
-    @locator_popover.parent = ApplicationWindow.cast(root.not_nil!).title_widget
 
     web_view
   end
