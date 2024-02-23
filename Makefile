@@ -33,7 +33,7 @@ install:
 	# docsets
 	mkdir -p $(DESTDIR)$(PREFIX)/share/rtfm/docsets/
 	cp -r data/Crystal.docset $(DESTDIR)$(PREFIX)/share/rtfm/docsets/
-	cp -r data/Gtk4.docset $(DESTDIR)$(PREFIX)/share/rtfm/docsets/
+	cp -r data/Gtk.docset $(DESTDIR)$(PREFIX)/share/rtfm/docsets/
 	# License
 	install -D -m0644 LICENSE $(DESTDIR)$(PREFIX)/share/licenses/rtfm/LICENSE
 	# Changelog
