@@ -84,6 +84,8 @@ class Locator < Adw::Bin
       @results_view.scroll_to(selected, :select, nil) if selected < @result_size
 
       return true
+    elsif key_val == Gdk::KEY_Escape
+      activate_action("page.hide_locator", nil)
     end
     false
   end
@@ -154,7 +156,7 @@ class Locator < Adw::Bin
   end
 
   private def row_activated(index : UInt32)
-    self.visible = false if @current_locator_provider.activate(self, index)
+    @current_locator_provider.activate(self, index)
   end
 
   @[GObject::Virtual]
