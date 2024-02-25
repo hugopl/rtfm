@@ -39,6 +39,8 @@ class Docset
           name = rs.read(String)
           kind = rs.read(String)
           path = rs.read(String)
+          # Ugly hack to remove dash tags on some docsets, e.g. the redis one
+          path = path.gsub(/<dash[^>]+>/, "") if path.includes?('<')
           key = key_for(name, kind)
 
           @entries << Doc.new(key, name, kind, path.to_s)
