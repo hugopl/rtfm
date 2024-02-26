@@ -1,5 +1,6 @@
 require "./application_window"
 require "./rtfm_log_format"
+require "./docsets_dialog"
 
 VERSION = {{ `shards version #{__DIR__}`.strip.stringify }}
 LICENSE = {{ run("./macros/license.cr").stringify }}
@@ -25,7 +26,7 @@ class Application < Adw::Application
 
     actions = {
       {name: "activate", shortcut: "<primary>N", closure: ->activate},
-      {name: "add_docset", shortcut: nil, closure: ->add_docset},
+      {name: "show_docsets_dialog", shortcut: "<primary>comma", closure: ->show_docsets_dialog},
       {name: "about", shortcut: nil, closure: ->show_about_dlg},
     }
     actions.each do |action|
@@ -68,18 +69,9 @@ class Application < Adw::Application
     0
   end
 
-  private def add_docset
-    title = "Not yet implemented"
-    text = %q(<span size="xx-large">🧌</span>)
-    secondary = "UI to add docsets isn't implemented nether a priority right now.\n\n" \
-                "So to add a docset you will need to copy the docset " \
-                "to one of these directories:\n\n" \
-                "<tt>~/.local/share/rtfm/docsets\n" \
-                "~/.local/share/Zeal/Zeal/docsets\n" \
-                "../share/rtfm/docsets (relative to rtfm binary)\n" \
-                "</tt>\n\n" \
-                "Sorry for the inconvenience 😁️"
-    Gtk::MessageDialog.ok(title: title, text: text, use_markup: true, secondary_text: secondary, secondary_use_markup: true, transient_for: @window, modal: true) { }
+  private def show_docsets_dialog
+    docsets_dialog = DocsetsDialog.new(transient_for: @window)
+    docsets_dialog.present
   end
 
   private ABOUT_DLG_COMMENTS = <<-EOT
