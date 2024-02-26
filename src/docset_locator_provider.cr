@@ -63,16 +63,16 @@ class DocsetLocatorProvider < LocatorProvider
   end
 
   private def entries : Array(Doc)
-   case @current_haystack
-   when @all_haystack
-     @metadata.docset.entries
-   when @classes_haystack
-     @classes.not_nil!
-   when @methods_haystack
-     @methods.not_nil!
-   else
-     raise RtfmError.new("wtf?")
-   end
+    case @current_haystack
+    when @all_haystack
+      @metadata.docset.entries
+    when @classes_haystack
+      @classes.not_nil!
+    when @methods_haystack
+      @methods.not_nil!
+    else
+      raise RtfmError.new("wtf?")
+    end
   end
 
   def activate(locator : Locator, pos : UInt32) : Bool
