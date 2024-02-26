@@ -1,18 +1,33 @@
 class Doc
   enum Kind
+    Abbreviation
+    Actor
+    Aggregation
+    Alias
     Annotation
+    Association
     Attribute
+    Axiom
     Binding
+    Block
+    Bookmark
     Builtin
     Callback
     Category
     Class
+    Collection
+    Column
     Command
     Component
     Constant
     Constructor
+    Conversion
+    Database
+    Decorator
     Define
     Delegate
+    DeletedSnippet
+    Device
     Diagram
     Directive
     Element
@@ -22,69 +37,110 @@ class Doc
     Error
     Event
     Exception
+    Expression
     Extension
     Field
     File
     Filter
+    Flag
     Framework
     Function
+    Given
     Global
+    Glossary
     Guide
+    Handler
+    Header
+    Helper
     Hook
+    Index
+    Indirection
+    Inductive
     Instance
     Instruction
     Interface
+    Iterator
     Keyword
+    Kind
+    Lemma
     Library
     Literal
     Macro
+    Member
+    Message
     Method
     Mixin
     Modifier
     Module
     Namespace
+    NewSnippet
+    Node
     Notation
     Object
     Operator
     Option
     Package
     Parameter
+    Pattern
+    Pipe
     Plugin
     Procedure
+    Projection
     Property
     Protocol
     Provider
     Provisioner
     Query
     Record
+    Reference
+    Register
+    Relationship
+    Report
+    Request
     Resource
+    Role
     Sample
+    Schema
+    Script
     Section
+    Sender
     Service
     Setting
+    Settings
     Shortcut
+    Signature
+    Snippet
+    State
     Statement
     Struct
     Style
     Subroutine
+    Syntax
+    Table
+    Tactic
     Tag
+    Template
     Test
     Trait
+    Trigger
     Type
     Union
+    Unknown
     Value
     Variable
+    Variant
+    View
+    Web
+    WebSearch
+    Widget
     Word
 
     # RTFM additions
     Signal
-    Unknown
   end
 
   getter key : String
   getter name : String
-
-  # TODO: Replace kind by a enum  with https://kapeli.com/docsets#supportedentrytypes values
   getter kind : Kind
   getter path : String
 
@@ -92,9 +148,8 @@ class Doc
     @kind = Kind.parse?(kind) || guess_kind(kind)
   end
 
-  def icon_name : String
-    # TODO: Have nice icons 😎️
-    "dialog-question-symbolic"
+  def icon_resource : String
+    "/io/github/hugopl/rtfm/#{kind.to_s}.png"
   end
 
   private def guess_kind(kind : String) : Kind

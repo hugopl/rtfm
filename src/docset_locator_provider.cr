@@ -59,7 +59,7 @@ class DocsetLocatorProvider < LocatorProvider
 
     item.name = doc.name
     item.description = doc.kind.to_s
-    item.icon_name = doc.icon_name
+    item.icon_resource = doc.icon_resource
   end
 
   private def entries : Array(Doc)

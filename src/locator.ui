@@ -180,8 +180,8 @@ to look for methods that matches "bar"</property>
                                           <object class="GtkImage">
                                             <property name="margin-end">6</property>
                                             <property name="icon-size">large</property>
-                                            <binding name="icon-name">
-                                              <lookup name="icon_name" type="LocatorItem">
+                                            <binding name="resource">
+                                              <lookup name="icon_resource" type="LocatorItem">
                                                 <lookup name="item">GtkListItem</lookup>
                                               </lookup>
                                             </binding>
