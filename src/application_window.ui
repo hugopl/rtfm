@@ -11,8 +11,8 @@
     </section>
     <section>
       <item>
-        <attribute name="label" translatable="yes">_Add Docset...</attribute>
-        <attribute name="action">app.add_docset</attribute>
+        <attribute name="label" translatable="yes">_Docsets...</attribute>
+        <attribute name="action">app.show_docsets_dialog</attribute>
       </item>
     </section>
     <section>
