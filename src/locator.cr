@@ -63,13 +63,6 @@ class Locator < Adw::Bin
     @entry.position = text.size
   end
 
-  def show(*, select_text : Bool, view : View?)
-    @current_view = view
-    @entry.grab_focus
-    @entry.select_region(0, -1) if select_text
-    popup
-  end
-
   private def entry_key_pressed(key_val : UInt32, _key_code : UInt32, _modifier : Gdk::ModifierType)
     if key_val == Gdk::KEY_Up
       selected = @selection_model.selected
