@@ -34,7 +34,7 @@ class DocsetMetadata < GObject::Object
     end
   end
 
-  def initialize(@title = "", @version = "", @revision = "")
+  def initialize
     super()
   end
 

@@ -12,12 +12,18 @@ class Docset
   Log = ::Log.for(Docset)
 
   getter metadata : DocsetMetadata
-  getter entries = [] of Doc
   @documents_dir : Path
+  getter root = RootDoc.new
+  getter doc_count = 0
 
   def initialize(@metadata : DocsetMetadata)
+    start_time = Time.monotonic
     @documents_dir = @metadata.path.join("Contents", "Resources", "Documents").expand
-    load_docset
+
+    load_docs
+
+    elapsed = Time.monotonic - start_time
+    Log.info { "Loaded #{@doc_count} entries from #{@metadata.title} docset in #{elapsed}." }
   end
 
   delegate title, to: @metadata
@@ -27,40 +33,48 @@ class Docset
     "file://#{@documents_dir.join(doc.path)}"
   end
 
-  # CREATE TABLE searchIndex(id INTEGER PRIMARY KEY, name TEXT, type TEXT, path TEXT);
-  private def load_docset
-    db_file = @metadata.path.join("Contents", "Resources", "docSet.dsidx")
-    Log.info { "Loading #{@metadata.title} database from #{db_file}." }
-    start_time = Time.monotonic
-
-    DB.open "sqlite3://#{db_file}" do |db|
-      db.query "select name, type, path from searchIndex order by name;" do |rs|
-        rs.each do
-          name = rs.read(String)
-          kind = rs.read(String)
-          path = rs.read(String)
-          # Ugly hack to remove dash tags on some docsets, e.g. the redis one
-          path = path.gsub(/<dash[^>]+>/, "") if path.includes?('<')
-          key = key_for(name, kind)
-
-          @entries << Doc.new(key, name, kind, path.to_s)
-        end
-      end
+  private def load_docs
+    parent_doc = @root
+    prev_doc = nil
+    query_database do |rs|
+      doc = rs.read(Doc)
+      parent_doc = load_doc(parent_doc, prev_doc, doc)
+      prev_doc = doc
     end
-
-    elapsed = Time.monotonic - start_time
-    Log.info { "Loaded #{@entries.size} entries in #{elapsed}" }
   end
 
-  private def key_for(name : String, kind : String) : String
-    if kind.in?("method", "attribute", "constant") && !name.ends_with?(".")
-      index = name.rindex('.')
-      index ? name[(index + 1)...] : name
-    elsif kind == "class_method" && !name.ends_with?("#")
-      index = name.rindex('#')
-      index ? name[index..] : name
+  # Returns the parent of the added doc.
+  private def load_doc(parent_doc : Doc, prev_doc : Nil, doc : Doc) : Doc
+    parent_doc.add_child(doc)
+    @doc_count += 1
+    parent_doc
+  end
+
+  # Returns the parent of the added doc.
+  private def load_doc(parent_doc : Doc, prev_doc : Doc, doc : Doc) : Doc
+    # Is a child doc?
+    if prev_doc.parent_of?(doc)
+      prev_doc.add_child(doc)
     else
-      name
+      # find parent
+      while parent_doc != @root && !parent_doc.parent_of?(doc)
+        parent_doc = parent_doc.parent.not_nil!
+      end
+      parent_doc.add_child(doc)
+    end
+    @doc_count += 1
+    parent_doc
+  end
+
+  private def query_database : Nil
+    db_file = @metadata.path.join("Contents", "Resources", "docSet.dsidx")
+    Log.info { "Loading #{@metadata.title} database from #{db_file}." }
+
+    DB.open("sqlite3://#{db_file}") do |db|
+      # CREATE TABLE searchIndex(id INTEGER PRIMARY KEY, name TEXT, type TEXT, path TEXT);
+      db.query("select name, type AS kind, path from searchIndex order by name;") do |rs|
+        yield(rs)
+      end
     end
   end
 end

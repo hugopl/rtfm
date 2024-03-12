@@ -11,7 +11,7 @@ targets:
 dependencies:
   fzy:
     github: hugopl/fzy
-    version: ~> 0.5
+    branch: main
   libadwaita:
     github: GeopJr/libadwaita.cr
     branch: main
