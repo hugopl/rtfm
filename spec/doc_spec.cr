@@ -27,6 +27,13 @@ describe Doc do
     doc.path.should eq("pathwithtags")
   end
 
-  pending "can iterate over docs" do
+  it "can iterate over docs" do
+    docs = create_docs(%w(Abc Class Class.new Class2).sort!)
+    docset = Docset.new(docs)
+    items = [] of Doc
+    docset.root.each do |doc|
+      items << doc
+    end
+    items.should eq(docs)
   end
 end

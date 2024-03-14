@@ -9,13 +9,22 @@ end
 class DocIterator
   include Iterator(Doc)
 
-  @root : Doc
+  @doc : Doc
+  @stack = [] of Doc
+  @i = 0
 
-  def initialize(@root)
+  def initialize(@doc)
   end
 
   def next
-    stop
+    children = @doc.children
+    if children && children.size < @i
+      @doc = children[@i]
+      yield(@doc)
+      @i += 1
+    else
+      stop
+    end
   end
 end
 
