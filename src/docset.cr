@@ -9,6 +9,8 @@ class DocsetError < RtfmError
 end
 
 class Docset
+  include Enumerable(Doc)
+
   Log = ::Log.for(Docset)
 
   getter metadata : DocsetMetadata
@@ -31,6 +33,21 @@ class Docset
 
   def uri(doc : Doc) : String
     "file://#{@documents_dir.join(doc.path)}"
+  end
+
+  #def each(&block : Doc->)
+  #  each(@root, &block)
+  #end
+
+  def each(doc : Doc = @root, &block : Doc->)
+    block.call(doc) if doc != @root
+
+    children = doc.children
+    return if children.nil?
+
+    children.each do |child|
+      each(child, &block)
+    end
   end
 
   private def load_docs

@@ -4,7 +4,7 @@ PREFIX ?= /usr
 all: configure .WAIT rtfm docsets
 
 debug:
-	shards build --debug -Dpreview_mt
+	shards build --debug -Dpreview_mt --error-trace
 
 configure:
 	shards install

@@ -6,28 +6,6 @@ struct KindConverter
   end
 end
 
-class DocIterator
-  include Iterator(Doc)
-
-  @doc : Doc
-  @stack = [] of Doc
-  @i = 0
-
-  def initialize(@doc)
-  end
-
-  def next
-    children = @doc.children
-    if children && children.size < @i
-      @doc = children[@i]
-      yield(@doc)
-      @i += 1
-    else
-      stop
-    end
-  end
-end
-
 class Doc
   include DB::Serializable
   include Iterable(Doc)

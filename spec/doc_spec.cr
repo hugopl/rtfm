@@ -31,7 +31,7 @@ describe Doc do
     docs = create_docs(%w(Abc Class Class.new Class2).sort!)
     docset = Docset.new(docs)
     items = [] of Doc
-    docset.root.each do |doc|
+    docset.each do |doc|
       items << doc
     end
     items.should eq(docs)
