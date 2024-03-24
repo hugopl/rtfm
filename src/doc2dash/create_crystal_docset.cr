@@ -34,12 +34,16 @@ module Doc2Dash
 
     getter html_id : String
     getter name : String
+    getter args_string : String?
 
     def dump(docset : DocsetBuilder, kind : Doc::Kind, namespace : String, path : String)
+      args_string = @args_string
+      has_arg_string = !args_string.nil? && !args_string.empty?
+
       name = if namespace.empty?
-               @name
+               has_arg_string ? "#{@name}#{args_string}" : @name
              else
-               "#{namespace}.#{@name}"
+               has_arg_string ? "#{namespace}.#{@name}#{args_string}" : "#{namespace}.#{@name}"
              end
       docset.insert(name, kind, "api/#{path}##{@html_id}")
     end
