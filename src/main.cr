@@ -12,8 +12,6 @@
   end
 {% end %}
 
-{% raise "Rtfm requires -Dpreview_mt compiler option." unless flag?(:preview_mt) %}
-
 require "colorize"
 require "libadwaita"
 GICrystal.require("WebKit", "6.0")
@@ -31,11 +29,7 @@ WebKit::WebView.g_type
   DocsetRepository.lookup_dirs.unshift(Path.new("./data"))
 {% end %}
 
-channel = Channel(Int32).new
-Thread.new do
-  app = Application.new
-  channel.send(app.run)
-end
-code = channel.receive
+app = Application.new
+code = app.run
 Log.info { "Rtfm quiting with exit code #{code}." }
 exit(code)
