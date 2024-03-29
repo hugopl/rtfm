@@ -159,7 +159,7 @@ class Doc
       when "instm", "clm" then Method
       else
         {% if flag?(:release) %}
-          Kind::Unknown
+          Unknown
         {% else %}
           raise ArgumentError.new("Unknown Doc::Kind: #{string.inspect}")
         {% end %}
