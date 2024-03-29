@@ -21,6 +21,7 @@ class DocPage < Adw::Bin
     @overlay.child = @locator
 
     setup_actions
+    setup_controllers
   end
 
   def setup_actions
@@ -40,9 +41,11 @@ class DocPage < Adw::Bin
     insert_action_group("page", group)
   end
 
-  def self._class_init(klass : Pointer(LibGObject::TypeClass), user_data : Pointer(Void)) : Nil
-    previous_def
-    LibGtk.gtk_widget_class_add_binding_action(klass, Gdk::KEY_P, Gdk::ModifierType::ControlMask, "page.show_locator", nil)
+  def setup_controllers
+    ctl = Gtk::ShortcutController.new(propagation_phase: :capture)
+    shortcut = Gtk::Shortcut.new(Gtk::ShortcutTrigger.parse_string("<Control>P"), Gtk::NamedAction.new("page.show_locator"))
+    ctl.add_shortcut(shortcut)
+    add_controller(ctl)
   end
 
   delegate current_locator_provider, to: @locator
