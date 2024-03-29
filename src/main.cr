@@ -3,7 +3,16 @@
   # open rtfm from terminals without blocking the terminal.
   # In debug mode we don't do this, because everybody loves printf debug style
   fun main(argc : Int32, argv : UInt8**) : Int32
-    if pid = LibC.fork.zero?
+    # if not using --license or --version, fork and let the terminal free
+    should_fork = true
+    argc.times do |i|
+      if !LibC.strcmp(argv[i], "--version") || !LibC.strcmp(argv[i], "--license")
+        should_fork = false
+        break
+      end
+    end
+
+    if !should_fork || (pid = LibC.fork.zero?)
       Crystal.main(argc, argv)
     else
       LibC.printf("RTFM running 🚀️, you must now be able to RTFM.\n")
