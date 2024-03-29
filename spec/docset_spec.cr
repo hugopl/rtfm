@@ -31,6 +31,19 @@ describe Docset do
     )
   end
 
+  it "can iterate over docs using an iterator" do
+    docs = create_docs(%w(Abc Class Class.new Class2).sort!)
+    docset = Docset.new(docs)
+    items = [] of Doc
+    it = docset.each
+    while doc = it.next
+      break if doc.is_a?(Iterator::Stop)
+
+      items << doc
+    end
+    items.should eq(docs)
+  end
+
   it "load crystal docset" do
     docset = crystal_docset
     # puts docset.print_doc_tree

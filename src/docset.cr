@@ -9,6 +9,8 @@ class DocsetError < RtfmError
 end
 
 class Docset
+  include Iterable(Doc)
+
   Log = ::Log.for(Docset)
 
   getter metadata : DocsetMetadata
@@ -49,6 +51,10 @@ class Docset
     end
     parent_doc.add_child(doc)
     parent_doc
+  end
+
+  def each
+    @entries.each
   end
 
   # CREATE TABLE searchIndex(id INTEGER PRIMARY KEY, name TEXT, type TEXT, path TEXT);

@@ -26,14 +26,4 @@ describe Doc do
     doc = Doc.new("foo", :method, "path<dash bla bla>with<dash asdasd>tags")
     doc.path.should eq("pathwithtags")
   end
-
-  pending "can iterate over docs" do
-    docs = create_docs(%w(Abc Class Class.new Class2).sort!)
-    docset = Docset.new(docs)
-    items = [] of Doc
-    docset.each do |doc|
-      items << doc
-    end
-    items.should eq(docs)
-  end
 end
