@@ -1,5 +1,14 @@
 class Doc
   enum Kind
+    # Docs that can be parent of other docs
+    Root
+    Module
+    Enum
+    Class
+    Struct
+    LastParentKind = Struct
+
+    # Normal doc kinds
     Abbreviation
     Actor
     Aggregation
@@ -14,7 +23,6 @@ class Doc
     Builtin
     Callback
     Category
-    Class
     Collection
     Column
     Command
@@ -32,7 +40,6 @@ class Doc
     Directive
     Element
     Entry
-    Enum
     Environment
     Error
     Event
@@ -71,7 +78,6 @@ class Doc
     Method
     Mixin
     Modifier
-    Module
     Namespace
     NewSnippet
     Node
@@ -112,7 +118,6 @@ class Doc
     Snippet
     State
     Statement
-    Struct
     Style
     Subroutine
     Syntax
@@ -137,7 +142,6 @@ class Doc
 
     # RTFM additions
     Signal
-    Root
 
     def self.parse(string : String) : self
       parse?(string) || guess_kind(string)
