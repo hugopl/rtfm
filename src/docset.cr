@@ -29,8 +29,22 @@ class Docset
   delegate size, to: @entries
   delegate print_doc_tree, to: @root
 
+  private def uri_prefix : String
+    @uri_prefix ||= "file://#{@documents_dir}/"
+  end
+
   def uri(doc : Doc) : String
-    "file://#{@documents_dir.join(doc.path)}"
+    uri_prefix + doc.path
+  end
+
+  def find_by_uri(uri : String) : Doc?
+    return if uri.size < uri_prefix.size
+
+    path = uri[uri_prefix.size..]
+    # O(n) 😱
+    @entries.find do |doc|
+      doc.path == path
+    end
   end
 
   private def build_hierarchy(entries)

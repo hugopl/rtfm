@@ -1,6 +1,8 @@
 require "./doc_kind"
 
 class Doc
+  include Comparable(Doc)
+
   getter key : String
   getter name : String
   getter kind : Kind
@@ -62,6 +64,17 @@ class Doc
     end
   end
 
+  def print_doc_tree : String
+    children = @children
+    return "" if children.nil?
+
+    String.build do |str|
+      children.each do |doc|
+        doc.print_doc_tree(str, 0)
+      end
+    end
+  end
+
   def print_doc_tree(io : IO, level = 0) : Nil
     spacing = "  " * level
     io << spacing << @kind << ' ' << @name << '\n'
@@ -71,6 +84,10 @@ class Doc
     children.each do |doc|
       doc.print_doc_tree(io, level + 1)
     end
+  end
+
+  def <=>(other)
+    @name <=> other.name
   end
 
   def fzy_key
@@ -96,13 +113,5 @@ class RootDoc < Doc
 
   def children : Array(Doc)
     @children.not_nil!
-  end
-
-  def print_doc_tree : String
-    String.build do |str|
-      children.each do |doc|
-        doc.print_doc_tree(str, 0)
-      end
-    end
   end
 end

@@ -8,6 +8,8 @@ abstract class LocatorProvider < GObject::Object
   @[GObject::Property]
   getter icon_path : String = ""
 
+  abstract def docset : Docset
+
   # Method called everytime this locator is active and the search text changes.
   #
   # Assync providers must return a Channel(Int32), sync providers a Int32.
@@ -22,5 +24,5 @@ abstract class LocatorProvider < GObject::Object
   abstract def bind(item : LocatorItem, pos : Int32) : Nil
 
   # Method called when a locator item is activated.
-  abstract def activate(locator : Locator, pos : UInt32) : Bool
+  abstract def activate(locator : Locator, pos : UInt32) : String?
 end

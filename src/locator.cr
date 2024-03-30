@@ -24,6 +24,7 @@ class Locator < Adw::Bin
 
   @result_items = [] of LocatorItem
   @result_size = 0
+  getter last_activated_docset : Docset?
 
   def initialize(selected_provider : LocatorProvider?)
     super(css_name: "locator")
@@ -167,7 +168,11 @@ class Locator < Adw::Bin
   end
 
   private def row_activated(index : UInt32)
-    @current_locator_provider.activate(self, index)
+    uri = @current_locator_provider.activate(self, index)
+    return if uri.nil?
+
+    @last_activated_docset = @current_locator_provider.docset
+    activate_action("page.load_uri", uri)
   end
 
   @[GObject::Virtual]

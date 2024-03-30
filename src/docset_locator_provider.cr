@@ -13,6 +13,10 @@ class DocsetLocatorProvider < LocatorProvider
     @icon_path = @metadata.icon_path
   end
 
+  def docset : Docset
+    @metadata.docset
+  end
+
   def search_changed(search_text : String, kind : Doc::Kind?) : Result
     Log.debug { "search changed: #{search_text}, #{kind}" }
     haystack = @haystack ||= Fzy::PreparedHaystack.new(@metadata.docset.entries)
@@ -28,9 +32,8 @@ class DocsetLocatorProvider < LocatorProvider
     item.icon_resource = doc.icon_resource
   end
 
-  def activate(locator : Locator, pos : UInt32) : Bool
+  def activate(locator : Locator, pos : UInt32) : String?
     doc = @last_results[pos].item
-    locator.activate_action("page.load_uri", @metadata.docset.uri(doc))
-    true
+    @metadata.docset.uri(doc)
   end
 end

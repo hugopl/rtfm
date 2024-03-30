@@ -89,6 +89,8 @@ class DocPage < Adw::Bin
   def load_uri(uri : String)
     Log.info { "Loading URI: #{uri}" }
     web_view = @web_view || create_web_view
+    return if web_view.nil?
+
     web_view.load_uri(uri)
     @locator.visible = false
   end
@@ -151,6 +153,7 @@ class DocPage < Adw::Bin
 
     @web_view = web_view = WebKit::WebView.new(vexpand: true, hexpand: true)
     web_view.bind_property("title", self, "title", :default)
+    web_view.notify_signal["uri"].connect { on_uri_changed }
     box.append(web_view)
 
     search_bar.connect_entry(entry)
@@ -159,6 +162,17 @@ class DocPage < Adw::Bin
     setup_search_signals(web_view, entry, search_count_label, prev_btn, next_btn)
 
     web_view
+  end
+
+  private def on_uri_changed
+    web_view = @web_view
+    docset = @locator.last_activated_docset
+    return if web_view.nil? || docset.nil?
+
+    doc = docset.find_by_uri(web_view.uri)
+    return if doc.nil?
+
+    Log.fatal { "uri changed #{doc}" }
   end
 
   private def setup_search_signals(web_view, entry, search_count_label, prev_btn, next_btn)
