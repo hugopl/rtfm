@@ -72,6 +72,10 @@ class Doc
       doc.print_doc_tree(io, level + 1)
     end
   end
+
+  def fzy_key
+    @key
+  end
 end
 
 class RootDoc < Doc
