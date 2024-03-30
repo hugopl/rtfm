@@ -13,7 +13,6 @@ class DocPage < Adw::Bin
   @search_ready = false
   @locator : Locator
   @overlay = Gtk::Overlay.new
-  @locator_overlay = Adw::Bin.new
 
   def initialize(default_provider : LocatorProvider?)
     @locator = Locator.new(default_provider)
@@ -91,18 +90,18 @@ class DocPage < Adw::Bin
     Log.info { "Loading URI: #{uri}" }
     web_view = @web_view || create_web_view
     web_view.load_uri(uri)
-    @locator_overlay.visible = false
+    @locator.visible = false
   end
 
   def show_locator(_variant : GLib::Variant? = nil)
     return if @web_view.nil?
 
-    @locator_overlay.visible = true
+    @locator.visible = true
     @locator.grab_focus
   end
 
   def hide_locator(_variant : GLib::Variant? = nil)
-    @locator_overlay.visible = false if @web_view
+    @locator.visible = false if @web_view
   end
 
   private def search_started(entry : Gtk::SearchEntry) : Nil
@@ -132,9 +131,8 @@ class DocPage < Adw::Bin
   private def create_web_view : WebKit::WebView
     box = Gtk::Box.new(orientation: :vertical, hexpand: true, vexpand: true, spacing: 0)
     @overlay.child = box
-    @locator_overlay.child = @locator
-    @overlay.add_overlay(@locator_overlay)
-    @locator_overlay.visible = false
+    @overlay.add_overlay(@locator)
+    @locator.visible = false
 
     @search_bar = search_bar = Gtk::SearchBar.new
     search_box = Gtk::Box.new(:horizontal, 6)
