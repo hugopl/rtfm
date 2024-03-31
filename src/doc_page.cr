@@ -1,23 +1,39 @@
 require "./docset"
 require "./locator"
+require "./sidebar_model"
 
+@[Gtk::UiTemplate(file: "#{__DIR__}/doc_page.ui", children: %w(overlay web_view list_view))]
 class DocPage < Adw::Bin
+  include Gtk::WidgetTemplate
+
   Log = ::Log.for(DocPage)
 
   @[GObject::Property]
   property title : String = "Choose a Docset"
 
-  @web_view : WebKit::WebView?
+  @web_view : WebKit::WebView
   @search_bar : Gtk::SearchBar?
   @search_count_label : Gtk::Label?
   @search_ready = false
   @locator : Locator
   @overlay = Gtk::Overlay.new
+  @sidebar : Gtk::Widget?
+  @sidebar_model = SidebarModel.new
 
   def initialize(default_provider : LocatorProvider?)
     @locator = Locator.new(default_provider)
-    super(css_name: "docpage", child: @overlay)
-    @overlay.child = @locator
+    super(css_name: "docpage")
+
+    @web_view = web_view = WebKit::WebView.cast(template_child("web_view"))
+    web_view.bind_property("title", self, "title", :default)
+    web_view.notify_signal["uri"].connect { on_uri_changed }
+
+    list_view = Gtk::ListView.cast(template_child("list_view"))
+    selection_model = Gtk::SingleSelection.new(@sidebar_model)
+    list_view.model = selection_model
+
+    overlay = Gtk::Overlay.cast(template_child("overlay"))
+    overlay.add_overlay(@locator)
 
     setup_actions
     setup_controllers
@@ -54,7 +70,8 @@ class DocPage < Adw::Bin
   end
 
   def grab_focus
-    (@web_view || @locator).grab_focus
+    widget = @locator.visible ? @locator : @web_view
+    widget.grab_focus
   end
 
   def focus_page
@@ -88,22 +105,17 @@ class DocPage < Adw::Bin
 
   def load_uri(uri : String)
     Log.info { "Loading URI: #{uri}" }
-    web_view = @web_view || create_web_view
-    return if web_view.nil?
-
-    web_view.load_uri(uri)
+    @web_view.load_uri(uri)
     @locator.visible = false
   end
 
   def show_locator(_variant : GLib::Variant? = nil)
-    return if @web_view.nil?
-
     @locator.visible = true
     @locator.grab_focus
   end
 
   def hide_locator(_variant : GLib::Variant? = nil)
-    @locator.visible = false if @web_view
+    @locator.visible = false
   end
 
   private def search_started(entry : Gtk::SearchEntry) : Nil
@@ -131,10 +143,8 @@ class DocPage < Adw::Bin
   end
 
   private def create_web_view : WebKit::WebView
-    box = Gtk::Box.new(orientation: :vertical, hexpand: true, vexpand: true, spacing: 0)
-    @overlay.child = box
-    @overlay.add_overlay(@locator)
-    @locator.visible = false
+    vbox = Gtk::Box.new(orientation: :vertical, hexpand: true, vexpand: true, spacing: 0)
+    hbox.append(vbox)
 
     @search_bar = search_bar = Gtk::SearchBar.new
     search_box = Gtk::Box.new(:horizontal, 6)
@@ -149,12 +159,7 @@ class DocPage < Adw::Bin
     search_box.append(next_btn)
     search_box.append(search_count_label)
 
-    box.append(search_bar)
-
-    @web_view = web_view = WebKit::WebView.new(vexpand: true, hexpand: true)
-    web_view.bind_property("title", self, "title", :default)
-    web_view.notify_signal["uri"].connect { on_uri_changed }
-    box.append(web_view)
+    vbox.append(search_bar)
 
     search_bar.connect_entry(entry)
     search_bar.key_capture_widget = self
@@ -165,14 +170,16 @@ class DocPage < Adw::Bin
   end
 
   private def on_uri_changed
-    web_view = @web_view
     docset = @locator.last_activated_docset
-    return if web_view.nil? || docset.nil?
+    Log.fatal { "on uri change #{docset}" }
 
-    doc = docset.find_by_uri(web_view.uri)
+    return if docset.nil?
+
+    doc = docset.find_by_uri(@web_view.uri)
     return if doc.nil?
 
     Log.fatal { "uri changed #{doc}" }
+    @sidebar_model.doc = doc.parent
   end
 
   private def setup_search_signals(web_view, entry, search_count_label, prev_btn, next_btn)

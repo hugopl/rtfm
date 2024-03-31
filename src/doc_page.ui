@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <requires lib="gtk" version="4.0"/>
+  <requires lib="web_kit" version="6.0"/>
+
+  <template class="DocPage" parent="AdwBin">
+    <child>
+      <object class="GtkBox">
+        <child>
+          <object class="GtkScrolledWindow" id="sidebar">
+            <property name="vexpand">1</property>
+            <property name="child">
+              <object class="GtkListView" id="list_view">
+                <property name="hexpand">1</property>
+                <property name="vexpand">1</property>
+
+                    <property name="factory">
+                          <object class="GtkBuilderListItemFactory">
+                            <property name="bytes"><![CDATA[
+                              <interface>
+                                  <template class="GtkListItem">
+                                    <property name="child">
+                                      <object class="GtkBox">
+                                        <child>
+                                          <object class="GtkImage">
+                                            <property name="margin-end">6</property>
+                                            <property name="icon-size">large</property>
+                                            <binding name="file">
+                                              <lookup name="icon_path" type="SidebarItem">
+                                                <lookup name="item">GtkListItem</lookup>
+                                              </lookup>
+                                            </binding>
+                                          </object>
+                                        </child>
+                                        <child>
+                                          <object class="GtkLabel">
+                                            <property name="xalign">0</property>
+                                            <property name="ellipsize">3</property>
+                                            <binding name="label">
+                                              <lookup name="label" type="SidebarItem">
+                                                <lookup name="item">GtkListItem</lookup>
+                                              </lookup>
+                                            </binding>
+                                            <style><class name="dim-label"/><class name="caption"/></style>
+                                          </object>
+                                        </child>
+                                      </object>
+                                    </property>
+                                  </template>
+                                </interface>
+                            ]]></property>
+                          </object>
+                        </property>
+
+
+              </object>
+            </property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkOverlay" id="overlay">
+            <child>
+              <object class="WebKitWebView" id="web_view">
+                <property name="hexpand">1</property>
+                <property name="vexpand">1</property>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+    </child>
+  </template>
+</interface>

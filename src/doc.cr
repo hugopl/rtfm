@@ -90,6 +90,10 @@ class Doc
     @name <=> other.name
   end
 
+  def root?
+    false
+  end
+
   def fzy_key
     @key
   end
@@ -104,7 +108,7 @@ class RootDoc < Doc
   end
 
   def parent
-    raise ArgumentError.new("roots doesn't have parent")
+    self
   end
 
   def parent_of?(other : Doc) : Bool
@@ -113,5 +117,9 @@ class RootDoc < Doc
 
   def children : Array(Doc)
     @children.not_nil!
+  end
+
+  def root?
+    true
   end
 end
