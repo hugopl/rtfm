@@ -83,7 +83,7 @@
                 <child>
                   <object class="GtkBox" id="locator_help">
                     <property name="orientation">vertical</property>
-                    <property name="halign">center</property>
+                    <property name="halign">fill</property>
                     <property name="margin-top">6</property>
                     <child>
                       <object class="GtkLabel">
@@ -101,59 +101,42 @@
                     </child>
                     <child>
                       <object class="GtkLabel">
-                        <property name="label">Looks for anything that matches "Foo"</property>
+                        <property name="label">Anything that matches "Foo"</property>
                         <property name="halign">start</property>
                         <style><class name="body" /></style>
                       </object>
                     </child>
                     <child>
                       <object class="GtkLabel">
-                        <property name="label">c Foo</property>
+                        <property name="label">Foo.</property>
                         <property name="halign">start</property>
                         <style><class name="locator-example" /></style>
                       </object>
                     </child>
                     <child>
                       <object class="GtkLabel">
-                        <property name="label">Looks for classes that matches "Foo"</property>
+                        <property name="label">Classes that matches "Foo"</property>
                         <property name="halign">start</property>
                         <style><class name="body" /></style>
                       </object>
                     </child>
                     <child>
                       <object class="GtkLabel">
-                        <property name="label">. foo</property>
+                        <property name="label">Foo.bar</property>
                         <property name="halign">start</property>
                         <style><class name="locator-example" /></style>
                       </object>
                     </child>
                     <child>
                       <object class="GtkLabel">
-                        <property name="label">Looks for methods that matches "Bar"</property>
+                        <property name="label">Methods that matches "bar" on types that matches "Foo".</property>
                         <property name="halign">start</property>
                         <style><class name="body" /></style>
                       </object>
                     </child>
-                    <!--
                     <child>
                       <object class="GtkLabel">
-                        <property name="label">c Foo . bar</property>
-                        <property name="halign">start</property>
-                        <style><class name="locator-example" /></style>
-                      </object>
-                    </child>
-                    <child>
-                      <object class="GtkLabel">
-                        <property name="label">Looks for classes that matches "Foo", then use the result
-to look for methods that matches "bar"</property>
-                        <property name="halign">start</property>
-                        <style><class name="body" /></style>
-                      </object>
-                    </child>
-                    -->
-                    <child>
-                      <object class="GtkLabel">
-                        <property name="label">With a document open hit Ctrl+P to bring this locator back.</property>
+                        <property name="label">Ctrl+P to bring this locator back any time.</property>
                         <property name="valign">end</property>
                         <property name="vexpand">1</property>
                         <property name="halign">start</property>
