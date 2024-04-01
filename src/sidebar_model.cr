@@ -26,21 +26,35 @@ end
 class SidebarModel < GObject::Object
   include Gio::ListModel
 
-  @doc = RootDoc.new
+  @doc : Doc = RootDoc.new
+  @docset : Docset?
   @data = [] of SidebarItem
 
   def initialize
     super
   end
 
-  def doc=(doc : Doc)
-    Log.fatal { "doc: #{doc}" }
+  def set_doc(doc : Doc, docset : Docset) : Nil
+    doc = doc.can_be_parent? ? doc : doc.parent
     return if doc == @doc
 
     @doc = doc
+    @docset = docset
+    update_data
+  end
+
+  def uri(pos : Int) : String?
+    docset = @docset
+    item = @data[pos]?
+    return if docset.nil? || item.nil?
+
+    docset.uri(item.doc)
+  end
+
+  private def update_data
     old_size = @data.size
-    children = doc.children
-    if doc.root? || children.nil?
+    children = @doc.children
+    if @doc.root? || children.nil?
       @data.clear
       items_changed(0, old_size, 0)
       return

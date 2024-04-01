@@ -32,6 +32,7 @@ class DocPage < Adw::Bin
     list_view = Gtk::ListView.cast(template_child("list_view"))
     selection_model = Gtk::SingleSelection.new(@sidebar_model)
     list_view.model = selection_model
+    list_view.activate_signal.connect(&->on_sidebar_item_activated(UInt32))
 
     overlay = Gtk::Overlay.cast(template_child("overlay"))
     overlay.add_overlay(@locator)
@@ -165,16 +166,21 @@ class DocPage < Adw::Bin
 
   private def on_uri_changed
     docset = @locator.last_activated_docset
-    Log.fatal { "on uri change #{docset}" }
-
     return if docset.nil?
 
     doc = docset.find_by_uri(@web_view.uri)
     return if doc.nil?
 
-    Log.fatal { "uri changed #{doc}" }
-    @sidebar_model.doc = doc.parent
+    @sidebar_model.set_doc(doc, docset)
     @sidebar.visible = @sidebar_model.get_n_items.positive?
+  end
+
+  def on_sidebar_item_activated(pos : UInt32)
+    docset = @locator.last_activated_docset
+    return if docset.nil?
+
+    uri = @sidebar_model.uri(pos)
+    load_uri(uri) if uri
   end
 
   private def setup_search_signals(web_view, entry, search_count_label, prev_btn, next_btn)
