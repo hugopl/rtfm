@@ -2,7 +2,7 @@ require "./docset"
 require "./locator"
 require "./sidebar_model"
 
-@[Gtk::UiTemplate(file: "#{__DIR__}/doc_page.ui", children: %w(overlay web_view list_view))]
+@[Gtk::UiTemplate(file: "#{__DIR__}/doc_page.ui", children: %w(overlay web_view list_view sidebar))]
 class DocPage < Adw::Bin
   include Gtk::WidgetTemplate
 
@@ -17,13 +17,14 @@ class DocPage < Adw::Bin
   @search_ready = false
   @locator : Locator
   @overlay = Gtk::Overlay.new
-  @sidebar : Gtk::Widget?
+  @sidebar : Gtk::Widget
   @sidebar_model = SidebarModel.new
 
   def initialize(default_provider : LocatorProvider?)
     @locator = Locator.new(default_provider)
     super(css_name: "docpage")
 
+    @sidebar = Gtk::Widget.cast(template_child("sidebar"))
     @web_view = web_view = WebKit::WebView.cast(template_child("web_view"))
     web_view.bind_property("title", self, "title", :default)
     web_view.notify_signal["uri"].connect { on_uri_changed }
@@ -64,10 +65,7 @@ class DocPage < Adw::Bin
   end
 
   delegate current_locator_provider, to: @locator
-
-  def uri : String?
-    @web_view.try(&.uri)
-  end
+  delegate uri, to: @web_view
 
   def grab_focus
     widget = @locator.visible ? @locator : @web_view
@@ -75,23 +73,19 @@ class DocPage < Adw::Bin
   end
 
   def focus_page
-    @web_view.try(&.grab_focus)
+    @web_view.grab_focus
   end
 
-  def go_back : Nil
-    @web_view.try(&.go_back)
-  end
+  delegate go_back, to: @web_view
 
   def can_go_back? : Bool
-    @web_view.try(&.can_go_back) || false
+    @web_view.can_go_back
   end
 
-  def go_forward : Nil
-    @web_view.try(&.go_forward)
-  end
+  delegate go_forward, to: @web_view
 
   def can_go_forward? : Bool
-    @web_view.try(&.can_go_forward) || false
+    @web_view.can_go_forward
   end
 
   def page_search
@@ -131,15 +125,15 @@ class DocPage < Adw::Bin
 
   private def search_stopped
     @search_ready = false
-    @web_view.try(&.find_controller.search_finish)
+    @web_view.find_controller.search_finish
   end
 
   private def search_next : Nil
-    @web_view.try(&.find_controller.search_next) if @search_ready
+    @web_view.find_controller.search_next if @search_ready
   end
 
   private def search_previous : Nil
-    @web_view.try(&.find_controller.search_previous) if @search_ready
+    @web_view.find_controller.search_previous if @search_ready
   end
 
   private def create_web_view : WebKit::WebView
@@ -180,6 +174,7 @@ class DocPage < Adw::Bin
 
     Log.fatal { "uri changed #{doc}" }
     @sidebar_model.doc = doc.parent
+    @sidebar.visible = @sidebar_model.get_n_items.positive?
   end
 
   private def setup_search_signals(web_view, entry, search_count_label, prev_btn, next_btn)
