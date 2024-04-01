@@ -3,18 +3,23 @@ require "./doc"
 class SidebarItem < GObject::Object
   getter doc : Doc
 
+  # TODO: Add a way to register a getter property in a method, so we don't need to declare the
+  # instance variable when it's not used.
   @[GObject::Property]
   getter label : String = ""
   @[GObject::Property]
-  getter icon_path : String
+  getter icon_path : String = ""
 
   def initialize(@doc)
     super()
-    @icon_path = ""
   end
 
   def label : String
     doc.name[@doc.parent.name.size..]
+  end
+
+  def icon_path : String
+    doc.icon_resource
   end
 end
 
