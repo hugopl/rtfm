@@ -26,14 +26,16 @@ class DocsetLocatorProvider < LocatorProvider
   end
 
   def bind(item : LocatorItem, pos : Int32) : Nil
-    doc = @last_results[pos].item
+    doc = @last_results[pos]?.try(&.item)
+    return if doc.nil?
+
     item.name = doc.name
     item.description = doc.kind.to_s
     item.icon_resource = doc.icon_resource
   end
 
   def activate(locator : Locator, pos : UInt32) : String?
-    doc = @last_results[pos].item
-    @metadata.docset.uri(doc)
+    doc = @last_results[pos]?.try(&.item)
+    @metadata.docset.uri(doc) if doc
   end
 end
