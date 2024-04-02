@@ -56,9 +56,34 @@
         <child>
           <object class="GtkOverlay" id="overlay">
             <child>
-              <object class="WebKitWebView" id="web_view">
+              <object class="GtkBox">
+                <property name="orientation">vertical</property>
                 <property name="hexpand">1</property>
                 <property name="vexpand">1</property>
+                <child>
+                  <object class="GtkSearchBar" id="search_bar">
+                    <child>
+                      <object class="GtkBox">
+                        <property name="spacing">6</property>
+                        <child>
+                          <object class="GtkSearchEntry" id="search_entry">
+                            <property name="hexpand">1</property>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkLabel" id="search_count_label">
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+                <child>
+                  <object class="WebKitWebView" id="web_view">
+                    <property name="hexpand">1</property>
+                    <property name="vexpand">1</property>
+                  </object>
+                </child>
               </object>
             </child>
           </object>

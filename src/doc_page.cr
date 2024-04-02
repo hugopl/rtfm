@@ -2,7 +2,7 @@ require "./docset"
 require "./locator"
 require "./sidebar_model"
 
-@[Gtk::UiTemplate(file: "#{__DIR__}/doc_page.ui", children: %w(overlay web_view list_view sidebar))]
+@[Gtk::UiTemplate(file: "#{__DIR__}/doc_page.ui", children: %w(overlay web_view list_view sidebar search_bar search_entry search_count_label))]
 class DocPage < Adw::Bin
   include Gtk::WidgetTemplate
 
@@ -12,8 +12,8 @@ class DocPage < Adw::Bin
   property title : String = "Choose a Docset"
 
   @web_view : WebKit::WebView
-  @search_bar : Gtk::SearchBar?
-  @search_count_label : Gtk::Label?
+  @search_bar : Gtk::SearchBar
+  @search_count_label : Gtk::Label
   @search_ready = false
   @locator : Locator
   @overlay = Gtk::Overlay.new
@@ -26,6 +26,9 @@ class DocPage < Adw::Bin
 
     @sidebar = Gtk::Widget.cast(template_child("sidebar"))
     @web_view = web_view = WebKit::WebView.cast(template_child("web_view"))
+    @search_count_label = Gtk::Label.cast(template_child("search_count_label"))
+    @search_bar = Gtk::SearchBar.cast(template_child("search_bar"))
+
     web_view.bind_property("title", self, "title", :default)
     web_view.notify_signal["uri"].connect { on_uri_changed }
 
@@ -39,6 +42,7 @@ class DocPage < Adw::Bin
 
     setup_actions
     setup_controllers
+    setup_search_signals
   end
 
   def setup_actions
@@ -48,11 +52,23 @@ class DocPage < Adw::Bin
     group.add_action(action)
 
     action = Gio::SimpleAction.new("show_locator", nil)
-    action.activate_signal.connect(->show_locator(GLib::Variant?))
+    action.activate_signal.connect { show_locator }
     group.add_action(action)
 
     action = Gio::SimpleAction.new("hide_locator", nil)
-    action.activate_signal.connect(->hide_locator(GLib::Variant?))
+    action.activate_signal.connect { hide_locator }
+    group.add_action(action)
+
+    action = Gio::SimpleAction.new("show_search", nil)
+    action.activate_signal.connect { show_search }
+    group.add_action(action)
+
+    action = Gio::SimpleAction.new("search_previous", nil)
+    action.activate_signal.connect { search_previous }
+    group.add_action(action)
+
+    action = Gio::SimpleAction.new("show_next", nil)
+    action.activate_signal.connect { search_next }
     group.add_action(action)
 
     insert_action_group("page", group)
@@ -60,8 +76,20 @@ class DocPage < Adw::Bin
 
   def setup_controllers
     ctl = Gtk::ShortcutController.new(propagation_phase: :capture)
-    shortcut = Gtk::Shortcut.new(Gtk::ShortcutTrigger.parse_string("<Control>P"), Gtk::NamedAction.new("page.show_locator"))
+
+    shortcut = Gtk::Shortcut.new(Gtk::ShortcutTrigger.parse_string("<Control>P"),
+                                 Gtk::NamedAction.new("page.show_locator"))
     ctl.add_shortcut(shortcut)
+    shortcut = Gtk::Shortcut.new(Gtk::ShortcutTrigger.parse_string("<Control>F"),
+                                 Gtk::NamedAction.new("page.show_search"))
+    ctl.add_shortcut(shortcut)
+    shortcut = Gtk::Shortcut.new(Gtk::ShortcutTrigger.parse_string("<Control>F3"),
+                                 Gtk::NamedAction.new("page.search_prev"))
+    ctl.add_shortcut(shortcut)
+    shortcut = Gtk::Shortcut.new(Gtk::ShortcutTrigger.parse_string("F3"),
+                                 Gtk::NamedAction.new("page.search_next"))
+    ctl.add_shortcut(shortcut)
+
     add_controller(ctl)
   end
 
@@ -89,9 +117,8 @@ class DocPage < Adw::Bin
     @web_view.can_go_forward
   end
 
-  def page_search
-    search_bar = @search_bar
-    search_bar.search_mode = true if search_bar
+  def show_search
+    @search_bar.search_mode = true
   end
 
   def load_uri(variant : GLib::Variant)
@@ -104,12 +131,12 @@ class DocPage < Adw::Bin
     @locator.visible = false
   end
 
-  def show_locator(_variant : GLib::Variant? = nil)
+  def show_locator
     @locator.visible = true
     @locator.grab_focus
   end
 
-  def hide_locator(_variant : GLib::Variant? = nil)
+  def hide_locator
     @locator.visible = false
   end
 
@@ -137,33 +164,6 @@ class DocPage < Adw::Bin
     @web_view.find_controller.search_previous if @search_ready
   end
 
-  private def create_web_view : WebKit::WebView
-    vbox = Gtk::Box.new(orientation: :vertical, hexpand: true, vexpand: true, spacing: 0)
-    hbox.append(vbox)
-
-    @search_bar = search_bar = Gtk::SearchBar.new
-    search_box = Gtk::Box.new(:horizontal, 6)
-    search_bar.child = search_box
-
-    entry = Gtk::SearchEntry.new(hexpand: true)
-    prev_btn = Gtk::Button.new(icon_name: "go-up-symbolic")
-    next_btn = Gtk::Button.new(icon_name: "go-down-symbolic")
-    @search_count_label = search_count_label = Gtk::Label.new
-    search_box.append(entry)
-    search_box.append(prev_btn)
-    search_box.append(next_btn)
-    search_box.append(search_count_label)
-
-    vbox.append(search_bar)
-
-    search_bar.connect_entry(entry)
-    search_bar.key_capture_widget = self
-
-    setup_search_signals(web_view, entry, search_count_label, prev_btn, next_btn)
-
-    web_view
-  end
-
   private def on_uri_changed
     docset = @locator.last_activated_docset
     return if docset.nil?
@@ -183,11 +183,15 @@ class DocPage < Adw::Bin
     load_uri(uri) if uri
   end
 
-  private def setup_search_signals(web_view, entry, search_count_label, prev_btn, next_btn)
-    find_controller = web_view.find_controller
+  private def setup_search_signals
+    entry = Gtk::SearchEntry.cast(template_child("search_entry"))
+
+    @search_bar.connect_entry(entry)
+
+    find_controller = @web_view.find_controller
     find_controller.counted_matches_signal.connect do |count|
       @search_ready = true
-      search_count_label.label = "#{count} matches"
+      @search_count_label.label = "#{count} matches"
     end
     find_controller.failed_to_find_text_signal.connect { entry.add_css_class("error") }
     find_controller.found_text_signal.connect { entry.remove_css_class("error") }
@@ -196,9 +200,5 @@ class DocPage < Adw::Bin
     entry.stop_search_signal.connect(->search_stopped)
     entry.previous_match_signal.connect(->search_next)
     entry.next_match_signal.connect(->search_previous)
-
-    # FIXME: Use actions to handle this instead these signal connections
-    prev_btn.clicked_signal.connect(->search_previous)
-    next_btn.clicked_signal.connect(->search_next)
   end
 end
