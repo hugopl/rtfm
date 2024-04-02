@@ -64,6 +64,10 @@ class Locator < Adw::Bin
     @entry.position = text.size
   end
 
+  def select_search_text
+    @entry.select_region(0, -1)
+  end
+
   private def entry_key_pressed(key_val : UInt32, _key_code : UInt32, _modifier : Gdk::ModifierType)
     if key_val == Gdk::KEY_Up
       selected = @selection_model.selected

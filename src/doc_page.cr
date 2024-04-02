@@ -133,6 +133,7 @@ class DocPage < Adw::Bin
 
   def show_locator
     @locator.visible = true
+    @locator.select_search_text
     @locator.grab_focus
   end
 
