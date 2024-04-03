@@ -4,7 +4,7 @@ It's a dash/docset reader with built in documentation for Crystal and GTK
 APIs. It's written in [Crystal](https://crystal-lang.org/) using
 [GTK4 bindings](https://github.com/hugopl/gtk4.cr).
 
-<img align="center" src="./screenshots/prerelease.png" />
+<img align="center" src="./screenshots/v0.4.1.png" />
 
 Tasks needed to be done before I ask anyone to use this:
 
