@@ -20,9 +20,11 @@ class DocPage < Adw::Bin
   @sidebar : Gtk::Widget
   @sidebar_model = SidebarModel.new
 
-  def initialize(default_provider : LocatorProvider?)
-    @locator = Locator.new(default_provider)
+  def initialize(default_provider : LocatorProvider?, query : String?)
     super(css_name: "docpage")
+
+    @locator = Locator.new(default_provider)
+    @locator.text = query if query
 
     @sidebar = Gtk::Widget.cast(template_child("sidebar"))
     @web_view = web_view = WebKit::WebView.cast(template_child("web_view"))

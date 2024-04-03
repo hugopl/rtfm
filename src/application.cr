@@ -11,7 +11,7 @@ class Application < Adw::Application
   @window : ApplicationWindow?
 
   def initialize
-    flags = Gio::ApplicationFlags::None
+    flags = Gio::ApplicationFlags::None | Gio::ApplicationFlags::HandlesCommandLine
     {% unless flag?(:release) %}
       flags |= Gio::ApplicationFlags::NonUnique
     {% end %}
@@ -42,12 +42,6 @@ class Application < Adw::Application
   end
 
   @[GObject::Virtual]
-  def activate
-    @window = window = ApplicationWindow.new(self)
-    window.present
-  end
-
-  @[GObject::Virtual]
   def handle_local_options(options : GLib::VariantDict) : Int32
     if options.remove("version")
       puts "RTFM version #{VERSION} build with Crystal #{Crystal::VERSION}."
@@ -63,6 +57,14 @@ class Application < Adw::Application
     -1
   rescue e : ArgumentError
     STDERR.puts(e.message)
+    0
+  end
+
+  @[GObject::Virtual]
+  def command_line(command_line : Gio::ApplicationCommandLine) : Int32
+    query = command_line.arguments[1]?
+    @window = window = ApplicationWindow.new(self, query)
+    window.present
     0
   end
 

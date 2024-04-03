@@ -53,6 +53,7 @@ class Locator < Adw::Bin
   end
 
   delegate grab_focus, to: @entry
+  delegate :text=, to: @entry
 
   def on_providers_view_selected
     @current_locator_provider = @providers_selection_model.selected_item.as(LocatorProvider)

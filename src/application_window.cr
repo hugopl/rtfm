@@ -11,7 +11,7 @@ class ApplicationWindow < Adw::ApplicationWindow
   @go_back_action : Gio::SimpleAction
   @go_forward_action : Gio::SimpleAction
 
-  def initialize(application : Application)
+  def initialize(application : Application, query : String?)
     super(application: application)
 
     @tab_view = Adw::TabView.cast(template_child("view"))
@@ -35,7 +35,7 @@ class ApplicationWindow < Adw::ApplicationWindow
     settings.bind("window-height", self, "default-height", :default)
     settings.bind("window-maximized", self, "maximized", :default)
 
-    new_tab
+    new_tab(query)
     {% unless flag?(:release) %}
       add_css_class("devel")
 
@@ -76,9 +76,9 @@ class ApplicationWindow < Adw::ApplicationWindow
     insert_action_group("settings", group)
   end
 
-  private def new_tab : Nil
+  private def new_tab(query : String? = nil) : Nil
     locator_provider = selected_doc_page?.try(&.current_locator_provider)
-    doc_page = DocPage.new(locator_provider)
+    doc_page = DocPage.new(locator_provider, query)
     add_tab(doc_page)
     doc_page.grab_focus
   end
