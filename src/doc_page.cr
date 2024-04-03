@@ -80,16 +80,16 @@ class DocPage < Adw::Bin
     ctl = Gtk::ShortcutController.new(propagation_phase: :capture)
 
     shortcut = Gtk::Shortcut.new(Gtk::ShortcutTrigger.parse_string("<Control>P"),
-                                 Gtk::NamedAction.new("page.show_locator"))
+      Gtk::NamedAction.new("page.show_locator"))
     ctl.add_shortcut(shortcut)
     shortcut = Gtk::Shortcut.new(Gtk::ShortcutTrigger.parse_string("<Control>F"),
-                                 Gtk::NamedAction.new("page.show_search"))
+      Gtk::NamedAction.new("page.show_search"))
     ctl.add_shortcut(shortcut)
     shortcut = Gtk::Shortcut.new(Gtk::ShortcutTrigger.parse_string("<Control>F3"),
-                                 Gtk::NamedAction.new("page.search_prev"))
+      Gtk::NamedAction.new("page.search_prev"))
     ctl.add_shortcut(shortcut)
     shortcut = Gtk::Shortcut.new(Gtk::ShortcutTrigger.parse_string("F3"),
-                                 Gtk::NamedAction.new("page.search_next"))
+      Gtk::NamedAction.new("page.search_next"))
     ctl.add_shortcut(shortcut)
 
     add_controller(ctl)
