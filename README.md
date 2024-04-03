@@ -1,3 +1,5 @@
+![AUR Version](https://img.shields.io/aur/version/gnome-rtfm)
+
 # Read the Formidable Manual
 
 It's a dash/docset reader with built in documentation for Crystal and GTK
