@@ -4,7 +4,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.4.1] - 2024-05-03
+### Added
+- It's possible to launch rtfm with a query, meanwhile the default docset is used.
+
+### Fixed
+- Added missing icon for Signal documents.
+
 ## [0.4.0] - 2024-05-02
+### Added
+- Added document hierarchy, a sidebar was added to show them.
+- Show arguments on Crystal docset methods and functions.
+
 ### Fixed
 - Fix compilation with GLib 2.80 and GTK 4.14.
 - Search text is selected when locator is show.
@@ -14,10 +25,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Removed buttons to search-prev/search-next, use F3/Ctrl+F3 instead.
 - Show arguments on Crystal docset methods and functions.
 - Class only search was temporary removed.
-
-### Added
-- Added document hierarchy, a sidebar was added to show them.
-- Show arguments on Crystal docset methods and functions.
 
 ## [0.3.1] - 2024-02-25
 ### Added
