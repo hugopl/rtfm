@@ -1,10 +1,12 @@
 class Doc
   enum Kind
     # Docs that can be parent of other docs
-    Root
-    Module
-    Enum
     Class
+    Enum
+    Mixin
+    Module
+    Namespace
+    Root
     Struct
     LastParentKind = Struct
 
@@ -76,9 +78,7 @@ class Doc
     Member
     Message
     Method
-    Mixin
     Modifier
-    Namespace
     NewSnippet
     Node
     Notation

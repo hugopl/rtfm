@@ -41,7 +41,7 @@ class Doc
   end
 
   def can_be_parent? : Bool
-    @kind.value < Doc::Kind::LastParentKind.value
+    @kind.value <= Doc::Kind::LastParentKind.value
   end
 
   def add_child(new_child : Doc)
