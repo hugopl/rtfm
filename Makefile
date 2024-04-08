@@ -1,17 +1,18 @@
 .PHONY: all debug configure rtfm docsets crystal-docset gtk-docset test install uninstall
 PREFIX ?= /usr
+CR_FLAGS ?= -Dstrict_multi_assign -Duse_pcre2 -Dpreview_overload_order
 
 all: configure .WAIT rtfm docsets
 
 debug:
-	shards build --debug -Dpreview_mt
+	shards build --debug $(CR_FLAGS) --error-trace
 
 configure:
 	shards install
 	./bin/gi-crystal
 
 rtfm:
-	shards build --release -Dpreview_mt rtfm
+	shards build --release $(CR_FLAGS) rtfm
 
 docsets: crystal-docset gtk-docset
 
