@@ -76,11 +76,9 @@ Dependencies:
 - Offline crystal api documentation for Crystal docset generation.
 - Offline Gtk api documentation for Gtk4, Gdk4, Gsk4, libAdwaita and Pango libraries for GTK4 libraries docset generation.
 
-There are no packages for any distro yet.
-
 ```
 $ make
-$ make install
+$ sudo make install
 ```
 
 Then you need to run some commands to let Gnome Shell update the application cache and start show Rtfm, but
@@ -89,7 +87,7 @@ if you don't remember these commands, just reinstall some Gnome application like
 You can uninstall it later with:
 
 ```
-$ make uninstall
+$ sudo make uninstall
 ```
 
 ## Contributing
