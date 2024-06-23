@@ -2,7 +2,7 @@ require "json"
 
 require "./docset_builder"
 
-private MODULES = {"gdk4", "gsk4", "gtk4", "libadwaita-1", "Pango"}
+private MODULES = {"glib-2.0", "gobject-2.0", "gio-2.0", "gdk4", "gsk4", "gtk4", "libadwaita-1", "Pango"}
 
 module Doc2Dash
   class GtkDocsetBuilder < DocsetBuilder
@@ -52,7 +52,7 @@ module Doc2Dash
 
       type = symbol.type
       case type
-      when "class", "record", "constant", "interface", "function", "enum", "alias", "function_macro", "bitfield", "callback", "domain"
+      when "class", "record", "constant", "interface", "function", "enum", "alias", "function_macro", "bitfield", "callback", "domain", "union"
         name = "#{namespace}::#{symbol.name}"
         kind = gtkdoc_type_to_kind(type)
         prefix = type_to_prefix(type)
