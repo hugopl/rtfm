@@ -1,6 +1,6 @@
 .PHONY: all debug configure rtfm docsets crystal-docset gtk-docset test install uninstall
 PREFIX ?= /usr
-CR_FLAGS ?= -Dstrict_multi_assign -Duse_pcre2 -Dpreview_overload_order
+CR_FLAGS ?= -Dstrict_multi_assign -Duse_pcre2 -Dpreview_overload_order --link-flags='-Wl,--as-needed'
 
 all: configure .WAIT rtfm docsets
 
