@@ -38,7 +38,13 @@ WebKit::WebView.g_type
   DocsetRepository.lookup_dirs.unshift(Path.new("./data"))
 {% end %}
 
-app = Application.new
-code = app.run
-Log.info { "Rtfm quiting with exit code #{code}." }
-exit(code)
+begin
+  app = Application.new
+  code = app.run
+  Log.info { "Rtfm quiting with exit code #{code}." }
+  exit(code)
+rescue ex
+  Log.error(exception: ex) { ex.message }
+  Log.info { "Rtfm quiting due to #{ex.class.name} exception." }
+  abort
+end
