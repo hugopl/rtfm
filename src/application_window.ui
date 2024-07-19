@@ -94,6 +94,7 @@
             <child>
               <object class="AdwTabBar" id="tab_bar">
                 <property name="view">view</property>
+                <property name="can_focus">0</property>
               </object>
             </child>
             <child>
