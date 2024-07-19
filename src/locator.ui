@@ -138,7 +138,7 @@
 -->
                     <child>
                       <object class="GtkLabel">
-                        <property name="label">Ctrl+P to bring this locator back any time.</property>
+                        <property name="label">Ctrl+P to bring this locator back any time&#13;Alt+Up/Down to select different docsets.</property>
                         <property name="valign">end</property>
                         <property name="vexpand">1</property>
                         <property name="halign">center</property>

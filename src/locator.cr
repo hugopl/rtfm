@@ -11,7 +11,6 @@ class Locator < Adw::Bin
 
   Log = ::Log.for(Locator)
 
-  @locator_providers = [] of LocatorProvider
   getter current_locator_provider : LocatorProvider
   @providers_selection_model : Gtk::SingleSelection
   @current_channel : Channel(Int32)?
@@ -69,8 +68,16 @@ class Locator < Adw::Bin
     @entry.select_region(0, -1)
   end
 
-  private def entry_key_pressed(key_val : UInt32, _key_code : UInt32, _modifier : Gdk::ModifierType)
-    if key_val == Gdk::KEY_Up
+  private def entry_key_pressed(key_val : UInt32, _key_code : UInt32, modifier : Gdk::ModifierType)
+    if modifier == Gdk::ModifierType::AltMask
+      if key_val == Gdk::KEY_Up
+        select_provider_relative(-1)
+        return true
+      elsif key_val == Gdk::KEY_Down
+        select_provider_relative(1)
+        return true
+      end
+    elsif key_val == Gdk::KEY_Up
       selected = @selection_model.selected
       return false if selected.zero?
 
@@ -178,6 +185,13 @@ class Locator < Adw::Bin
 
     @last_activated_docset = @current_locator_provider.docset
     activate_action("page.load_uri", uri)
+  end
+
+  private def select_provider_relative(relative_index : Int32)
+    max = @providers_selection_model.n_items
+    index = LocatorProvidersModel.instance.index_of(@current_locator_provider).to_i32
+    to_select = (index + relative_index) % max
+    @providers_selection_model.selected = to_select.to_u32
   end
 
   @[GObject::Virtual]
