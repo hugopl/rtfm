@@ -140,6 +140,8 @@ class DocPage < Adw::Bin
   end
 
   def hide_locator
+    return if @web_view.uri?.nil?
+
     @locator.visible = false
   end
 
