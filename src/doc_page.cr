@@ -98,7 +98,8 @@ class DocPage < Adw::Bin
   delegate current_locator_provider, to: @locator
   delegate uri, to: @web_view
 
-  def grab_focus
+  @[GObject::Virtual]
+  def grab_focus : Bool
     widget = @locator.visible ? @locator : @web_view
     widget.grab_focus
   end

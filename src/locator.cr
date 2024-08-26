@@ -51,7 +51,11 @@ class Locator < Adw::Bin
     @results_view.activate_signal.connect(->row_activated(UInt32))
   end
 
-  delegate grab_focus, to: @entry
+  @[GObject::Virtual]
+  def grab_focus : Bool
+    @entry.grab_focus
+  end
+
   delegate :text=, to: @entry
 
   def on_providers_view_selected
