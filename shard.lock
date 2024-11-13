@@ -6,7 +6,7 @@ shards:
 
   fzy:
     git: https://github.com/hugopl/fzy.git
-    version: 0.5.5+git.commit.6c2395bcdea1889969d0d08c16163c276fe4e473
+    version: 0.5.5+git.commit.e07aa6fa277c6b8f0964a1d975cfaaa950a67947
 
   gi-crystal:
     git: https://github.com/hugopl/gi-crystal.git

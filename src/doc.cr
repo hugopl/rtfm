@@ -7,6 +7,7 @@ class Doc
   getter name : String
   getter kind : Kind
   getter path : String
+  getter as_hay : Fzy::Hay(Doc)
 
   # Parent doc
   property! parent : Doc?
@@ -16,6 +17,8 @@ class Doc
   def initialize(@name, @kind, path : String)
     @path = path.includes?('<') ? path.gsub(/<dash[^>]+>/, "") : path
     @key = name_to_key
+    @as_hay = uninitialized Fzy::Hay(Doc)
+    @as_hay = Fzy::Hay.new(self, key)
   end
 
   private def name_to_key
@@ -87,7 +90,7 @@ class Doc
   end
 
   def <=>(other)
-    @name <=> other.name
+    by_name = @name <=> other.name
   end
 
   def root?
@@ -105,6 +108,8 @@ class RootDoc < Doc
     @kind = Kind::Root
     @path = @key = ""
     @children = [] of Doc
+    @as_hay = uninitialized Fzy::Hay(Doc)
+    @as_hay = Fzy::Hay(Doc).new(self, "")
   end
 
   def parent
