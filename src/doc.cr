@@ -1,3 +1,4 @@
+require "fzy"
 require "./doc_kind"
 
 class Doc
