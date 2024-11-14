@@ -45,7 +45,7 @@ describe Docset do
   end
 
   it "load crystal docset" do
-    docset = crystal_docset
+    crystal_docset
     # puts docset.print_doc_tree
   end
 end

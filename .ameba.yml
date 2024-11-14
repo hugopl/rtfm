@@ -1,0 +1,29 @@
+Lint/NotNil:
+  Description: Identifies usage of `not_nil!` calls
+  Enabled: false
+Documentation/DocumentationAdmonition:
+  Enabled: false
+Naming/AccessorMethodName:
+  Excluded:
+  - src/locator.cr
+  - src/locator_providers_model.cr
+  - src/sidebar_model.cr
+Naming/BlockParameterName:
+  AllowedNames:
+  - db
+  - e
+  - i
+  - j
+  - k
+  - x
+  - s
+  - y
+  - ex
+  - io
+  - op
+  - id
+  - ip
+  - rs
+  ForbiddenNames: []
+  Enabled: true
+  Severity: Convention

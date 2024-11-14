@@ -55,7 +55,7 @@ class Doc
   end
 
   def icon_resource : String
-    "/io/github/hugopl/rtfm/#{kind.to_s}.png"
+    "/io/github/hugopl/rtfm/#{kind}.png"
   end
 
   def to_s(io : IO)
@@ -91,7 +91,7 @@ class Doc
   end
 
   def <=>(other)
-    by_name = @name <=> other.name
+    @name <=> other.name
   end
 
   def root?
