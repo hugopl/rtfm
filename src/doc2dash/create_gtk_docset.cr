@@ -2,7 +2,7 @@ require "json"
 
 require "./docset_builder"
 
-private MODULES = {"glib-2.0", "gobject-2.0", "gio-2.0", "gdk4", "gsk4", "gtk4", "libadwaita-1", "Pango"}
+private MODULES = {"glib-2.0", "gobject-2.0", "gio-2.0", "gdk4", "gsk4", "gtk4", "libadwaita-1", "Pango", "webkit2gtk-4.0"}
 
 module Doc2Dash
   class GtkDocsetBuilder < DocsetBuilder
