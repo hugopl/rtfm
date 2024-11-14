@@ -52,7 +52,7 @@ class ApplicationWindow < Adw::ApplicationWindow
   delegate page_search, to: selected_doc_page
 
   def title_widget : Gtk::Widget
-    Gtk::Widget.cast(template_child("title"))
+    Adw::WindowTitle.cast(template_child("title"))
   end
 
   private def setup_actions(settings : Gio::Settings)
@@ -86,17 +86,19 @@ class ApplicationWindow < Adw::ApplicationWindow
   private def add_tab(doc_page : DocPage)
     page = @tab_view.append(doc_page)
     # FIXME: Disconect signals when closing a tab, so GC collects the DocPage instance.
-    doc_page.notify_signal["title"].connect { on_doc_page_change(doc_page) }
     doc_page.bind_property("title", page, "title", :default)
+    doc_page.notify_signal["title"].connect { on_doc_page_change(doc_page) }
     page.title = doc_page.title
     page.live_thumbnail = true
 
     @tab_view.selected_page = page
+    update_title_bar
   end
 
   private def close_tab : Nil
     page = @tab_view.selected_page
     @tab_view.close_page(page) if page
+    update_title_bar
   end
 
   def on_close_page(page : Adw::TabPage) : Bool
@@ -105,9 +107,19 @@ class ApplicationWindow < Adw::ApplicationWindow
   end
 
   def on_doc_page_change(doc_page : DocPage)
+    update_title_bar if @tab_view.n_pages == 1
+
     return if doc_page != selected_doc_page
 
     update_ui_for_page_change(doc_page)
+  end
+
+  private def update_title_bar
+    title_widget.title = if @tab_view.n_pages == 1
+                           "Rtfm - #{@tab_view.nth_page(0).title}"
+                         else
+                           "Rtfm"
+                         end
   end
 
   private def on_selected_page_change(_param_spec)
