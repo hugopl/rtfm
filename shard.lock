@@ -21,7 +21,7 @@ shards:
     version: 0.2.0
 
   libadwaita:
-    git: https://github.com/geopjr/libadwaita.cr.git
+    git: https://github.com/hugopl/libadwaita.cr.git
     version: 1.0.0+git.commit.cffabb56e911d2a90c53c2fd14d6bd08bf5ac446
 
   pango:
