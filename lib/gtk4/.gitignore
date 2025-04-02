@@ -1,0 +1,14 @@
+/docs/
+/lib/
+/bin/
+!/bin/make-docs
+/.shards/
+*.dwarf
+shard.override.yml
+.ccls-cache
+
+# Libraries don't need dependency lock
+# Dependencies will be locked in applications that use them
+/shard.lock
+# I use this file in SHARDS_OVERRIDE env var when I need to test gi-crystal changes.
+/local_shards.yml

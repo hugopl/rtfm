@@ -1,0 +1,65 @@
+namespace: Gtk
+version: "4.0"
+require_after:
+- about_dialog.cr
+- builder.cr
+- expression.cr
+- gi_crystal.cr
+- list_store.cr
+- message_dialog.cr
+- stack.cr
+- tree_selection.cr
+- tree_store.cr
+- tree_view.cr
+- widget.cr
+- widget_template.cr
+- snapshot.cr
+- signal_list_item_factory.cr
+
+types:
+  ButtonPrivate:
+    ignore: true
+  CellAreaContextPrivate:
+    ignore: true
+  CellRendererClassPrivate:
+    ignore: true
+  CellRendererPrivate:
+    ignore: true
+  CssProviderPrivate:
+    ignore: true
+  Expression:
+    ignore_methods:
+    - ref
+    - unref
+  IMContextSimplePrivate:
+    ignore: true
+  IMMulticontextPrivate:
+    ignore: true
+  ListStorePrivate:
+    ignore: true
+  MountOperationPrivate:
+    ignore: true
+  ParamSpecExpression:
+    ignore: true
+  PrintOperationPrivate:
+    ignore: true
+  RecentManagerPrivate:
+    ignore: true
+  TextBufferPrivate:
+    ignore: true
+  TextTagPrivate:
+    ignore: true
+  TextViewPrivate:
+    ignore: true
+  TreeModelFilterPrivate:
+    ignore: true
+  TreeModelSortPrivate:
+    ignore: true
+  TreeStorePrivate:
+    ignore: true
+  WidgetClassPrivate:
+    ignore: true
+  WidgetPrivate:
+    ignore: true
+  WindowGroupPrivate:
+    ignore: true

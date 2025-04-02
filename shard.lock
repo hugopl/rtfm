@@ -1,3 +1,4 @@
+# NOTICE: This lockfile contains some overrides from shard.override.yml
 version: 2.0
 shards:
   db:
@@ -8,9 +9,9 @@ shards:
     git: https://github.com/hugopl/fzy.git
     version: 0.6.0
 
-  gi-crystal:
+  gi-crystal: # Overridden
     git: https://github.com/hugopl/gi-crystal.git
-    version: 0.24.0
+    version: 0.25.0+git.commit.69388976418f5cc5ebc0cb7fb6aae5efd345ce8d
 
   gtk4:
     git: https://github.com/hugopl/gtk4.cr.git

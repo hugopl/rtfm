@@ -1,0 +1,15 @@
+name: sqlite3
+version: 0.20.0
+
+dependencies:
+  db:
+    github: crystal-lang/crystal-db
+    version: ~> 0.12.0
+
+authors:
+  - Ary Borenszweig <aborenszweig@manas.tech>
+  - Brian J. Cardiff <bcardiff@gmail.com>
+
+crystal: ">= 1.0.0, < 2.0.0"
+
+license: MIT

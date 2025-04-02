@@ -1,0 +1,30 @@
+name: Crystal CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  schedule:
+    - cron: '20 16 * * 6'
+
+jobs:
+  tests:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Install package dependencies
+        run: sudo apt-get install gobject-introspection libgirepository1.0-dev
+      - name: Install Crystal
+        uses: crystal-lang/install-crystal@v1
+        with:
+          crystal: latest
+      - name: Check out repository code
+        uses: actions/checkout@v4
+      - name: Install crystal dependencies
+        run: shards install
+      - name: Linter
+        run: crystal tool format --check
+      - name: Run tests
+        run: G_DEBUG=fatal-warnings RSPEC_OPTS="--color -v --order=random" make test
+      - name: Run tests with -Ddebugmemory
+        run: G_DEBUG=fatal-warnings ./bin/spec -Ddebugmemory --color -v --order=random

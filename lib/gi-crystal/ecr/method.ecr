@@ -1,0 +1,24 @@
+<% render_doc(object, method) -%>
+<% if method.deprecated? -%>
+@[Deprecated]
+<% end -%>
+def <%= method_identifier %>(<% render_args_declaration -%>) <%= method_return_type_declaration %>
+  <%= method_gi_annotations %>
+  <% if throws? -%>
+    _error = Pointer(LibGLib::Error).null
+  <% end -%>
+
+  <% render_args_preparation %>
+  # C call
+  <%= method_c_call %>
+
+  <% if throws? -%>
+    # Error check
+    <%= namespace_name %>.raise_gerror(_error) unless _error.null?
+  <% end -%>
+
+  # Return value handling
+  <%= method_return %>
+end
+
+<%= method_splat_overload %>

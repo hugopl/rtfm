@@ -1,0 +1,114 @@
+# Dependencies
+<% immediate_dependencies.each do |dep| -%>
+require "../<%= dep.module_dir %>/<%= dep.filename%>"
+<% end %>
+
+# C lib declaration
+require "./<%= @lib.filename %>"
+
+<% config.require_before.each do |inc| -%>
+require "<%= inc.relative_to("#{output_dir}/#{module_dir}").to_posix %>"
+<% end %>
+
+# Wrappers
+<% wrapper_files.each do |inc| -%>
+require "./<%= inc %>"
+<% end %>
+
+module <%= namespace_name %>
+  <% constants.each do |const| -%>
+    <% next if config.ignore_constants.includes?(const.name) %>
+    <% render_doc(const) -%>
+    <%= const.name %> = <%= const.literal -%>
+  <% end %>
+
+  # Callbacks
+  <% each_callback do |callback| %>
+    <% render_doc(callback) -%>
+    alias <%= to_type_name(callback.name) %> = <%= callable_to_crystal_proc(callback) %>
+  <% end %>
+
+  <% if declare_error? %>
+  # Base class for all errors in this module.
+  class <%= namespace_name %>Error < GLib::Error
+  end
+  <% end %>
+
+  # Enums
+  <% enums.each do |enum_| %>
+    <% next if config.type_config(enum_.name).ignore? %>
+    <% next if enum_.error_domain %>
+
+    <% render_doc(enum_) -%>
+    enum <%= to_type_name(enum_.name) %> : <%= to_crystal_type(enum_.storage_type) %>
+      <% enum_.values.each do |value| -%>
+        <% render_doc(enum_, value) -%>
+        <%= to_type_name(value.name) %> = <%= value.value %>
+      <% end %>
+      <% render "ecr/g_type_method.ecr", enum_ %>
+    end
+  <% end %>
+
+  # Flags
+  <% flags.each do |flag| -%>
+    <% next if config.type_config(flag.name).ignore? %>
+
+    <% render_doc(flag) -%>
+    <%= "@[Flags]\n" unless empty_flag?(flag) -%>
+    enum <%= to_type_name(flag.name) %> : <%= to_crystal_type(flag.storage_type) %>
+      <% flag.values.each do |value| -%>
+        <% next if skip_flag_value?(flag, value) %>
+        <%= to_type_name(value.name) %> = <%= value.value -%>
+      <% end %>
+      <% render "ecr/g_type_method.ecr", flag %>
+    end
+  <% end %>
+
+  <% render_methods %>
+
+  # Errors
+  <% enums.each do |enum_| %>
+    <%= next unless enum_.error_domain %>
+
+    <% render_doc(enum_) -%>
+    class <%= to_type_name(enum_.name) -%> < <%= namespace_name %>Error
+      <% enum_.values.each do |value| -%>
+        class <%= to_type_name(value.name) %> < <%= to_type_name(enum_.name) %>
+          def initialize(message : String = "")
+            domain_quark = LibGLib.g_quark_from_static_string("<%= enum_.error_domain %>")
+            @pointer = LibGLib.g_error_new_literal(domain_quark, <%= value.value %>, message)
+          end
+
+          def initialize(pointer : Pointer(LibGLib::Error), transfer : GICrystal::Transfer)
+            super
+          end
+        end
+      <% end %>
+    end
+  <% end %>
+
+  # :nodoc:
+  def gerror_to_crystal(error : Pointer(LibGLib::Error), transfer : GICrystal::Transfer) : GLib::Error
+    gerror_to_crystal?(error, transfer) || GLib::Error.new(error, transfer)
+  end
+
+  # :nodoc:
+  def gerror_to_crystal?(error : Pointer(LibGLib::Error), transfer : GICrystal::Transfer) : GLib::Error?
+    <%= gerror_to_crystal_implementation %>
+
+    <% immediate_dependencies.each do |namespace| -%>
+      <%= namespace.namespace_name %>.gerror_to_crystal?(error, transfer)
+    <% end -%>
+  end
+
+  # :nodoc:
+  def raise_gerror(error : Pointer(LibGLib::Error))
+    raise gerror_to_crystal(error, :full)
+  end
+
+  extend self
+end
+
+<% config.require_after.each do |inc| -%>
+require "<%= inc.relative_to("#{output_dir}/#{module_dir}").to_posix %>"
+<% end %>

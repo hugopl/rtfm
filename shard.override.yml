@@ -1,0 +1,5 @@
+dependencies:
+  gi-crystal:
+    github: hugopl/gi-crystal
+    branch: main
+

@@ -1,0 +1,281 @@
+namespace: GObject
+version: "2.0"
+
+require_before:
+ - gc.cr
+ - enum.cr
+ - lib_g_object.cr
+ - type.cr
+ - signal.cr
+
+require_after:
+ - param_spec.cr
+ - object.cr
+ - value.cr
+ - signal_connection.cr
+ - gi_crystal.cr
+
+ignore_constants:
+- PARAM_MASK
+- PARAM_STATIC_STRINGS
+- PARAM_USER_SHIFT
+- SIGNAL_FLAGS_MASK
+- SIGNAL_MATCH_MASK
+- TYPE_FLAG_RESERVED_ID_BIT
+- TYPE_FUNDAMENTAL_MAX
+- TYPE_FUNDAMENTAL_SHIFT
+- TYPE_RESERVED_BSE_FIRST
+- TYPE_RESERVED_BSE_LAST
+- TYPE_RESERVED_GLIB_FIRST
+- TYPE_RESERVED_GLIB_LAST
+- TYPE_RESERVED_USER_FIRST
+- VALUE_INTERNED_STRING
+- VALUE_NOCOPY_CONTENTS
+
+types:
+  CClosure:
+    ignore_methods:
+    - marshal_BOOLEAN__BOXED_BOXED
+    - marshal_BOOLEAN__FLAGS
+    - marshal_generic
+    - marshal_STRING__OBJECT_POINTER
+    - marshal_VOID__BOOLEAN
+    - marshal_VOID__BOXED
+    - marshal_VOID__CHAR
+    - marshal_VOID__DOUBLE
+    - marshal_VOID__ENUM
+    - marshal_VOID__FLAGS
+    - marshal_VOID__FLOAT
+    - marshal_VOID__INT
+    - marshal_VOID__LONG
+    - marshal_VOID__OBJECT
+    - marshal_VOID__PARAM
+    - marshal_VOID__POINTER
+    - marshal_VOID__STRING
+    - marshal_VOID__UCHAR
+    - marshal_VOID__UINT
+    - marshal_VOID__UINT_POINTER
+    - marshal_VOID__ULONG
+    - marshal_VOID__VARIANT
+    - marshal_VOID__VOID
+  GObject:
+    ignore_methods:
+    - boxed_copy
+    - boxed_free
+    - cclosure_marshal_BOOLEAN__BOXED_BOXED
+    - cclosure_marshal_BOOLEAN__FLAGS
+    - cclosure_marshal_generic
+    - cclosure_marshal_STRING__OBJECT_POINTER
+    - cclosure_marshal_VOID__BOOLEAN
+    - cclosure_marshal_VOID__BOXED
+    - cclosure_marshal_VOID__CHAR
+    - cclosure_marshal_VOID__DOUBLE
+    - cclosure_marshal_VOID__ENUM
+    - cclosure_marshal_VOID__FLAGS
+    - cclosure_marshal_VOID__FLOAT
+    - cclosure_marshal_VOID__INT
+    - cclosure_marshal_VOID__LONG
+    - cclosure_marshal_VOID__OBJECT
+    - cclosure_marshal_VOID__PARAM
+    - cclosure_marshal_VOID__POINTER
+    - cclosure_marshal_VOID__STRING
+    - cclosure_marshal_VOID__UCHAR
+    - cclosure_marshal_VOID__UINT
+    - cclosure_marshal_VOID__UINT_POINTER
+    - cclosure_marshal_VOID__ULONG
+    - cclosure_marshal_VOID__VARIANT
+    - cclosure_marshal_VOID__VOID
+    - clear_signal_handler
+    - enum_complete_type_info
+    - enum_get_value
+    - enum_get_value_by_name
+    - enum_get_value_by_nick
+    - enum_register_static
+    - enum_to_string
+    - flags_complete_type_info
+    - flags_get_first_value
+    - flags_get_value_by_name
+    - flags_get_value_by_nick
+    - flags_register_static
+    - flags_to_string
+    - gtype_get_type
+    - param_spec_boxed
+    - param_type_register_static
+    - param_value_convert
+    - param_value_defaults
+    - param_values_cmp
+    - param_value_set_default
+    - param_value_validate
+    - pointer_type_register_static
+    - signal_accumulator_first_wins
+    - signal_accumulator_true_handled
+    - signal_add_emission_hook
+    - signal_chain_from_overridden
+    - signal_connect_closure
+    - signal_connect_closure_by_id
+    - signal_emitv
+    - signal_get_invocation_hint
+    - signal_handler_block
+    - signal_handler_disconnect
+    - signal_handler_find
+    - signal_handler_is_connected
+    - signal_handlers_block_matched
+    - signal_handlers_destroy
+    - signal_handlers_disconnect_matched
+    - signal_handlers_unblock_matched
+    - signal_handler_unblock
+    - signal_has_handler_pending
+    - signal_is_valid_name
+    - signal_list_ids
+    - signal_lookup
+    - signal_name
+    - signal_override_class_closure
+    - signal_parse_name
+    - signal_query
+    - signal_remove_emission_hook
+    - signal_set_va_marshaller
+    - signal_stop_emission
+    - signal_stop_emission_by_name
+    - signal_type_cclosure_new
+    - source_set_closure
+    - source_set_dummy_callback
+    - strdup_value_contents
+    - type_add_class_private
+    - type_add_instance_private
+    - type_add_interface_dynamic
+    - type_add_interface_static
+    - type_check_class_is_a
+    - type_check_instance
+    - type_check_instance_is_a
+    - type_check_instance_is_fundamentally_a
+    - type_check_is_value_type
+    - type_check_value
+    - type_check_value_holds
+    - type_children
+    - type_class_adjust_private_offset
+    - type_class_peek
+    - type_class_peek_static
+    - type_class_ref
+    - type_default_interface_peek
+    - type_default_interface_ref
+    - type_default_interface_unref
+    - type_depth
+    - type_ensure
+    - type_free_instance
+    - type_from_name
+    - type_fundamental
+    - type_fundamental_next
+    - type_get_instance_count
+    - type_get_plugin
+    - type_get_qdata
+    - type_get_type_registration_serial
+    - type_init
+    - type_init_with_debug_flags
+    - type_interface_add_prerequisite
+    - type_interface_get_plugin
+    - type_interface_instantiatable_prerequisite
+    - type_interface_peek
+    - type_interface_prerequisites
+    - type_interfaces
+    - type_is_a
+    - type_name
+    - type_name_from_class
+    - type_name_from_instance
+    - type_next_base
+    - type_parent
+    - type_qname
+    - type_query
+    - type_register_dynamic
+    - type_register_fundamental
+    - type_register_static
+    - type_set_qdata
+    - type_test_flags
+    - value_type_compatible
+    - value_type_transformable
+  Object:
+    ignore_methods:
+    - interface_install_property
+    - ref
+    - is_floating
+    - ref_sink
+    - force_floating
+    - unref
+  ParamSpecBoolean:
+    ignore: true
+  ParamSpecBoxed:
+    ignore: true
+  ParamSpecChar:
+    ignore: true
+  ParamSpecDouble:
+    ignore: true
+  ParamSpecEnum:
+    ignore: true
+  ParamSpecFlags:
+    ignore: true
+  ParamSpecFloat:
+    ignore: true
+  ParamSpecGType:
+    ignore: true
+  ParamSpecInt:
+    ignore: true
+  ParamSpecInt64:
+    ignore: true
+  ParamSpecLong:
+    ignore: true
+  ParamSpecObject:
+    ignore: true
+  ParamSpecOverride:
+    ignore: true
+  ParamSpecParam:
+    ignore: true
+  ParamSpecPointer:
+    ignore: true
+  ParamSpecString:
+    ignore: true
+  ParamSpecUChar:
+    ignore: true
+  ParamSpecUInt:
+    ignore: true
+  ParamSpecUInt64:
+    ignore: true
+  ParamSpecULong:
+    ignore: true
+  ParamSpecUnichar:
+    ignore: true
+  ParamSpecValueArray:
+    ignore: true
+  ParamSpecVariant:
+    ignore: true
+  ParamSpecTypeInfo:
+    ignore: true
+  SignalQuery:
+    ignore: true
+  TypeClass:
+    ignore_methods:
+    - adjust_private_offset
+    - peek
+    - peek_static
+    - ref
+  TypeCValue:
+    ignore: true
+  TypeValueCollectFunc:
+    ignore: true
+  TypeValueLCopyFunc:
+    ignore: true
+  TypeInterface:
+    ignore_methods:
+    - add_prerequisite
+    - get_plugin
+    - instantiatable_prerequisite
+    - peek
+    - prerequisites
+  Value:
+    handmade: true
+  ValueArray:
+    ignore: true
+  WeakRef:
+    ignore: true
+
+execute_callback:
+ - g_signal_emitv
+ - g_closure_invoke

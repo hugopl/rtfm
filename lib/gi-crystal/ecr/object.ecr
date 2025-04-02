@@ -1,0 +1,88 @@
+<%= require_file(object.parent) -%>
+<% object.interfaces.each do |interface| -%>
+  <%= require_file(interface) %>
+<% end %>
+
+module <%= namespace_name %>
+  <% render_doc(object) -%>
+  @[GICrystal::GeneratedWrapper]
+  class <%= type_name %> <%= parent_class %>
+    <% object.interfaces.each do |interface| -%>
+    include <%= to_crystal_type(interface, namespace != interface.namespace) %>
+    <% end %>
+
+    <% if object.parent.nil? %>
+    @pointer : Pointer(Void)
+    <% end %>
+
+    <% class_struct = object.class_struct -%>
+    <% if class_struct.nil? || object.fundamental? || object.final? %>
+    macro inherited
+      {{ raise "Cannot inherit from #{@type.superclass}" unless @type.annotation(GICrystal::GeneratedWrapper) }}
+    end
+    <% elsif class_struct %>
+    # :nodoc:
+    def self._register_derived_type(class_name : String, class_init, instance_init)
+      LibGObject.g_type_register_static_simple(g_type, class_name,
+                                               sizeof(<%= to_lib_type(class_struct) %>), class_init,
+                                               sizeof(<%= to_lib_type(object) %>), instance_init, 0)
+    end
+    <% end %>
+
+    <% render_qdata_optimized_new_method %>
+
+    <% if object.parent %>
+    # Initialize a new `<%= type_name %>`.
+    def initialize
+      super
+    end
+
+    # :nodoc:
+    def initialize(pointer, transfer : GICrystal::Transfer)
+      super
+    end
+    <% end %>
+
+
+    # :nodoc:
+    # Code copied from crystal/src/weak_ref.cr
+    # Allocates this object using malloc_atomic, allowing the GC to run more efficiently.
+    # As GObjects memory is managed using reference counting, we do not need to scan its pointers.
+    def self.allocate
+      ptr = GC.malloc_atomic(instance_sizeof(self)).as(self)
+      set_crystal_type_id(ptr)
+      ptr
+    end
+
+    <% if all_properties.any? -%>
+      <% render "ecr/gobject_constructor.ecr" %>
+    <% end %>
+
+    <% if object.parent.nil? %>
+      # Called by the garbage collector. Decreases the reference count of object.
+      # (i.e. its memory is freed).
+      def finalize
+        {% if flag?(:debugmemory) %}
+        LibC.printf("~%s at %p\n", self.class.name.to_unsafe, self)
+        {% end %}
+        GICrystal.finalize_instance(self)
+      end
+
+      # Returns a pointer to the C object.
+      def to_unsafe
+        @pointer
+      end
+
+      private def _after_init : Nil
+      end
+    <% end %>
+
+    <% render "ecr/object_g_type_method.ecr" %>
+    <% render_properties %>
+    <% render_methods %>
+    <% render_signals %>
+    <% render_vfuncs %>
+
+    def_equals_and_hash @pointer
+  end
+end

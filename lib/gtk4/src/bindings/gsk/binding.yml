@@ -1,0 +1,14 @@
+namespace: Gsk
+version: "4.0"
+require_after:
+- gi_crystal.cr
+- render_node.cr
+
+types:
+  RenderNode:
+    ignore_methods:
+    - ref
+    - unref
+  PathPoint:
+    ignore_methods:
+    - get_curvature

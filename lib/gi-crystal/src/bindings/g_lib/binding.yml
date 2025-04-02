@@ -1,0 +1,848 @@
+namespace: GLib
+version: "2.0"
+
+require_before:
+- error.cr
+- lib_g_lib.cr
+
+require_after:
+- bytes.cr
+- list.cr
+- slist.cr
+- timeout.cr
+- variant.cr
+- variant_dict.cr
+
+ignore_constants:
+- ANALYZER_ANALYZING
+- ASCII_DTOSTR_BUF_SIZE
+- BIG_ENDIAN
+- CSET_a_2_z
+- CSET_A_2_Z
+- CSET_DIGITS
+- C_STD_VERSION
+- DATALIST_FLAGS_MASK
+- DATE_BAD_DAY
+- DATE_BAD_JULIAN
+- DATE_BAD_YEAR
+- DIR_SEPARATOR
+- DIR_SEPARATOR_S
+- E
+- GINT16_FORMAT
+- GINT16_MODIFIER
+- GINT32_FORMAT
+- GINT32_MODIFIER
+- GINT64_FORMAT
+- GINT64_MODIFIER
+- GINTPTR_FORMAT
+- GINTPTR_MODIFIER
+- GNUC_FUNCTION
+- GNUC_PRETTY_FUNCTION
+- GSIZE_FORMAT
+- GSIZE_MODIFIER
+- GSSIZE_FORMAT
+- GSSIZE_MODIFIER
+- GUINT16_FORMAT
+- GUINT32_FORMAT
+- GUINT64_FORMAT
+- GUINTPTR_FORMAT
+- HAVE_GINT64
+- HAVE_GNUC_VARARGS
+- HAVE_GNUC_VISIBILITY
+- HAVE_GROWING_STACK
+- HAVE_ISO_VARARGS
+- HOOK_FLAG_USER_SHIFT
+- IEEE754_DOUBLE_BIAS
+- IEEE754_FLOAT_BIAS
+- KEY_FILE_DESKTOP_GROUP
+- KEY_FILE_DESKTOP_KEY_ACTIONS
+- KEY_FILE_DESKTOP_KEY_CATEGORIES
+- KEY_FILE_DESKTOP_KEY_COMMENT
+- KEY_FILE_DESKTOP_KEY_DBUS_ACTIVATABLE
+- KEY_FILE_DESKTOP_KEY_EXEC
+- KEY_FILE_DESKTOP_KEY_GENERIC_NAME
+- KEY_FILE_DESKTOP_KEY_HIDDEN
+- KEY_FILE_DESKTOP_KEY_ICON
+- KEY_FILE_DESKTOP_KEY_MIME_TYPE
+- KEY_FILE_DESKTOP_KEY_NAME
+- KEY_FILE_DESKTOP_KEY_NO_DISPLAY
+- KEY_FILE_DESKTOP_KEY_NOT_SHOW_IN
+- KEY_FILE_DESKTOP_KEY_ONLY_SHOW_IN
+- KEY_FILE_DESKTOP_KEY_PATH
+- KEY_FILE_DESKTOP_KEY_STARTUP_NOTIFY
+- KEY_FILE_DESKTOP_KEY_STARTUP_WM_CLASS
+- KEY_FILE_DESKTOP_KEY_TERMINAL
+- KEY_FILE_DESKTOP_KEY_TRY_EXEC
+- KEY_FILE_DESKTOP_KEY_TYPE
+- KEY_FILE_DESKTOP_KEY_URL
+- KEY_FILE_DESKTOP_KEY_VERSION
+- KEY_FILE_DESKTOP_TYPE_APPLICATION
+- KEY_FILE_DESKTOP_TYPE_DIRECTORY
+- KEY_FILE_DESKTOP_TYPE_LINK
+- LITTLE_ENDIAN
+- LN10
+- LN2
+- LOG_2_BASE_10
+- LOG_DOMAIN
+- LOG_FATAL_MASK
+- LOG_LEVEL_USER_SHIFT
+- macro__has_attribute___noreturn__
+- MAXINT16
+- MAXINT32
+- MAXINT64
+- MAXINT8
+- MAXUINT16
+- MAXUINT32
+- MAXUINT64
+- MAXUINT8
+- MININT16
+- MININT32
+- MININT64
+- MININT8
+- PDP_ENDIAN
+- OPTION_REMAINING
+- MODULE_SUFFIX
+- PI
+- PI_2
+- PI_4
+- PID_FORMAT
+- POLLFD_FORMAT
+- SEARCHPATH_SEPARATOR
+- SEARCHPATH_SEPARATOR_S
+- SIZEOF_LONG
+- SIZEOF_SIZE_T
+- SIZEOF_SSIZE_T
+- SIZEOF_VOID_P
+- SQRT2
+- STR_DELIMITERS
+- SYSDEF_AF_INET
+- SYSDEF_AF_INET6
+- SYSDEF_AF_UNIX
+- SYSDEF_MSG_DONTROUTE
+- SYSDEF_MSG_OOB
+- SYSDEF_MSG_PEEK
+- TEST_OPTION_ISOLATE_DIRS
+- TIME_SPAN_DAY
+- TIME_SPAN_HOUR
+- TIME_SPAN_MILLISECOND
+- TIME_SPAN_MINUTE
+- TIME_SPAN_SECOND
+- UNICHAR_MAX_DECOMPOSITION_LENGTH
+- URI_RESERVED_CHARS_GENERIC_DELIMITERS
+- URI_RESERVED_CHARS_SUBCOMPONENT_DELIMITERS
+- USEC_PER_SEC
+- VA_COPY_AS_ARRAY
+- VERSION_MIN_REQUIRED
+- WIN32_MSG_HANDLE
+
+types:
+  Array:
+    ignore: true
+  AsyncQueue:
+    ignore: true
+  Variant:
+    handmade: true
+  BookmarkFile:
+    ignore: true
+  ByteArray:
+    ignore: true
+  Bytes:
+    ignore_methods:
+    - new
+    - new_take
+    - ref
+    - unref
+    - unref_to_array
+    - unref_to_data
+  Checksum:
+    ignore: true
+  ChecksumType:
+    ignore: true
+  Cond:
+    ignore: true
+  Data:
+    ignore: true
+  Date:
+    ignore: true
+  DateTime:
+    ignore: true
+  DebugKey:
+    ignore: true
+  Dir:
+    ignore: true
+  ErrorCopyFunc:
+    ignore: true
+  GLib:
+    ignore_methods:
+    - access
+    - aligned_alloc
+    - aligned_alloc0
+    - aligned_free
+    - ascii_digit_value
+    - ascii_dtostr
+    - ascii_formatd
+    - ascii_strcasecmp
+    - ascii_strdown
+    - ascii_string_to_signed
+    - ascii_string_to_unsigned
+    - ascii_strncasecmp
+    - ascii_strtod
+    - ascii_strtoll
+    - ascii_strtoull
+    - ascii_strup
+    - ascii_tolower
+    - ascii_toupper
+    - ascii_xdigit_value
+    - assertion_message
+    - assertion_message_cmpstr
+    - assertion_message_cmpstrv
+    - assertion_message_error
+    - assert_warning
+    - atexit
+    - atomic_int_add
+    - atomic_int_and
+    - atomic_int_compare_and_exchange
+    - atomic_int_dec_and_test
+    - atomic_int_exchange_and_add
+    - atomic_int_get
+    - atomic_int_inc
+    - atomic_int_or
+    - atomic_int_set
+    - atomic_int_xor
+    - atomic_pointer_add
+    - atomic_pointer_and
+    - atomic_pointer_compare_and_exchange
+    - atomic_pointer_get
+    - atomic_pointer_or
+    - atomic_pointer_set
+    - atomic_pointer_xor
+    - atomic_rc_box_acquire
+    - atomic_rc_box_alloc
+    - atomic_rc_box_alloc0
+    - atomic_rc_box_dup
+    - atomic_rc_box_get_size
+    - atomic_rc_box_release
+    - atomic_rc_box_release_full
+    - atomic_ref_count_compare
+    - atomic_ref_count_dec
+    - atomic_ref_count_inc
+    - atomic_ref_count_init
+    - base64_decode
+    - base64_decode_inplace
+    - base64_encode
+    - base64_encode_close
+    - base64_encode_step
+    - basename
+    - bit_lock
+    - bit_trylock
+    - bit_unlock
+    - bookmark_file_error_quark
+    - build_filenamev
+    - build_pathv
+    - byte_array_free
+    - byte_array_free_to_bytes
+    - byte_array_new
+    - byte_array_new_take
+    - byte_array_steal
+    - byte_array_unref
+    - canonicalize_filename
+    - chdir
+    - checksum_type_get_length
+    - child_watch_add
+    - child_watch_source_new
+    - clear_error
+    - close
+    - compute_checksum_for_bytes
+    - compute_checksum_for_data
+    - compute_checksum_for_string
+    - compute_hmac_for_bytes
+    - compute_hmac_for_data
+    - compute_hmac_for_string
+    - convert
+    - convert_error_quark
+    - convert_with_fallback
+    - datalist_foreach
+    - datalist_get_data
+    - datalist_get_flags
+    - datalist_id_get_data
+    - datalist_set_flags
+    - datalist_unset_flags
+    - dataset_destroy
+    - dataset_foreach
+    - dataset_id_get_data
+    - date_get_days_in_month
+    - date_get_monday_weeks_in_year
+    - date_get_sunday_weeks_in_year
+    - date_is_leap_year
+    - date_strftime
+    - date_valid_day
+    - date_valid_dmy
+    - date_valid_julian
+    - date_valid_month
+    - date_valid_weekday
+    - date_valid_year
+    - dcgettext
+    - dgettext
+    - direct_equal
+    - direct_hash
+    - dir_make_tmp
+    - dngettext
+    - double_equal
+    - double_hash
+    - dpgettext
+    - dpgettext2
+    - environ_getenv
+    - environ_setenv
+    - environ_unsetenv
+    - error_copy
+    - file_error_from_errno
+    - file_error_quark
+    - file_get_contents
+    - filename_display_basename
+    - filename_display_name
+    - filename_from_uri
+    - filename_from_utf8
+    - filename_to_uri
+    - filename_to_utf8
+    - file_open_tmp
+    - file_read_link
+    - file_set_contents
+    - file_set_contents_full
+    - file_test
+    - find_program_in_path
+    - format_size
+    - format_size_full
+    - free
+    - get_charset
+    - get_codeset
+    - get_console_charset
+    - get_current_dir
+    - get_current_time
+    - getenv
+    - get_environ
+    - get_filename_charsets
+    - get_home_dir
+    - get_host_name
+    - get_language_names
+    - get_language_names_with_category
+    - get_locale_variants
+    - get_monotonic_time
+    - get_num_processors
+    - get_real_name
+    - get_real_time
+    - get_tmp_dir
+    - get_user_name
+    - hash_table_add
+    - hash_table_contains
+    - hash_table_destroy
+    - hash_table_insert
+    - hash_table_lookup
+    - hash_table_lookup_extended
+    - hash_table_new_similar
+    - hash_table_remove
+    - hash_table_remove_all
+    - hash_table_replace
+    - hash_table_size
+    - hash_table_steal
+    - hash_table_steal_all
+    - hash_table_steal_extended
+    - hash_table_unref
+    - hook_destroy
+    - hook_destroy_link
+    - hook_free
+    - hook_insert_before
+    - hook_prepend
+    - hook_unref
+    - hostname_is_ascii_encoded
+    - hostname_is_ip_address
+    - hostname_is_non_ascii
+    - hostname_to_ascii
+    - hostname_to_unicode
+    - idle_add
+    - int64_equal
+    - int64_hash
+    - int_equal
+    - intern_static_string
+    - intern_string
+    - int_hash
+    - io_add_watch
+    - io_channel_error_from_errno
+    - io_channel_error_quark
+    - io_create_watch
+    - key_file_error_quark
+    - key_file_load_from_bytes
+    - listenv
+    - locale_from_utf8
+    - locale_to_utf8
+    - log_default_handler
+    - log_get_debug_enabled
+    - log_remove_handler
+    - log_set_always_fatal
+    - log_set_debug_enabled
+    - log_set_fatal_mask
+    - log_set_handler
+    - log_set_writer_func
+    - log_structured_array
+    - log_variant
+    - log_writer_default
+    - log_writer_default_set_use_stderr
+    - log_writer_default_would_drop
+    - log_writer_format_fields
+    - log_writer_is_journald
+    - log_writer_journald
+    - log_writer_standard_streams
+    - log_writer_supports_color
+    - main_context_add_poll
+    - main_context_remove_poll
+    - malloc
+    - malloc0
+    - malloc0_n
+    - malloc_n
+    - markup_error_quark
+    - memdup
+    - memdup2
+    - mem_is_system_malloc
+    - mem_profile
+    - mem_set_vtable
+    - mkdir_with_parents
+    - nullify_pointer
+    - number_parser_error_quark
+    - option_error_quark
+    - parse_debug_string
+    - path_get_basename
+    - path_get_dirname
+    - path_is_absolute
+    - path_skip_root
+    - pattern_match
+    - pattern_match_simple
+    - pattern_match_string
+    - pattern_spec_free
+    - pointer_bit_lock
+    - pointer_bit_trylock
+    - pointer_bit_unlock
+    - poll
+    - prefix_error_literal
+    - propagate_error
+    - quark_from_static_string
+    - random_double
+    - random_double_range
+    - random_int
+    - random_int_range
+    - random_set_seed
+    - rc_box_acquire
+    - rc_box_alloc
+    - rc_box_alloc0
+    - rc_box_dup
+    - rc_box_get_size
+    - rc_box_release
+    - rc_box_release_full
+    - realloc
+    - realloc_n
+    - ref_count_compare
+    - ref_count_dec
+    - ref_count_inc
+    - ref_count_init
+    - ref_string_acquire
+    - ref_string_length
+    - ref_string_new
+    - ref_string_new_intern
+    - ref_string_new_len
+    - ref_string_release
+    - regex_check_replacement
+    - regex_error_quark
+    - regex_escape_nul
+    - regex_escape_string
+    - regex_match_simple
+    - regex_split_simple
+    - rmdir
+    - sequence_get
+    - sequence_insert_before
+    - sequence_move
+    - sequence_move_range
+    - sequence_range_get_midpoint
+    - sequence_remove
+    - sequence_remove_range
+    - sequence_set
+    - sequence_swap
+    - setenv
+    - set_error_literal
+    - shell_error_quark
+    - shell_parse_argv
+    - shell_quote
+    - shell_unquote
+    - slice_alloc
+    - slice_alloc0
+    - slice_copy
+    - slice_free1
+    - slice_free_chain_with_offset
+    - slice_get_config
+    - slice_get_config_state
+    - slice_set_config
+    - source_add_poll
+    - source_remove_by_funcs_user_data
+    - source_remove_by_user_data
+    - source_remove_poll
+    - spawn_async
+    - spawn_async_with_fds
+    - spawn_async_with_pipes
+    - spawn_async_with_pipes_and_fds
+    - spawn_check_exit_status
+    - spawn_check_wait_status
+    - spawn_close_pid
+    - spawn_command_line_async
+    - spawn_command_line_sync
+    - spawn_error_quark
+    - spawn_exit_error_quark
+    - spawn_sync
+    - stpcpy
+    - strcanon
+    - strcasecmp
+    - strchomp
+    - strchug
+    - strcmp0
+    - strcompress
+    - strdelimit
+    - strdown
+    - strdup
+    - str_equal
+    - strerror
+    - strescape
+    - strfreev
+    - str_hash
+    - str_has_prefix
+    - str_has_suffix
+    - strip_context
+    - str_is_ascii
+    - strjoinv
+    - strlcat
+    - strlcpy
+    - str_match_string
+    - strncasecmp
+    - strndup
+    - strnfill
+    - strreverse
+    - strrstr
+    - strrstr_len
+    - strsignal
+    - strstr_len
+    - str_to_ascii
+    - strtod
+    - str_tokenize_and_fold
+    - strup
+    - strv_contains
+    - strv_equal
+    - strv_get_type
+    - strv_length
+    - test_add_data_func
+    - test_add_data_func_full
+    - test_add_func
+    - test_assert_expected_messages_internal
+    - test_bug
+    - test_bug_base
+    - test_expect_message
+    - test_fail
+    - test_failed
+    - test_get_dir
+    - test_get_path
+    - test_incomplete
+    - test_log_type_name
+    - test_queue_destroy
+    - test_queue_free
+    - test_rand_double
+    - test_rand_double_range
+    - test_rand_int
+    - test_rand_int_range
+    - test_run
+    - test_run_suite
+    - test_set_nonfatal_assertions
+    - test_skip
+    - test_subprocess
+    - test_summary
+    - test_timer_elapsed
+    - test_timer_last
+    - test_timer_start
+    - test_trap_assertions
+    - test_trap_fork
+    - test_trap_has_passed
+    - test_trap_reached_timeout
+    - test_trap_subprocess
+    - thread_error_quark
+    - thread_exit
+    - thread_pool_get_max_idle_time
+    - thread_pool_get_max_unused_threads
+    - thread_pool_get_num_unused_threads
+    - thread_pool_set_max_idle_time
+    - thread_pool_set_max_unused_threads
+    - thread_pool_stop_unused_threads
+    - thread_self
+    - thread_yield
+    - timeout_add
+    - timeout_add_seconds
+    - time_val_from_iso8601
+    - trash_stack_height
+    - trash_stack_peek
+    - trash_stack_pop
+    - trash_stack_push
+    - try_malloc
+    - try_malloc0
+    - try_malloc0_n
+    - try_malloc_n
+    - try_realloc
+    - try_realloc_n
+    - ucs4_to_utf16
+    - ucs4_to_utf8
+    - unichar_break_type
+    - unichar_combining_class
+    - unichar_compose
+    - unichar_decompose
+    - unichar_digit_value
+    - unichar_fully_decompose
+    - unichar_get_mirror_char
+    - unichar_get_script
+    - unichar_isalnum
+    - unichar_isalpha
+    - unichar_iscntrl
+    - unichar_isdefined
+    - unichar_isdigit
+    - unichar_isgraph
+    - unichar_islower
+    - unichar_ismark
+    - unichar_isprint
+    - unichar_ispunct
+    - unichar_isspace
+    - unichar_istitle
+    - unichar_isupper
+    - unichar_iswide
+    - unichar_iswide_cjk
+    - unichar_isxdigit
+    - unichar_iszerowidth
+    - unichar_tolower
+    - unichar_totitle
+    - unichar_toupper
+    - unichar_to_utf8
+    - unichar_type
+    - unichar_validate
+    - unichar_xdigit_value
+    - unicode_canonical_decomposition
+    - unicode_canonical_ordering
+    - unicode_script_from_iso15924
+    - unicode_script_to_iso15924
+    - unix_error_quark
+    - unix_fd_add_full
+    - unix_fd_source_new
+    - unix_get_passwd_entry
+    - unix_open_pipe
+    - unix_set_fd_nonblocking
+    - unix_signal_add
+    - unix_signal_source_new
+    - unlink
+    - unsetenv
+    - uri_build
+    - uri_build_with_user
+    - uri_error_quark
+    - uri_escape_bytes
+    - uri_escape_string
+    - uri_is_valid
+    - uri_join
+    - uri_join_with_user
+    - uri_list_extract_uris
+    - uri_parse
+    - uri_parse_params
+    - uri_parse_scheme
+    - uri_peek_scheme
+    - uri_resolve_relative
+    - uri_split
+    - uri_split_network
+    - uri_split_with_user
+    - uri_unescape_bytes
+    - uri_unescape_segment
+    - uri_unescape_string
+    - usleep
+    - utf16_to_ucs4
+    - utf16_to_utf8
+    - utf8_casefold
+    - utf8_collate
+    - utf8_collate_key
+    - utf8_collate_key_for_filename
+    - utf8_find_next_char
+    - utf8_find_prev_char
+    - utf8_get_char
+    - utf8_get_char_validated
+    - utf8_make_valid
+    - utf8_normalize
+    - utf8_offset_to_pointer
+    - utf8_pointer_to_offset
+    - utf8_prev_char
+    - utf8_strchr
+    - utf8_strdown
+    - utf8_strlen
+    - utf8_strncpy
+    - utf8_strrchr
+    - utf8_strreverse
+    - utf8_strup
+    - utf8_substring
+    - utf8_to_ucs4
+    - utf8_to_ucs4_fast
+    - utf8_to_utf16
+    - utf8_validate
+    - utf8_validate_len
+    - uuid_string_is_valid
+    - uuid_string_random
+  HashTable:
+    ignore: true
+  HashTableIter:
+    ignore: true
+  Hmac:
+    ignore: true
+  Hook:
+    ignore: true
+  HookList:
+    ignore: true
+  IOChannel:
+    ignore: true
+  IOFuncs:
+    ignore: true
+  KeyFile:
+    ignore: true
+  List:
+    ignore: true
+  LogField:
+    ignore: true
+  MainContext:
+    ignore_methods:
+    - add_poll
+    - remove_poll
+  MatchInfo:
+    ignore: true
+  MemVTable:
+    ignore: true
+  Node:
+    ignore: true
+  Once:
+    ignore: true
+  OptionContext:
+    ignore: true
+  OptionEntry:
+    ignore: true
+  OptionGroup:
+    ignore: true
+  PatternSpec:
+    ignore: true
+  PollFD:
+    ignore: true
+  Private:
+    ignore: true
+  PtrArray:
+    ignore: true
+  Queue:
+    ignore: true
+  Rand:
+    ignore: true
+  RecMutex:
+    ignore: true
+  Regex:
+    ignore: true
+  RWLock:
+    ignore: true
+  Scanner:
+    ignore: true
+  ScannerConfig:
+    ignore: true
+  Sequence:
+    ignore: true
+  SequenceIter:
+    ignore: true
+  SList:
+    ignore: true
+  Source:
+    ignore_methods:
+    - add_poll
+    - remove_poll
+    - remove_by_funcs_user_data
+    - remove_by_user_data
+  SourcePrivate:
+    ignore: true
+  StatBuf:
+    ignore: true
+  String:
+    ignore: true
+  StringChunk:
+    ignore: true
+  StrvBuilder:
+    ignore: true
+  TestCase:
+    ignore: true
+  TestConfig:
+    ignore: true
+  TestLogBuffer:
+    ignore: true
+  TestLogMsg:
+    ignore: true
+  TestSuite:
+    ignore: true
+  Thread:
+    ignore: true
+  ThreadPool:
+    ignore: true
+  Timer:
+    ignore: true
+  TimeVal:
+    ignore: true
+  TimeZone:
+    ignore: true
+  TrashStack:
+    ignore: true
+  Tree:
+    ignore: true
+  TreeNode:
+    ignore: true
+  Uri:
+    ignore: true
+  UriParamsIter:
+    ignore: true
+  HookCheckMarshaller:
+    ignore: true
+  HookCompareFunc:
+    ignore: true
+  HookFinalizeFunc:
+    ignore: true
+  HookFindFunc:
+    ignore: true
+  HookMarshaller:
+    ignore: true
+  IOFunc:
+    ignore: true
+  LogFunc:
+    ignore: true
+  LogWriterFunc:
+    ignore: true
+  NodeForeachFunc:
+    ignore: true
+  OptionErrorFunc:
+    ignore: true
+  RegexEvalCallback:
+    ignore: true
+  ScannerMsgFunc:
+    ignore: true
+  SequenceIterCompareFunc:
+    ignore: true
+  OptionParseFunc:
+    ignore: true
+  PollFunc:
+    ignore: true
+  TraverseNodeFunc:
+    ignore: true
+  NodeTraverseFunc:
+    ignore: true
+  HookFunc:
+    ignore: true
+
+execute_callback:
+ - g_main_loop_run
+ - g_main_context_invoke_full
+ - g_main_context_invoke
+lib_ignore:
+- g_once_init_enter
+- g_once_init_leave
+- g_once_init_enter_pointer
+- g_once_init_leave_pointer

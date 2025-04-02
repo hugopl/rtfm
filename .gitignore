@@ -5,6 +5,5 @@
 /data/*.docset/
 /docs/
 /.flatpak-builder/
-/lib/
 /.shards/
 *.dwarf
