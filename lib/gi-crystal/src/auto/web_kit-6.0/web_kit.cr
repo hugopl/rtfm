@@ -529,7 +529,7 @@ module WebKit
 
   @[Flags]
   enum WebExtensionMatchPatternOptions : UInt32
-    None                 = 1
+    # None                 = 1
     IgnoreSchemes        = 2
     IgnorePaths          = 4
     MatchBidirectionally = 8
