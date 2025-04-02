@@ -2,14 +2,10 @@
 PREFIX ?= /usr
 CR_FLAGS ?= -Dstrict_multi_assign -Duse_pcre2 -Dpreview_overload_order --link-flags='-Wl,--as-needed'
 
-all: configure .WAIT rtfm docsets
+all: rtfm docsets
 
 debug:
 	shards build --debug $(CR_FLAGS) --error-trace
-
-configure:
-	shards install
-	./bin/gi-crystal
 
 rtfm:
 	shards build --release $(CR_FLAGS) rtfm

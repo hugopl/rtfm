@@ -4,11 +4,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## 0.6.1 - 2025-03-07
+## [0.6.2] ### Fixed
+- Fix compilation after a [GTK change](https://gitlab.gnome.org/GNOME/gtk/-/merge_requests/7836).
+- Fix compilation for newer versions of WebkitGtk-6.0 that broke gi-crystal code generation.
+- RTFM now distribute the generated sources, so future binary compatible
+  changes of libraries wont stop rtfm from compiling.
+
+## [0.6.1] - 2025-03-07
 ### Fixed
 - Fix compilation with Crystal 1.15.1 by not forking on main (#24).
 
-## 0.6.0 - 2024-11-14
+## [0.6.0] - 2024-11-14
 ### Added
 - Add documentation for WebKitGtk2.
 - Show page title on title bar if tabview header is hidden.
