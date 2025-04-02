@@ -4,7 +4,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.6.2] ### Fixed
+## [0.6.2] - 2025-04-02
+### Fixed
 - Fix compilation after a [GTK change](https://gitlab.gnome.org/GNOME/gtk/-/merge_requests/7836).
 - Fix compilation for newer versions of WebkitGtk-6.0 that broke gi-crystal code generation.
 - RTFM now distribute the generated sources, so future binary compatible
