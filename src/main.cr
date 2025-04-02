@@ -6,6 +6,7 @@ require "./monkey_patches"
 require "./application"
 require "./docset_repository"
 
+Gtk.init
 Gio.register_resource("data/resources.xml", source_dir: "data")
 
 # Need this, otherwise the Builder doesn't know about WebKit type since the type was never registered on GLib type system
