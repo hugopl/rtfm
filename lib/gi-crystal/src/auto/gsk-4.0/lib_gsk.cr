@@ -1,6 +1,7 @@
 @[Link("gtk-4", pkg_config: "gtk-4")]
 lib LibGsk
   # Flags
+  type Isolation = Int32
   type PathForeachFlags = UInt32
 
   # Enums
@@ -12,7 +13,9 @@ lib LibGsk
   type LineJoin = UInt32
   type MaskMode = UInt32
   type PathDirection = UInt32
+  type PathIntersection = UInt32
   type PathOperation = UInt32
+  type PorterDuff = UInt32
   type RenderNodeType = UInt32
   type ScalingFilter = UInt32
   type SerializationError = UInt32
@@ -21,6 +24,10 @@ lib LibGsk
   # Callbacks
   alias ParseErrorFunc = Pointer(LibGsk::ParseLocation), Pointer(LibGsk::ParseLocation), Pointer(LibGLib::Error), Pointer(Void) -> Void
   alias PathForeachFunc = UInt32, Pointer(LibGraphene::Point), UInt64, Float32, Pointer(Void) -> LibC::Int
+  alias PathIntersectionFunc = Pointer(LibGsk::Path), Pointer(LibGsk::PathPoint), Pointer(LibGsk::Path), Pointer(LibGsk::PathPoint), UInt32, Pointer(Void) -> LibC::Int
+  alias RenderReplayFontFilter = Pointer(LibGsk::RenderReplay), Pointer(LibPango::Font), Pointer(Void) -> Pointer(LibPango::Font)
+  alias RenderReplayNodeFilter = Pointer(LibGsk::RenderReplay), Pointer(LibGsk::RenderNode), Pointer(Void) -> Pointer(LibGsk::RenderNode)
+  alias RenderReplayTextureFilter = Pointer(LibGsk::RenderReplay), Pointer(LibGdk::Texture), Pointer(Void) -> Pointer(LibGdk::Texture)
 
   # Interface types
 
@@ -33,6 +40,8 @@ lib LibGsk
     offset : Float32
     color : LibGdk::RGBA
   end
+
+  type ComponentTransfer = Void # Struct with zero bytes
 
   type GLRendererClass = Void # Struct with zero bytes
 
@@ -55,6 +64,8 @@ lib LibGsk
   type PathMeasure = Void # Struct with zero bytes
 
   type PathPoint = Void # Struct with zero bytes
+
+  type RenderReplay = Void # Struct with zero bytes
 
   type RendererClass = Void # Struct with zero bytes
 
@@ -99,9 +110,15 @@ lib LibGsk
 
   type ColorNode = Void # Object struct with no fields
 
+  type ComponentTransferNode = Void # Object struct with no fields
+
+  type CompositeNode = Void # Object struct with no fields
+
   type ConicGradientNode = Void # Object struct with no fields
 
   type ContainerNode = Void # Object struct with no fields
+
+  type CopyNode = Void # Object struct with no fields
 
   type CrossFadeNode = Void # Object struct with no fields
 
@@ -117,6 +134,8 @@ lib LibGsk
 
   type InsetShadowNode = Void # Object struct with no fields
 
+  type IsolationNode = Void # Object struct with no fields
+
   type LinearGradientNode = Void # Object struct with no fields
 
   type MaskNode = Void # Object struct with no fields
@@ -126,6 +145,8 @@ lib LibGsk
   type OpacityNode = Void # Object struct with no fields
 
   type OutsetShadowNode = Void # Object struct with no fields
+
+  type PasteNode = Void # Object struct with no fields
 
   type RadialGradientNode = Void # Object struct with no fields
 
@@ -193,6 +214,26 @@ lib LibGsk
   fun gsk_color_node_get_color(this : Void*) : Pointer(Void)
   fun gsk_color_node_get_type : UInt64
   fun gsk_color_node_new(rgba : Pointer(Void), bounds : Pointer(Void)) : Pointer(Void)
+  fun gsk_component_transfer_copy(this : Void*) : Pointer(Void)
+  fun gsk_component_transfer_equal(_self : Pointer(Void), other : Pointer(Void)) : LibC::Int
+  fun gsk_component_transfer_equal(_self : Pointer(Void), other : Pointer(Void)) : LibC::Int
+  fun gsk_component_transfer_free(this : Void*) : Void
+  fun gsk_component_transfer_get_type : UInt64
+  fun gsk_component_transfer_new_discrete(n : UInt32, values : Pointer(Float32)) : Pointer(Void)
+  fun gsk_component_transfer_new_gamma(amp : Float32, exp : Float32, ofs : Float32) : Pointer(Void)
+  fun gsk_component_transfer_new_identity : Pointer(Void)
+  fun gsk_component_transfer_new_levels(n : Float32) : Pointer(Void)
+  fun gsk_component_transfer_new_linear(m : Float32, b : Float32) : Pointer(Void)
+  fun gsk_component_transfer_new_table(n : UInt32, values : Pointer(Float32)) : Pointer(Void)
+  fun gsk_component_transfer_node_get_child(this : Void*) : Pointer(Void)
+  fun gsk_component_transfer_node_get_transfer(this : Void*, component : UInt32) : Pointer(Void)
+  fun gsk_component_transfer_node_get_type : UInt64
+  fun gsk_component_transfer_node_new(child : Pointer(Void), r : Pointer(Void), g : Pointer(Void), b : Pointer(Void), a : Pointer(Void)) : Pointer(Void)
+  fun gsk_composite_node_get_child(this : Void*) : Pointer(Void)
+  fun gsk_composite_node_get_mask(this : Void*) : Pointer(Void)
+  fun gsk_composite_node_get_operator(this : Void*) : UInt32
+  fun gsk_composite_node_get_type : UInt64
+  fun gsk_composite_node_new(child : Pointer(Void), mask : Pointer(Void), op : UInt32) : Pointer(Void)
   fun gsk_conic_gradient_node_get_angle(this : Void*) : Float32
   fun gsk_conic_gradient_node_get_center(this : Void*) : Pointer(Void)
   fun gsk_conic_gradient_node_get_color_stops(this : Void*, n_stops : Pointer(UInt64)) : Pointer(LibGsk::ColorStop)
@@ -204,6 +245,9 @@ lib LibGsk
   fun gsk_container_node_get_n_children(this : Void*) : UInt32
   fun gsk_container_node_get_type : UInt64
   fun gsk_container_node_new(children : Pointer(Pointer(LibGsk::RenderNode)), n_children : UInt32) : Pointer(Void)
+  fun gsk_copy_node_get_child(this : Void*) : Pointer(Void)
+  fun gsk_copy_node_get_type : UInt64
+  fun gsk_copy_node_new(child : Pointer(Void)) : Pointer(Void)
   fun gsk_corner_get_type : UInt64
   fun gsk_cross_fade_node_get_end_child(this : Void*) : Pointer(Void)
   fun gsk_cross_fade_node_get_progress(this : Void*) : Float32
@@ -257,6 +301,11 @@ lib LibGsk
   fun gsk_inset_shadow_node_get_spread(this : Void*) : Float32
   fun gsk_inset_shadow_node_get_type : UInt64
   fun gsk_inset_shadow_node_new(outline : Pointer(Void), color : Pointer(Void), dx : Float32, dy : Float32, spread : Float32, blur_radius : Float32) : Pointer(Void)
+  fun gsk_isolation_get_type : UInt64
+  fun gsk_isolation_node_get_child(this : Void*) : Pointer(Void)
+  fun gsk_isolation_node_get_isolations(this : Void*) : Int32
+  fun gsk_isolation_node_get_type : UInt64
+  fun gsk_isolation_node_new(child : Pointer(Void), isolations : Int32) : Pointer(Void)
   fun gsk_line_cap_get_type : UInt64
   fun gsk_line_join_get_type : UInt64
   fun gsk_linear_gradient_node_get_color_stops(this : Void*, n_stops : Pointer(UInt64)) : Pointer(LibGsk::ColorStop)
@@ -285,6 +334,9 @@ lib LibGsk
   fun gsk_outset_shadow_node_get_spread(this : Void*) : Float32
   fun gsk_outset_shadow_node_get_type : UInt64
   fun gsk_outset_shadow_node_new(outline : Pointer(Void), color : Pointer(Void), dx : Float32, dy : Float32, spread : Float32, blur_radius : Float32) : Pointer(Void)
+  fun gsk_paste_node_get_depth(this : Void*) : UInt64
+  fun gsk_paste_node_get_type : UInt64
+  fun gsk_paste_node_new(bounds : Pointer(Void), depth : UInt64) : Pointer(Void)
   fun gsk_path_builder_add_cairo_path(this : Void*, path : Pointer(Void)) : Void
   fun gsk_path_builder_add_circle(this : Void*, center : Pointer(Void), radius : Float32) : Void
   fun gsk_path_builder_add_layout(this : Void*, layout : Pointer(Void)) : Void
@@ -317,15 +369,21 @@ lib LibGsk
   fun gsk_path_builder_to_path(this : Void*) : Pointer(Void)
   fun gsk_path_builder_unref(this : Void*) : Void
   fun gsk_path_direction_get_type : UInt64
+  fun gsk_path_equal(this : Void*, path2 : Pointer(Void)) : LibC::Int
   fun gsk_path_foreach(this : Void*, flags : UInt32, func : Void*, user_data : Pointer(Void)) : LibC::Int
   fun gsk_path_foreach_flags_get_type : UInt64
+  fun gsk_path_foreach_intersection(this : Void*, path2 : Pointer(Void), func : Void*, user_data : Pointer(Void)) : LibC::Int
   fun gsk_path_get_bounds(this : Void*, bounds : Pointer(Void)) : LibC::Int
   fun gsk_path_get_closest_point(this : Void*, point : Pointer(Void), threshold : Float32, result : Pointer(Void), distance : Pointer(Float32)) : LibC::Int
   fun gsk_path_get_end_point(this : Void*, result : Pointer(Void)) : LibC::Int
+  fun gsk_path_get_next(this : Void*, point : Pointer(Void)) : LibC::Int
+  fun gsk_path_get_previous(this : Void*, point : Pointer(Void)) : LibC::Int
   fun gsk_path_get_start_point(this : Void*, result : Pointer(Void)) : LibC::Int
   fun gsk_path_get_stroke_bounds(this : Void*, stroke : Pointer(Void), bounds : Pointer(Void)) : LibC::Int
+  fun gsk_path_get_tight_bounds(this : Void*, bounds : Pointer(Void)) : LibC::Int
   fun gsk_path_get_type : UInt64
   fun gsk_path_in_fill(this : Void*, point : Pointer(Void), fill_rule : UInt32) : LibC::Int
+  fun gsk_path_intersection_get_type : UInt64
   fun gsk_path_is_closed(this : Void*) : LibC::Int
   fun gsk_path_is_empty(this : Void*) : LibC::Int
   fun gsk_path_measure_get_length(this : Void*) : Float32
@@ -355,6 +413,7 @@ lib LibGsk
   fun gsk_path_to_cairo(this : Void*, cr : Pointer(Void)) : Void
   fun gsk_path_to_string(this : Void*) : Pointer(LibC::Char)
   fun gsk_path_unref(this : Void*) : Void
+  fun gsk_porter_duff_get_type : UInt64
   fun gsk_radial_gradient_node_get_center(this : Void*) : Pointer(Void)
   fun gsk_radial_gradient_node_get_color_stops(this : Void*, n_stops : Pointer(UInt64)) : Pointer(LibGsk::ColorStop)
   fun gsk_radial_gradient_node_get_end(this : Void*) : Float32
@@ -367,6 +426,7 @@ lib LibGsk
   fun gsk_render_node_deserialize(bytes : Pointer(Void), error_func : Void*, user_data : Pointer(Void)) : Pointer(Void)
   fun gsk_render_node_draw(this : Void*, cr : Pointer(Void)) : Void
   fun gsk_render_node_get_bounds(this : Void*, bounds : Pointer(Void)) : Void
+  fun gsk_render_node_get_children(this : Void*, n_children : Pointer(UInt64)) : Pointer(Pointer(LibGsk::RenderNode))
   fun gsk_render_node_get_node_type(this : Void*) : UInt32
   fun gsk_render_node_get_opaque_rect(this : Void*, out_opaque : Pointer(Void)) : LibC::Int
   fun gsk_render_node_get_type : UInt64
@@ -375,6 +435,16 @@ lib LibGsk
   fun gsk_render_node_type_get_type : UInt64
   fun gsk_render_node_unref(this : Void*) : Void
   fun gsk_render_node_write_to_file(this : Void*, filename : Pointer(LibC::Char), error : LibGLib::Error**) : LibC::Int
+  fun gsk_render_replay_default(this : Void*, node : Pointer(Void)) : Pointer(Void)
+  fun gsk_render_replay_filter_font(this : Void*, font : Pointer(Void)) : Pointer(Void)
+  fun gsk_render_replay_filter_node(this : Void*, node : Pointer(Void)) : Pointer(Void)
+  fun gsk_render_replay_filter_texture(this : Void*, texture : Pointer(Void)) : Pointer(Void)
+  fun gsk_render_replay_free(this : Void*) : Void
+  fun gsk_render_replay_get_type : UInt64
+  fun gsk_render_replay_new : Pointer(Void)
+  fun gsk_render_replay_set_font_filter(this : Void*, filter : Void*, user_data : Pointer(Void), user_destroy : Void*) : Void
+  fun gsk_render_replay_set_node_filter(this : Void*, filter : Void*, user_data : Pointer(Void), user_destroy : Void*) : Void
+  fun gsk_render_replay_set_texture_filter(this : Void*, filter : Void*, user_data : Pointer(Void), user_destroy : Void*) : Void
   fun gsk_renderer_get_surface(this : Void*) : Pointer(Void)
   fun gsk_renderer_get_type : UInt64
   fun gsk_renderer_is_realized(this : Void*) : LibC::Int
@@ -473,6 +543,7 @@ lib LibGsk
   fun gsk_transform_get_type : UInt64
   fun gsk_transform_invert(this : Void*) : Pointer(Void)
   fun gsk_transform_matrix(this : Void*, matrix : Pointer(Void)) : Pointer(Void)
+  fun gsk_transform_matrix_2d(this : Void*, xx : Float32, yx : Float32, xy : Float32, yy : Float32, dx : Float32, dy : Float32) : Pointer(Void)
   fun gsk_transform_new : Pointer(Void)
   fun gsk_transform_node_get_child(this : Void*) : Pointer(Void)
   fun gsk_transform_node_get_transform(this : Void*) : Pointer(Void)

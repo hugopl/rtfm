@@ -155,15 +155,15 @@ module Gio
       ::Path.new(::String.new(_retval)) unless _retval.null?
     end
 
-    def environ : Enumerable(::String)
+    def environ : Enumerable(::String)?
       # g_application_command_line_get_environ: (Method)
-      # Returns: (transfer none) (array zero-terminated=1 element-type Filename)
+      # Returns: (transfer none) (nullable) (array zero-terminated=1 element-type Filename)
 
       # C call
       _retval = LibGio.g_application_command_line_get_environ(to_unsafe)
 
       # Return value handling
-      GICrystal.transfer_null_ended_array(_retval, GICrystal::Transfer::None)
+      GICrystal.transfer_null_ended_array(_retval, GICrystal::Transfer::None) unless _retval.null?
     end
 
     def exit_status : Int32

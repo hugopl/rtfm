@@ -300,7 +300,7 @@ module Gtk
       # @function_name:
       # @flags:
       # @object: (nullable)
-      # Returns: (transfer full) (nullable)
+      # Returns: (transfer none) (nullable)
 
       _error = Pointer(LibGLib::Error).null
 
@@ -318,7 +318,7 @@ module Gtk
       Gtk.raise_gerror(_error) unless _error.null?
 
       # Return value handling
-      GObject::Closure.new(_retval, GICrystal::Transfer::Full) unless _retval.null?
+      GObject::Closure.new(_retval, GICrystal::Transfer::None) unless _retval.null?
     end
 
     def expose_object(name : ::String, object : GObject::Object) : Nil

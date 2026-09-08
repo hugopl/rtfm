@@ -117,6 +117,18 @@ module Gdk
       GICrystal.to_bool(_retval)
     end
 
+    def print(string : GLib::String) : GLib::String
+      # gdk_rgba_print: (Method)
+      # @string:
+      # Returns: (transfer full)
+
+      # C call
+      _retval = LibGdk.gdk_rgba_print(to_unsafe, string)
+
+      # Return value handling
+      GLib::String.new(_retval, GICrystal::Transfer::Full)
+    end
+
     def to_string : ::String
       # gdk_rgba_to_string: (Method)
       # Returns: (transfer full)

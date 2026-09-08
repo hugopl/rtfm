@@ -35,6 +35,37 @@ module Gtk
       ptr
     end
 
+    def initialize(*, prefers_color_scheme : Gtk::InterfaceColorScheme? = nil, prefers_contrast : Gtk::InterfaceContrast? = nil, prefers_reduced_motion : Gtk::ReducedMotion? = nil)
+      _names = uninitialized Pointer(LibC::Char)[3]
+      _values = StaticArray(LibGObject::Value, 3).new(LibGObject::Value.new)
+      _n = 0
+
+      if !prefers_color_scheme.nil?
+        (_names.to_unsafe + _n).value = "prefers-color-scheme".to_unsafe
+        GObject::Value.init_g_value(_values.to_unsafe + _n, prefers_color_scheme)
+        _n += 1
+      end
+      if !prefers_contrast.nil?
+        (_names.to_unsafe + _n).value = "prefers-contrast".to_unsafe
+        GObject::Value.init_g_value(_values.to_unsafe + _n, prefers_contrast)
+        _n += 1
+      end
+      if !prefers_reduced_motion.nil?
+        (_names.to_unsafe + _n).value = "prefers-reduced-motion".to_unsafe
+        GObject::Value.init_g_value(_values.to_unsafe + _n, prefers_reduced_motion)
+        _n += 1
+      end
+
+      ptr = LibGObject.g_object_new_with_properties(self.class.g_type, _n, _names, _values)
+      super(ptr, :full)
+
+      _n.times do |i|
+        LibGObject.g_value_unset(_values.to_unsafe + i)
+      end
+
+      LibGObject.g_object_set_qdata(@pointer, GICrystal::INSTANCE_QDATA_KEY, Pointer(Void).new(object_id))
+    end
+
     @@g_type : UInt64?
 
     # Returns the type id (GType) registered in GLib type system.
@@ -44,6 +75,51 @@ module Gtk
         ctor = ->Gtk::CssProvider.new(Void*, GICrystal::Transfer)
         LibGObject.g_type_set_qdata(g_type, GICrystal::INSTANCE_FACTORY, ctor.pointer)
       end
+    end
+
+    def prefers_color_scheme=(value : Gtk::InterfaceColorScheme) : Gtk::InterfaceColorScheme
+      unsafe_value = value
+
+      LibGObject.g_object_set(self, "prefers-color-scheme", unsafe_value, Pointer(Void).null)
+      value
+    end
+
+    def prefers_color_scheme : Gtk::InterfaceColorScheme
+      # Returns: None
+
+      value = uninitialized UInt32
+      LibGObject.g_object_get(self, "prefers-color-scheme", pointerof(value), Pointer(Void).null)
+      Gtk::InterfaceColorScheme.new(value)
+    end
+
+    def prefers_contrast=(value : Gtk::InterfaceContrast) : Gtk::InterfaceContrast
+      unsafe_value = value
+
+      LibGObject.g_object_set(self, "prefers-contrast", unsafe_value, Pointer(Void).null)
+      value
+    end
+
+    def prefers_contrast : Gtk::InterfaceContrast
+      # Returns: None
+
+      value = uninitialized UInt32
+      LibGObject.g_object_get(self, "prefers-contrast", pointerof(value), Pointer(Void).null)
+      Gtk::InterfaceContrast.new(value)
+    end
+
+    def prefers_reduced_motion=(value : Gtk::ReducedMotion) : Gtk::ReducedMotion
+      unsafe_value = value
+
+      LibGObject.g_object_set(self, "prefers-reduced-motion", unsafe_value, Pointer(Void).null)
+      value
+    end
+
+    def prefers_reduced_motion : Gtk::ReducedMotion
+      # Returns: None
+
+      value = uninitialized UInt32
+      LibGObject.g_object_get(self, "prefers-reduced-motion", pointerof(value), Pointer(Void).null)
+      Gtk::ReducedMotion.new(value)
     end
 
     def self.new : self
@@ -125,6 +201,7 @@ module Gtk
       # Return value handling
     end
 
+    @[Deprecated]
     def load_named(name : ::String, variant : ::String?) : Nil
       # gtk_css_provider_load_named: (Method)
       # @name:

@@ -13,20 +13,20 @@ module HarfBuzz
       LibGLib.g_free(pointer) if transfer.full?
     end
 
-    def self.new(path_open : Int32? = nil, path_start_x : Float32? = nil, path_start_y : Float32? = nil, current_x : Float32? = nil, current_y : Float32? = nil, slant_xy : Float32? = nil, reserved1 : HarfBuzz::VarNumT? = nil, reserved2 : HarfBuzz::VarNumT? = nil, reserved3 : HarfBuzz::VarNumT? = nil, reserved4 : HarfBuzz::VarNumT? = nil, reserved5 : HarfBuzz::VarNumT? = nil, reserved6 : HarfBuzz::VarNumT? = nil)
+    def self.new(path_open : Int32? = nil, path_start_x : Float32? = nil, path_start_y : Float32? = nil, current_x : Float32? = nil, current_y : Float32? = nil, reserved1 : HarfBuzz::VarNumT? = nil, reserved2 : HarfBuzz::VarNumT? = nil, reserved3 : HarfBuzz::VarNumT? = nil, reserved4 : HarfBuzz::VarNumT? = nil, reserved5 : HarfBuzz::VarNumT? = nil, reserved6 : HarfBuzz::VarNumT? = nil, reserved7 : HarfBuzz::VarNumT? = nil)
       _instance = allocate
       _instance.path_open = path_open unless path_open.nil?
       _instance.path_start_x = path_start_x unless path_start_x.nil?
       _instance.path_start_y = path_start_y unless path_start_y.nil?
       _instance.current_x = current_x unless current_x.nil?
       _instance.current_y = current_y unless current_y.nil?
-      _instance.slant_xy = slant_xy unless slant_xy.nil?
       _instance.reserved1 = reserved1 unless reserved1.nil?
       _instance.reserved2 = reserved2 unless reserved2.nil?
       _instance.reserved3 = reserved3 unless reserved3.nil?
       _instance.reserved4 = reserved4 unless reserved4.nil?
       _instance.reserved5 = reserved5 unless reserved5.nil?
       _instance.reserved6 = reserved6 unless reserved6.nil?
+      _instance.reserved7 = reserved7 unless reserved7.nil?
       _instance
     end
 
@@ -84,23 +84,13 @@ module HarfBuzz
       value
     end
 
-    def slant_xy : Float32
-      value = to_unsafe.as(Pointer(LibHarfBuzz::DrawStateT)).value.slant_xy
-      value
-    end
-
-    def slant_xy=(value : Float32)
-      _var = (to_unsafe + 20).as(Pointer(Float32)).value = value
-      value
-    end
-
     def reserved1 : HarfBuzz::VarNumT
       value = to_unsafe.as(Pointer(LibHarfBuzz::DrawStateT)).value.reserved1
       HarfBuzz::VarNumT.new(value, GICrystal::Transfer::None)
     end
 
     def reserved1=(value : HarfBuzz::VarNumT)
-      _var = (to_unsafe + 24).as(Pointer(LibHarfBuzz::VarNumT))
+      _var = (to_unsafe + 20).as(Pointer(LibHarfBuzz::VarNumT))
       _var.copy_from(value.to_unsafe, sizeof(LibHarfBuzz::DrawStateT))
       value
     end
@@ -111,7 +101,7 @@ module HarfBuzz
     end
 
     def reserved2=(value : HarfBuzz::VarNumT)
-      _var = (to_unsafe + 28).as(Pointer(LibHarfBuzz::VarNumT))
+      _var = (to_unsafe + 24).as(Pointer(LibHarfBuzz::VarNumT))
       _var.copy_from(value.to_unsafe, sizeof(LibHarfBuzz::DrawStateT))
       value
     end
@@ -122,7 +112,7 @@ module HarfBuzz
     end
 
     def reserved3=(value : HarfBuzz::VarNumT)
-      _var = (to_unsafe + 32).as(Pointer(LibHarfBuzz::VarNumT))
+      _var = (to_unsafe + 28).as(Pointer(LibHarfBuzz::VarNumT))
       _var.copy_from(value.to_unsafe, sizeof(LibHarfBuzz::DrawStateT))
       value
     end
@@ -133,7 +123,7 @@ module HarfBuzz
     end
 
     def reserved4=(value : HarfBuzz::VarNumT)
-      _var = (to_unsafe + 36).as(Pointer(LibHarfBuzz::VarNumT))
+      _var = (to_unsafe + 32).as(Pointer(LibHarfBuzz::VarNumT))
       _var.copy_from(value.to_unsafe, sizeof(LibHarfBuzz::DrawStateT))
       value
     end
@@ -144,7 +134,7 @@ module HarfBuzz
     end
 
     def reserved5=(value : HarfBuzz::VarNumT)
-      _var = (to_unsafe + 40).as(Pointer(LibHarfBuzz::VarNumT))
+      _var = (to_unsafe + 36).as(Pointer(LibHarfBuzz::VarNumT))
       _var.copy_from(value.to_unsafe, sizeof(LibHarfBuzz::DrawStateT))
       value
     end
@@ -155,6 +145,17 @@ module HarfBuzz
     end
 
     def reserved6=(value : HarfBuzz::VarNumT)
+      _var = (to_unsafe + 40).as(Pointer(LibHarfBuzz::VarNumT))
+      _var.copy_from(value.to_unsafe, sizeof(LibHarfBuzz::DrawStateT))
+      value
+    end
+
+    def reserved7 : HarfBuzz::VarNumT
+      value = to_unsafe.as(Pointer(LibHarfBuzz::DrawStateT)).value.reserved7
+      HarfBuzz::VarNumT.new(value, GICrystal::Transfer::None)
+    end
+
+    def reserved7=(value : HarfBuzz::VarNumT)
       _var = (to_unsafe + 44).as(Pointer(LibHarfBuzz::VarNumT))
       _var.copy_from(value.to_unsafe, sizeof(LibHarfBuzz::DrawStateT))
       value

@@ -29,14 +29,19 @@ module Adw
       ptr
     end
 
-    def initialize(*, child : Gtk::Widget? = nil, enabled : Bool? = nil, icon_name : ::String? = nil, label : ::String? = nil, name : ::String? = nil, tooltip : ::String? = nil, use_underline : Bool? = nil)
-      _names = uninitialized Pointer(LibC::Char)[7]
-      _values = StaticArray(LibGObject::Value, 7).new(LibGObject::Value.new)
+    def initialize(*, child : Gtk::Widget? = nil, description : ::String? = nil, enabled : Bool? = nil, icon_name : ::String? = nil, label : ::String? = nil, name : ::String? = nil, tooltip : ::String? = nil, use_underline : Bool? = nil)
+      _names = uninitialized Pointer(LibC::Char)[8]
+      _values = StaticArray(LibGObject::Value, 8).new(LibGObject::Value.new)
       _n = 0
 
       if !child.nil?
         (_names.to_unsafe + _n).value = "child".to_unsafe
         GObject::Value.init_g_value(_values.to_unsafe + _n, child)
+        _n += 1
+      end
+      if !description.nil?
+        (_names.to_unsafe + _n).value = "description".to_unsafe
+        GObject::Value.init_g_value(_values.to_unsafe + _n, description)
         _n += 1
       end
       if !enabled.nil?
@@ -104,6 +109,33 @@ module Adw
       value = uninitialized Pointer(Void)
       LibGObject.g_object_get(self, "child", pointerof(value), Pointer(Void).null)
       Gtk::Widget.new(value, GICrystal::Transfer::None) unless value.null?
+    end
+
+    def description=(value : ::String) : ::String
+      unsafe_value = value
+
+      LibGObject.g_object_set(self, "description", unsafe_value, Pointer(Void).null)
+      value
+    end
+
+    def description : ::String
+      # Returns: None
+
+      value = uninitialized Pointer(LibC::Char)
+      LibGObject.g_object_get(self, "description", pointerof(value), Pointer(Void).null)
+      ::String.new(value)
+    end
+
+    # Set `#description` property to nil.
+    def description=(value : Nil) : Nil
+      LibGObject.g_object_set(self, "description", Pointer(Void).null, Pointer(Void).null)
+    end
+
+    # Same as `#description`, but can return nil.
+    def description? : ::String?
+      value = uninitialized Pointer(LibC::Char)
+      LibGObject.g_object_get(self, "description", pointerof(value), Pointer(Void).null)
+      ::String.new(value) if value
     end
 
     def enabled=(value : Bool) : Bool
@@ -266,6 +298,17 @@ module Adw
       Gtk::Widget.new(_retval, GICrystal::Transfer::None) unless _retval.null?
     end
 
+    def description : ::String
+      # adw_toggle_get_description: (Method | Getter)
+      # Returns: (transfer none)
+
+      # C call
+      _retval = LibAdw.adw_toggle_get_description(to_unsafe)
+
+      # Return value handling
+      ::String.new(_retval)
+    end
+
     def enabled : Bool
       # adw_toggle_get_enabled: (Method | Getter)
       # Returns: (transfer none)
@@ -357,6 +400,17 @@ module Adw
 
       # C call
       LibAdw.adw_toggle_set_child(to_unsafe, child)
+
+      # Return value handling
+    end
+
+    def description=(description : ::String) : Nil
+      # adw_toggle_set_description: (Method | Setter)
+      # @description:
+      # Returns: (transfer none)
+
+      # C call
+      LibAdw.adw_toggle_set_description(to_unsafe, description)
 
       # Return value handling
     end

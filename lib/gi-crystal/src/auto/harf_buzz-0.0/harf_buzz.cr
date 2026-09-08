@@ -51,14 +51,15 @@ module HarfBuzz
   OT_LAYOUT_NO_VARIATIONS_INDEX        =             -1
   OT_MAX_TAGS_PER_LANGUAGE             =              3
   OT_MAX_TAGS_PER_SCRIPT               =              3
+  OT_SHAPE_BUFFER_FORMAT_SERIAL        =              1
   OT_VAR_NO_AXIS_INDEX                 =             -1
   UNICODE_COMBINING_CLASS_CCC133       =            133
   UNICODE_MAX                          =        1114111
   UNICODE_MAX_DECOMPOSITION_LEN        =             19
-  VERSION_MAJOR                        =             11
-  VERSION_MICRO                        =              0
-  VERSION_MINOR                        =              0
-  VERSION_STRING                       = "11.0.0"
+  VERSION_MAJOR                        =             14
+  VERSION_MICRO                        =              1
+  VERSION_MINOR                        =              3
+  VERSION_STRING                       = "14.3.1"
 
   # Callbacks
 
@@ -82,6 +83,8 @@ module HarfBuzz
 
   alias FontDrawGlyphFuncT = Proc(HarfBuzz::FontT, Pointer(Void), UInt32, HarfBuzz::DrawFuncsT, Pointer(Void), Nil)
 
+  alias FontDrawGlyphOrFailFuncT = Proc(HarfBuzz::FontT, Pointer(Void), UInt32, HarfBuzz::DrawFuncsT, Pointer(Void), Int32)
+
   alias FontGetFontExtentsFuncT = Proc(HarfBuzz::FontT, Pointer(Void), HarfBuzz::FontExtentsT, Int32)
 
   alias FontGetGlyphAdvanceFuncT = Proc(HarfBuzz::FontT, Pointer(Void), UInt32, Int32)
@@ -102,6 +105,8 @@ module HarfBuzz
 
   alias FontGetGlyphOriginFuncT = Proc(HarfBuzz::FontT, Pointer(Void), UInt32, Int32, Int32, Int32)
 
+  alias FontGetGlyphOriginsFuncT = Proc(HarfBuzz::FontT, Pointer(Void), UInt32, Pointer(UInt32), UInt32, Int32, UInt32, Int32, UInt32, Int32)
+
   alias FontGetGlyphShapeFuncT = Proc(HarfBuzz::FontT, Pointer(Void), UInt32, HarfBuzz::DrawFuncsT, Pointer(Void), Nil)
 
   alias FontGetNominalGlyphFuncT = Proc(HarfBuzz::FontT, Pointer(Void), UInt32, UInt32, Int32)
@@ -110,15 +115,19 @@ module HarfBuzz
 
   alias FontGetVariationGlyphFuncT = Proc(HarfBuzz::FontT, Pointer(Void), UInt32, UInt32, UInt32, Int32)
 
-  alias FontPaintGlyphFuncT = Proc(HarfBuzz::FontT, Pointer(Void), UInt32, HarfBuzz::PaintFuncsT, Pointer(Void), UInt32, UInt32, Nil)
+  alias FontPaintGlyphFuncT = Proc(HarfBuzz::FontT, Pointer(Void), UInt32, HarfBuzz::PaintFuncsT, Pointer(Void), UInt32, UInt32, Int32)
 
-  alias GetTableTagsFuncT = Proc(HarfBuzz::FaceT, UInt32, UInt32, Enumerable(UInt32), UInt32)
+  alias FontPaintGlyphOrFailFuncT = Proc(HarfBuzz::FontT, Pointer(Void), UInt32, HarfBuzz::PaintFuncsT, Pointer(Void), UInt32, UInt32, Int32)
+
+  alias GetTableTagsFuncT = Proc(HarfBuzz::FaceT, UInt32, UInt32, Enumerable(UInt32)?, UInt32)
 
   alias PaintColorFuncT = Proc(HarfBuzz::PaintFuncsT, Pointer(Void), Int32, UInt32, Nil)
 
   alias PaintColorGlyphFuncT = Proc(HarfBuzz::PaintFuncsT, Pointer(Void), UInt32, HarfBuzz::FontT, Int32)
 
   alias PaintCustomPaletteColorFuncT = Proc(HarfBuzz::PaintFuncsT, Pointer(Void), UInt32, UInt32, Int32)
+
+  alias PaintFillGlyphFuncT = Proc(HarfBuzz::PaintFuncsT, Pointer(Void), UInt32, HarfBuzz::FontT, Int32, UInt32, Nil)
 
   alias PaintImageFuncT = Proc(HarfBuzz::PaintFuncsT, Pointer(Void), HarfBuzz::BlobT, UInt32, UInt32, UInt32, Float32, HarfBuzz::GlyphExtentsT?, Int32)
 
@@ -132,7 +141,13 @@ module HarfBuzz
 
   alias PaintPushClipGlyphFuncT = Proc(HarfBuzz::PaintFuncsT, Pointer(Void), UInt32, HarfBuzz::FontT, Nil)
 
+  alias PaintPushClipPathEndFuncT = Proc(HarfBuzz::PaintFuncsT, Pointer(Void), Nil)
+
+  alias PaintPushClipPathStartFuncT = Proc(HarfBuzz::PaintFuncsT, Pointer(Void), Pointer(Void), HarfBuzz::DrawFuncsT)
+
   alias PaintPushClipRectangleFuncT = Proc(HarfBuzz::PaintFuncsT, Pointer(Void), Float32, Float32, Float32, Float32, Nil)
+
+  alias PaintPushGroupForFuncT = Proc(HarfBuzz::PaintFuncsT, Pointer(Void), HarfBuzz::PaintCompositeModeT, Nil)
 
   alias PaintPushGroupFuncT = Proc(HarfBuzz::PaintFuncsT, Pointer(Void), Nil)
 
@@ -141,6 +156,8 @@ module HarfBuzz
   alias PaintRadialGradientFuncT = Proc(HarfBuzz::PaintFuncsT, Pointer(Void), HarfBuzz::ColorLineT, Float32, Float32, Float32, Float32, Float32, Float32, Nil)
 
   alias PaintSweepGradientFuncT = Proc(HarfBuzz::PaintFuncsT, Pointer(Void), HarfBuzz::ColorLineT, Float32, Float32, Float32, Float32, Nil)
+
+  alias PaintSweepGradientTileFuncT = Proc(Float32, UInt32, Float32, UInt32, Nil)
 
   alias ReferenceTableFuncT = Proc(HarfBuzz::FaceT, UInt32, HarfBuzz::BlobT)
 
@@ -162,18 +179,346 @@ module HarfBuzz
 
   # Enums
 
+  enum AatLayoutFeatureSelectorT : UInt32
+    Invalid                      = 65535
+    AllTypeFeaturesOn            =     0
+    AllTypeFeaturesOff           =     1
+    RequiredLigaturesOn          =     0
+    RequiredLigaturesOff         =     1
+    CommonLigaturesOn            =     2
+    CommonLigaturesOff           =     3
+    RareLigaturesOn              =     4
+    RareLigaturesOff             =     5
+    LogosOn                      =     6
+    LogosOff                     =     7
+    RebusPicturesOn              =     8
+    RebusPicturesOff             =     9
+    DiphthongLigaturesOn         =    10
+    DiphthongLigaturesOff        =    11
+    SquaredLigaturesOn           =    12
+    SquaredLigaturesOff          =    13
+    AbbrevSquaredLigaturesOn     =    14
+    AbbrevSquaredLigaturesOff    =    15
+    SymbolLigaturesOn            =    16
+    SymbolLigaturesOff           =    17
+    ContextualLigaturesOn        =    18
+    ContextualLigaturesOff       =    19
+    HistoricalLigaturesOn        =    20
+    HistoricalLigaturesOff       =    21
+    Unconnected                  =     0
+    PartiallyConnected           =     1
+    Cursive                      =     2
+    UpperAndLowerCase            =     0
+    AllCaps                      =     1
+    AllLowerCase                 =     2
+    SmallCaps                    =     3
+    InitialCaps                  =     4
+    InitialCapsAndSmallCaps      =     5
+    SubstituteVerticalFormsOn    =     0
+    SubstituteVerticalFormsOff   =     1
+    LinguisticRearrangementOn    =     0
+    LinguisticRearrangementOff   =     1
+    MonospacedNumbers            =     0
+    ProportionalNumbers          =     1
+    ThirdWidthNumbers            =     2
+    QuarterWidthNumbers          =     3
+    WordInitialSwashesOn         =     0
+    WordInitialSwashesOff        =     1
+    WordFinalSwashesOn           =     2
+    WordFinalSwashesOff          =     3
+    LineInitialSwashesOn         =     4
+    LineInitialSwashesOff        =     5
+    LineFinalSwashesOn           =     6
+    LineFinalSwashesOff          =     7
+    NonFinalSwashesOn            =     8
+    NonFinalSwashesOff           =     9
+    ShowDiacritics               =     0
+    HideDiacritics               =     1
+    DecomposeDiacritics          =     2
+    NormalPosition               =     0
+    Superiors                    =     1
+    Inferiors                    =     2
+    Ordinals                     =     3
+    ScientificInferiors          =     4
+    NoFractions                  =     0
+    VerticalFractions            =     1
+    DiagonalFractions            =     2
+    PreventOverlapOn             =     0
+    PreventOverlapOff            =     1
+    HyphensToEmDashOn            =     0
+    HyphensToEmDashOff           =     1
+    HyphenToEnDashOn             =     2
+    HyphenToEnDashOff            =     3
+    SlashedZeroOn                =     4
+    SlashedZeroOff               =     5
+    FormInterrobangOn            =     6
+    FormInterrobangOff           =     7
+    SmartQuotesOn                =     8
+    SmartQuotesOff               =     9
+    PeriodsToEllipsisOn          =    10
+    PeriodsToEllipsisOff         =    11
+    HyphenToMinusOn              =     0
+    HyphenToMinusOff             =     1
+    AsteriskToMultiplyOn         =     2
+    AsteriskToMultiplyOff        =     3
+    SlashToDivideOn              =     4
+    SlashToDivideOff             =     5
+    InequalityLigaturesOn        =     6
+    InequalityLigaturesOff       =     7
+    ExponentsOn                  =     8
+    ExponentsOff                 =     9
+    MathematicalGreekOn          =    10
+    MathematicalGreekOff         =    11
+    NoOrnaments                  =     0
+    Dingbats                     =     1
+    PiCharacters                 =     2
+    Fleurons                     =     3
+    DecorativeBorders            =     4
+    InternationalSymbols         =     5
+    MathSymbols                  =     6
+    NoAlternates                 =     0
+    DesignLevel1                 =     0
+    DesignLevel2                 =     1
+    DesignLevel3                 =     2
+    DesignLevel4                 =     3
+    DesignLevel5                 =     4
+    NoStyleOptions               =     0
+    DisplayText                  =     1
+    EngravedText                 =     2
+    IlluminatedCaps              =     3
+    TitlingCaps                  =     4
+    TallCaps                     =     5
+    TraditionalCharacters        =     0
+    SimplifiedCharacters         =     1
+    Jis1978Characters            =     2
+    Jis1983Characters            =     3
+    Jis1990Characters            =     4
+    TraditionalAltOne            =     5
+    TraditionalAltTwo            =     6
+    TraditionalAltThree          =     7
+    TraditionalAltFour           =     8
+    TraditionalAltFive           =     9
+    ExpertCharacters             =    10
+    Jis2004Characters            =    11
+    HojoCharacters               =    12
+    Nlccharacters                =    13
+    TraditionalNamesCharacters   =    14
+    LowerCaseNumbers             =     0
+    UpperCaseNumbers             =     1
+    ProportionalText             =     0
+    MonospacedText               =     1
+    HalfWidthText                =     2
+    ThirdWidthText               =     3
+    QuarterWidthText             =     4
+    AltProportionalText          =     5
+    AltHalfWidthText             =     6
+    NoTransliteration            =     0
+    HanjaToHangul                =     1
+    HiraganaToKatakana           =     2
+    KatakanaToHiragana           =     3
+    KanaToRomanization           =     4
+    RomanizationToHiragana       =     5
+    RomanizationToKatakana       =     6
+    HanjaToHangulAltOne          =     7
+    HanjaToHangulAltTwo          =     8
+    HanjaToHangulAltThree        =     9
+    NoAnnotation                 =     0
+    BoxAnnotation                =     1
+    RoundedBoxAnnotation         =     2
+    CircleAnnotation             =     3
+    InvertedCircleAnnotation     =     4
+    ParenthesisAnnotation        =     5
+    PeriodAnnotation             =     6
+    RomanNumeralAnnotation       =     7
+    DiamondAnnotation            =     8
+    InvertedBoxAnnotation        =     9
+    InvertedRoundedBoxAnnotation =    10
+    FullWidthKana                =     0
+    ProportionalKana             =     1
+    FullWidthIdeographs          =     0
+    ProportionalIdeographs       =     1
+    HalfWidthIdeographs          =     2
+    CanonicalCompositionOn       =     0
+    CanonicalCompositionOff      =     1
+    CompatibilityCompositionOn   =     2
+    CompatibilityCompositionOff  =     3
+    TranscodingCompositionOn     =     4
+    TranscodingCompositionOff    =     5
+    NoRubyKana                   =     0
+    RubyKana                     =     1
+    RubyKanaOn                   =     2
+    RubyKanaOff                  =     3
+    NoCjkSymbolAlternatives      =     0
+    CjkSymbolAltOne              =     1
+    CjkSymbolAltTwo              =     2
+    CjkSymbolAltThree            =     3
+    CjkSymbolAltFour             =     4
+    CjkSymbolAltFive             =     5
+    NoIdeographicAlternatives    =     0
+    IdeographicAltOne            =     1
+    IdeographicAltTwo            =     2
+    IdeographicAltThree          =     3
+    IdeographicAltFour           =     4
+    IdeographicAltFive           =     5
+    CjkVerticalRomanCentered     =     0
+    CjkVerticalRomanHbaseline    =     1
+    NoCjkItalicRoman             =     0
+    CjkItalicRoman               =     1
+    CjkItalicRomanOn             =     2
+    CjkItalicRomanOff            =     3
+    CaseSensitiveLayoutOn        =     0
+    CaseSensitiveLayoutOff       =     1
+    CaseSensitiveSpacingOn       =     2
+    CaseSensitiveSpacingOff      =     3
+    AlternateHorizKanaOn         =     0
+    AlternateHorizKanaOff        =     1
+    AlternateVertKanaOn          =     2
+    AlternateVertKanaOff         =     3
+    NoStylisticAlternates        =     0
+    StylisticAltOneOn            =     2
+    StylisticAltOneOff           =     3
+    StylisticAltTwoOn            =     4
+    StylisticAltTwoOff           =     5
+    StylisticAltThreeOn          =     6
+    StylisticAltThreeOff         =     7
+    StylisticAltFourOn           =     8
+    StylisticAltFourOff          =     9
+    StylisticAltFiveOn           =    10
+    StylisticAltFiveOff          =    11
+    StylisticAltSixOn            =    12
+    StylisticAltSixOff           =    13
+    StylisticAltSevenOn          =    14
+    StylisticAltSevenOff         =    15
+    StylisticAltEightOn          =    16
+    StylisticAltEightOff         =    17
+    StylisticAltNineOn           =    18
+    StylisticAltNineOff          =    19
+    StylisticAltTenOn            =    20
+    StylisticAltTenOff           =    21
+    StylisticAltElevenOn         =    22
+    StylisticAltElevenOff        =    23
+    StylisticAltTwelveOn         =    24
+    StylisticAltTwelveOff        =    25
+    StylisticAltThirteenOn       =    26
+    StylisticAltThirteenOff      =    27
+    StylisticAltFourteenOn       =    28
+    StylisticAltFourteenOff      =    29
+    StylisticAltFifteenOn        =    30
+    StylisticAltFifteenOff       =    31
+    StylisticAltSixteenOn        =    32
+    StylisticAltSixteenOff       =    33
+    StylisticAltSeventeenOn      =    34
+    StylisticAltSeventeenOff     =    35
+    StylisticAltEighteenOn       =    36
+    StylisticAltEighteenOff      =    37
+    StylisticAltNineteenOn       =    38
+    StylisticAltNineteenOff      =    39
+    StylisticAltTwentyOn         =    40
+    StylisticAltTwentyOff        =    41
+    ContextualAlternatesOn       =     0
+    ContextualAlternatesOff      =     1
+    SwashAlternatesOn            =     2
+    SwashAlternatesOff           =     3
+    ContextualSwashAlternatesOn  =     4
+    ContextualSwashAlternatesOff =     5
+    DefaultLowerCase             =     0
+    LowerCaseSmallCaps           =     1
+    LowerCasePetiteCaps          =     2
+    DefaultUpperCase             =     0
+    UpperCaseSmallCaps           =     1
+    UpperCasePetiteCaps          =     2
+    HalfWidthCjkRoman            =     0
+    ProportionalCjkRoman         =     1
+    DefaultCjkRoman              =     2
+    FullWidthCjkRoman            =     3
+
+    # Returns the type id (GType) registered in GLib type system.
+    def self.g_type : UInt64
+      LibHarfBuzz.hb_gobject_aat_layout_feature_selector_get_type
+    end
+  end
+
+  enum AatLayoutFeatureTypeT : UInt32
+    Invalid                       = 65535
+    AllTypographic                =     0
+    Ligatures                     =     1
+    CursiveConnection             =     2
+    LetterCase                    =     3
+    VerticalSubstitution          =     4
+    LinguisticRearrangement       =     5
+    NumberSpacing                 =     6
+    SmartSwashType                =     8
+    DiacriticsType                =     9
+    VerticalPosition              =    10
+    Fractions                     =    11
+    OverlappingCharactersType     =    13
+    TypographicExtras             =    14
+    MathematicalExtras            =    15
+    OrnamentSetsType              =    16
+    CharacterAlternatives         =    17
+    DesignComplexityType          =    18
+    StyleOptions                  =    19
+    CharacterShape                =    20
+    NumberCase                    =    21
+    TextSpacing                   =    22
+    Transliteration               =    23
+    AnnotationType                =    24
+    KanaSpacingType               =    25
+    IdeographicSpacingType        =    26
+    UnicodeDecompositionType      =    27
+    RubyKana                      =    28
+    CjkSymbolAlternativesType     =    29
+    IdeographicAlternativesType   =    30
+    CjkVerticalRomanPlacementType =    31
+    ItalicCjkRoman                =    32
+    CaseSensitiveLayout           =    33
+    AlternateKana                 =    34
+    StylisticAlternatives         =    35
+    ContextualAlternatives        =    36
+    LowerCase                     =    37
+    UpperCase                     =    38
+    LanguageTagType               =    39
+    CjkRomanSpacingType           =   103
+
+    # Returns the type id (GType) registered in GLib type system.
+    def self.g_type : UInt64
+      LibHarfBuzz.hb_gobject_aat_layout_feature_type_get_type
+    end
+  end
+
   enum BufferClusterLevelT : UInt32
     MonotoneGraphemes  = 0
     MonotoneCharacters = 1
     Characters         = 2
     Graphemes          = 3
     Default            = 0
+
+    # Returns the type id (GType) registered in GLib type system.
+    def self.g_type : UInt64
+      LibHarfBuzz.hb_gobject_buffer_cluster_level_get_type
+    end
   end
 
   enum BufferContentTypeT : UInt32
     Invalid = 0
     Unicode = 1
     Glyphs  = 2
+
+    # Returns the type id (GType) registered in GLib type system.
+    def self.g_type : UInt64
+      LibHarfBuzz.hb_gobject_buffer_content_type_get_type
+    end
+  end
+
+  enum BufferSerializeFormatT : UInt32
+    Text    = 1413830740
+    Json    = 1246973774
+    Invalid =          0
+
+    # Returns the type id (GType) registered in GLib type system.
+    def self.g_type : UInt64
+      LibHarfBuzz.hb_gobject_buffer_serialize_format_get_type
+    end
   end
 
   enum DirectionT : UInt32
@@ -182,6 +527,21 @@ module HarfBuzz
     Rtl     = 5
     Ttb     = 6
     Btt     = 7
+
+    # Returns the type id (GType) registered in GLib type system.
+    def self.g_type : UInt64
+      LibHarfBuzz.hb_gobject_direction_get_type
+    end
+  end
+
+  enum DrawLineCapT : UInt32
+    Butt   = 0
+    Square = 1
+
+    # Returns the type id (GType) registered in GLib type system.
+    def self.g_type : UInt64
+      LibHarfBuzz.hb_gobject_draw_line_cap_get_type
+    end
   end
 
   enum MemoryModeT : UInt32
@@ -189,6 +549,46 @@ module HarfBuzz
     Readonly                = 1
     Writable                = 2
     ReadonlyMayMakeWritable = 3
+
+    # Returns the type id (GType) registered in GLib type system.
+    def self.g_type : UInt64
+      LibHarfBuzz.hb_gobject_memory_mode_get_type
+    end
+  end
+
+  enum OtBitsTagT : UInt32
+    FsType         = 1718842480
+    FsSelection    = 1718842220
+    MacStyle       = 1835234164
+    IsFixedPitch   = 1719169140
+    UnicodeRange1  = 1970433585
+    UnicodeRange2  = 1970433586
+    UnicodeRange3  = 1970433587
+    UnicodeRange4  = 1970433588
+    CodePageRange1 = 1668313649
+    CodePageRange2 = 1668313650
+
+    # Returns the type id (GType) registered in GLib type system.
+    def self.g_type : UInt64
+      LibHarfBuzz.hb_gobject_ot_bits_tag_get_type
+    end
+  end
+
+  enum OtLayoutBaselineTagT : UInt32
+    Roman                 = 1919905134
+    Hanging               = 1751215719
+    IdeoFaceBottomOrLeft  = 1768121954
+    IdeoFaceTopOrRight    = 1768121972
+    IdeoFaceCentral       = 1231251043
+    IdeoEmboxBottomOrLeft = 1768187247
+    IdeoEmboxTopOrRight   = 1768191088
+    IdeoEmboxCentral      = 1231315813
+    Math                  = 1835103336
+
+    # Returns the type id (GType) registered in GLib type system.
+    def self.g_type : UInt64
+      LibHarfBuzz.hb_gobject_ot_layout_baseline_tag_get_type
+    end
   end
 
   enum OtLayoutGlyphClassT : UInt32
@@ -197,6 +597,11 @@ module HarfBuzz
     Ligature     = 2
     Mark         = 3
     Component    = 4
+
+    # Returns the type id (GType) registered in GLib type system.
+    def self.g_type : UInt64
+      LibHarfBuzz.hb_gobject_ot_layout_glyph_class_get_type
+    end
   end
 
   enum OtMathConstantT : UInt32
@@ -256,6 +661,11 @@ module HarfBuzz
     RadicalKernBeforeDegree                  = 53
     RadicalKernAfterDegree                   = 54
     RadicalDegreeBottomRaisePercent          = 55
+
+    # Returns the type id (GType) registered in GLib type system.
+    def self.g_type : UInt64
+      LibHarfBuzz.hb_gobject_ot_math_constant_get_type
+    end
   end
 
   enum OtMathKernT : UInt32
@@ -263,6 +673,57 @@ module HarfBuzz
     TopLeft     = 1
     BottomRight = 2
     BottomLeft  = 3
+
+    # Returns the type id (GType) registered in GLib type system.
+    def self.g_type : UInt64
+      LibHarfBuzz.hb_gobject_ot_math_kern_get_type
+    end
+  end
+
+  enum OtMetaTagT : UInt32
+    DesignLanguages    = 1684827751
+    SupportedLanguages = 1936485991
+
+    # Returns the type id (GType) registered in GLib type system.
+    def self.g_type : UInt64
+      LibHarfBuzz.hb_gobject_ot_meta_tag_get_type
+    end
+  end
+
+  enum OtMetricsTagT : UInt32
+    HorizontalAscender        = 1751216995
+    HorizontalDescender       = 1751413603
+    HorizontalLineGap         = 1751934832
+    HorizontalClippingAscent  = 1751346273
+    HorizontalClippingDescent = 1751346276
+    VerticalAscender          = 1986098019
+    VerticalDescender         = 1986294627
+    VerticalLineGap           = 1986815856
+    HorizontalCaretRise       = 1751347827
+    HorizontalCaretRun        = 1751347822
+    HorizontalCaretOffset     = 1751347046
+    VerticalCaretRise         = 1986228851
+    VerticalCaretRun          = 1986228846
+    VerticalCaretOffset       = 1986228070
+    XHeight                   = 2020108148
+    CapHeight                 = 1668311156
+    SubscriptEmXSize          = 1935833203
+    SubscriptEmYSize          = 1935833459
+    SubscriptEmXOffset        = 1935833199
+    SubscriptEmYOffset        = 1935833455
+    SuperscriptEmXSize        = 1936750707
+    SuperscriptEmYSize        = 1936750963
+    SuperscriptEmXOffset      = 1936750703
+    SuperscriptEmYOffset      = 1936750959
+    StrikeoutSize             = 1937011315
+    StrikeoutOffset           = 1937011311
+    UnderlineSize             = 1970168947
+    UnderlineOffset           = 1970168943
+
+    # Returns the type id (GType) registered in GLib type system.
+    def self.g_type : UInt64
+      LibHarfBuzz.hb_gobject_ot_metrics_tag_get_type
+    end
   end
 
   enum OtNameIdPredefinedT : UInt32
@@ -292,6 +753,23 @@ module HarfBuzz
     DarkBackground       =    24
     VariationsPsPrefix   =    25
     Invalid              = 65535
+
+    # Returns the type id (GType) registered in GLib type system.
+    def self.g_type : UInt64
+      LibHarfBuzz.hb_gobject_ot_name_id_predefined_get_type
+    end
+  end
+
+  enum OtNumberTagT : UInt32
+    XMin = 2020436334
+    YMin = 2037213550
+    XMax = 2020434296
+    YMax = 2037211512
+
+    # Returns the type id (GType) registered in GLib type system.
+    def self.g_type : UInt64
+      LibHarfBuzz.hb_gobject_ot_number_tag_get_type
+    end
   end
 
   enum PaintCompositeModeT : UInt32
@@ -323,12 +801,221 @@ module HarfBuzz
     HslSaturation = 25
     HslColor      = 26
     HslLuminosity = 27
+
+    # Returns the type id (GType) registered in GLib type system.
+    def self.g_type : UInt64
+      LibHarfBuzz.hb_gobject_paint_composite_mode_get_type
+    end
   end
 
   enum PaintExtendT : UInt32
     Pad     = 0
     Repeat  = 1
     Reflect = 2
+
+    # Returns the type id (GType) registered in GLib type system.
+    def self.g_type : UInt64
+      LibHarfBuzz.hb_gobject_paint_extend_get_type
+    end
+  end
+
+  enum ScriptT : UInt32
+    Common                = 1517910393
+    Inherited             = 1516858984
+    Unknown               = 1517976186
+    Arabic                = 1098015074
+    Armenian              = 1098018158
+    Bengali               = 1113943655
+    Cyrillic              = 1132032620
+    Devanagari            = 1147500129
+    Georgian              = 1197830002
+    Greek                 = 1198679403
+    Gujarati              = 1198877298
+    Gurmukhi              = 1198879349
+    Hangul                = 1214344807
+    Han                   = 1214344809
+    Hebrew                = 1214603890
+    Hiragana              = 1214870113
+    Kannada               = 1265525857
+    Katakana              = 1264676449
+    Lao                   = 1281453935
+    Latin                 = 1281455214
+    Malayalam             = 1298954605
+    Oriya                 = 1332902241
+    Tamil                 = 1415671148
+    Telugu                = 1415933045
+    Thai                  = 1416126825
+    Tibetan               = 1416192628
+    Bopomofo              = 1114599535
+    Braille               = 1114792297
+    CanadianSyllabics     = 1130458739
+    Cherokee              = 1130915186
+    Ethiopic              = 1165256809
+    Khmer                 = 1265134962
+    Mongolian             = 1299148391
+    Myanmar               = 1299803506
+    Ogham                 = 1332175213
+    Runic                 = 1383427698
+    Sinhala               = 1399418472
+    Syriac                = 1400468067
+    Thaana                = 1416126817
+    Yi                    = 1500080489
+    Deseret               = 1148416628
+    Gothic                = 1198486632
+    OldItalic             = 1232363884
+    Buhid                 = 1114990692
+    Hanunoo               = 1214344815
+    Tagalog               = 1416064103
+    Tagbanwa              = 1415669602
+    Cypriot               = 1131442804
+    Limbu                 = 1281977698
+    LinearB               = 1281977954
+    Osmanya               = 1332964705
+    Shavian               = 1399349623
+    TaiLe                 = 1415670885
+    Ugaritic              = 1432838514
+    Buginese              = 1114990441
+    Coptic                = 1131376756
+    Glagolitic            = 1198285159
+    Kharoshthi            = 1265131890
+    NewTaiLue             = 1415670901
+    OldPersian            = 1483761007
+    SylotiNagri           = 1400466543
+    Tifinagh              = 1415999079
+    Balinese              = 1113681001
+    Cuneiform             = 1483961720
+    Nko                   = 1315663727
+    PhagsPa               = 1349017959
+    Phoenician            = 1349021304
+    Carian                = 1130459753
+    Cham                  = 1130914157
+    KayahLi               = 1264675945
+    Lepcha                = 1281716323
+    Lycian                = 1283023721
+    Lydian                = 1283023977
+    OlChiki               = 1332503403
+    Rejang                = 1382706791
+    Saurashtra            = 1398895986
+    Sundanese             = 1400204900
+    Vai                   = 1449224553
+    Avestan               = 1098281844
+    Bamum                 = 1113681269
+    EgyptianHieroglyphs   = 1164409200
+    ImperialAramaic       = 1098018153
+    InscriptionalPahlavi  = 1349020777
+    InscriptionalParthian = 1349678185
+    Javanese              = 1247901281
+    Kaithi                = 1265920105
+    Lisu                  = 1281979253
+    MeeteiMayek           = 1299473769
+    OldSouthArabian       = 1398895202
+    OldTurkic             = 1332898664
+    Samaritan             = 1398893938
+    TaiTham               = 1281453665
+    TaiViet               = 1415673460
+    Batak                 = 1113683051
+    Brahmi                = 1114792296
+    Mandaic               = 1298230884
+    Chakma                = 1130457965
+    MeroiticCursive       = 1298494051
+    MeroiticHieroglyphs   = 1298494063
+    Miao                  = 1349284452
+    Sharada               = 1399353956
+    SoraSompeng           = 1399812705
+    Takri                 = 1415670642
+    BassaVah              = 1113682803
+    CaucasianAlbanian     = 1097295970
+    Duployan              = 1148547180
+    Elbasan               = 1164730977
+    Grantha               = 1198678382
+    Khojki                = 1265135466
+    Khudawadi             = 1399418468
+    LinearA               = 1281977953
+    Mahajani              = 1298229354
+    Manichaean            = 1298230889
+    MendeKikakui          = 1298493028
+    Modi                  = 1299145833
+    Mro                   = 1299345263
+    Nabataean             = 1315070324
+    OldNorthArabian       = 1315009122
+    OldPermic             = 1348825709
+    PahawhHmong           = 1215131239
+    Palmyrene             = 1348562029
+    PauCinHau             = 1348564323
+    PsalterPahlavi        = 1349020784
+    Siddham               = 1399415908
+    Tirhuta               = 1416196712
+    WarangCiti            = 1466004065
+    Ahom                  = 1097363309
+    AnatolianHieroglyphs  = 1215067511
+    Hatran                = 1214346354
+    Multani               = 1299541108
+    OldHungarian          = 1215655527
+    Signwriting           = 1399287415
+    Adlam                 = 1097100397
+    Bhaiksuki             = 1114139507
+    Marchen               = 1298231907
+    Osage                 = 1332963173
+    Tangut                = 1415671399
+    Newa                  = 1315272545
+    MasaramGondi          = 1198485101
+    Nushu                 = 1316186229
+    Soyombo               = 1399814511
+    ZanabazarSquare       = 1516334690
+    Dogra                 = 1148151666
+    GunjalaGondi          = 1198485095
+    HanifiRohingya        = 1383032935
+    Makasar               = 1298230113
+    Medefaidrin           = 1298490470
+    OldSogdian            = 1399809903
+    Sogdian               = 1399809892
+    Elymaic               = 1164736877
+    Nandinagari           = 1315008100
+    NyiakengPuachueHmong  = 1215131248
+    Wancho                = 1466132591
+    Chorasmian            = 1130918515
+    DivesAkuru            = 1147756907
+    KhitanSmallScript     = 1265202291
+    Yezidi                = 1499822697
+    CyproMinoan           = 1131441518
+    OldUyghur             = 1333094258
+    Tangsa                = 1416524641
+    Toto                  = 1416590447
+    Vithkuqi              = 1449751656
+    Math                  = 1517122664
+    Kawi                  = 1264678761
+    NagMundari            = 1315006317
+    Garay                 = 1197568609
+    GurungKhema           = 1198877544
+    KiratRai              = 1265787241
+    OlOnal                = 1332633967
+    Sunuwar               = 1400204917
+    Todhri                = 1416586354
+    TuluTigalari          = 1416983655
+    BeriaErfe             = 1113944678
+    Sidetic               = 1399415924
+    TaiYo                 = 1415674223
+    TolongSiki            = 1416588403
+    Invalid               =          0
+
+    # Returns the type id (GType) registered in GLib type system.
+    def self.g_type : UInt64
+      LibHarfBuzz.hb_gobject_script_get_type
+    end
+  end
+
+  enum StyleTagT : UInt32
+    Italic      = 1769234796
+    OpticalSize = 1869640570
+    SlantAngle  = 1936486004
+    SlantRatio  = 1399615092
+    Width       = 2003072104
+    Weight      = 2003265652
+
+    # Returns the type id (GType) registered in GLib type system.
+    def self.g_type : UInt64
+      LibHarfBuzz.hb_gobject_style_tag_get_type
+    end
   end
 
   enum UnicodeCombiningClassT : UInt32
@@ -389,6 +1076,11 @@ module HarfBuzz
     DoubleAbove        = 234
     IotaSubscript      = 240
     Invalid            = 255
+
+    # Returns the type id (GType) registered in GLib type system.
+    def self.g_type : UInt64
+      LibHarfBuzz.hb_gobject_unicode_combining_class_get_type
+    end
   end
 
   enum UnicodeGeneralCategoryT : UInt32
@@ -422,308 +1114,14 @@ module HarfBuzz
     LineSeparator      = 27
     ParagraphSeparator = 28
     SpaceSeparator     = 29
+
+    # Returns the type id (GType) registered in GLib type system.
+    def self.g_type : UInt64
+      LibHarfBuzz.hb_gobject_unicode_general_category_get_type
+    end
   end
 
   # Flags
-
-  @[Flags]
-  enum AatLayoutFeatureSelectorT : UInt32
-    BAatLayoutFeatureSelectorInvalid                      = 65535
-    BAatLayoutFeatureSelectorAllTypeFeaturesOn            =     0
-    BAatLayoutFeatureSelectorAllTypeFeaturesOff           =     1
-    BAatLayoutFeatureSelectorRequiredLigaturesOn          =     0
-    BAatLayoutFeatureSelectorRequiredLigaturesOff         =     1
-    BAatLayoutFeatureSelectorCommonLigaturesOn            =     2
-    BAatLayoutFeatureSelectorCommonLigaturesOff           =     3
-    BAatLayoutFeatureSelectorRareLigaturesOn              =     4
-    BAatLayoutFeatureSelectorRareLigaturesOff             =     5
-    BAatLayoutFeatureSelectorLogosOn                      =     6
-    BAatLayoutFeatureSelectorLogosOff                     =     7
-    BAatLayoutFeatureSelectorRebusPicturesOn              =     8
-    BAatLayoutFeatureSelectorRebusPicturesOff             =     9
-    BAatLayoutFeatureSelectorDiphthongLigaturesOn         =    10
-    BAatLayoutFeatureSelectorDiphthongLigaturesOff        =    11
-    BAatLayoutFeatureSelectorSquaredLigaturesOn           =    12
-    BAatLayoutFeatureSelectorSquaredLigaturesOff          =    13
-    BAatLayoutFeatureSelectorAbbrevSquaredLigaturesOn     =    14
-    BAatLayoutFeatureSelectorAbbrevSquaredLigaturesOff    =    15
-    BAatLayoutFeatureSelectorSymbolLigaturesOn            =    16
-    BAatLayoutFeatureSelectorSymbolLigaturesOff           =    17
-    BAatLayoutFeatureSelectorContextualLigaturesOn        =    18
-    BAatLayoutFeatureSelectorContextualLigaturesOff       =    19
-    BAatLayoutFeatureSelectorHistoricalLigaturesOn        =    20
-    BAatLayoutFeatureSelectorHistoricalLigaturesOff       =    21
-    BAatLayoutFeatureSelectorUnconnected                  =     0
-    BAatLayoutFeatureSelectorPartiallyConnected           =     1
-    BAatLayoutFeatureSelectorCursive                      =     2
-    BAatLayoutFeatureSelectorUpperAndLowerCase            =     0
-    BAatLayoutFeatureSelectorAllCaps                      =     1
-    BAatLayoutFeatureSelectorAllLowerCase                 =     2
-    BAatLayoutFeatureSelectorSmallCaps                    =     3
-    BAatLayoutFeatureSelectorInitialCaps                  =     4
-    BAatLayoutFeatureSelectorInitialCapsAndSmallCaps      =     5
-    BAatLayoutFeatureSelectorSubstituteVerticalFormsOn    =     0
-    BAatLayoutFeatureSelectorSubstituteVerticalFormsOff   =     1
-    BAatLayoutFeatureSelectorLinguisticRearrangementOn    =     0
-    BAatLayoutFeatureSelectorLinguisticRearrangementOff   =     1
-    BAatLayoutFeatureSelectorMonospacedNumbers            =     0
-    BAatLayoutFeatureSelectorProportionalNumbers          =     1
-    BAatLayoutFeatureSelectorThirdWidthNumbers            =     2
-    BAatLayoutFeatureSelectorQuarterWidthNumbers          =     3
-    BAatLayoutFeatureSelectorWordInitialSwashesOn         =     0
-    BAatLayoutFeatureSelectorWordInitialSwashesOff        =     1
-    BAatLayoutFeatureSelectorWordFinalSwashesOn           =     2
-    BAatLayoutFeatureSelectorWordFinalSwashesOff          =     3
-    BAatLayoutFeatureSelectorLineInitialSwashesOn         =     4
-    BAatLayoutFeatureSelectorLineInitialSwashesOff        =     5
-    BAatLayoutFeatureSelectorLineFinalSwashesOn           =     6
-    BAatLayoutFeatureSelectorLineFinalSwashesOff          =     7
-    BAatLayoutFeatureSelectorNonFinalSwashesOn            =     8
-    BAatLayoutFeatureSelectorNonFinalSwashesOff           =     9
-    BAatLayoutFeatureSelectorShowDiacritics               =     0
-    BAatLayoutFeatureSelectorHideDiacritics               =     1
-    BAatLayoutFeatureSelectorDecomposeDiacritics          =     2
-    BAatLayoutFeatureSelectorNormalPosition               =     0
-    BAatLayoutFeatureSelectorSuperiors                    =     1
-    BAatLayoutFeatureSelectorInferiors                    =     2
-    BAatLayoutFeatureSelectorOrdinals                     =     3
-    BAatLayoutFeatureSelectorScientificInferiors          =     4
-    BAatLayoutFeatureSelectorNoFractions                  =     0
-    BAatLayoutFeatureSelectorVerticalFractions            =     1
-    BAatLayoutFeatureSelectorDiagonalFractions            =     2
-    BAatLayoutFeatureSelectorPreventOverlapOn             =     0
-    BAatLayoutFeatureSelectorPreventOverlapOff            =     1
-    BAatLayoutFeatureSelectorHyphensToEmDashOn            =     0
-    BAatLayoutFeatureSelectorHyphensToEmDashOff           =     1
-    BAatLayoutFeatureSelectorHyphenToEnDashOn             =     2
-    BAatLayoutFeatureSelectorHyphenToEnDashOff            =     3
-    BAatLayoutFeatureSelectorSlashedZeroOn                =     4
-    BAatLayoutFeatureSelectorSlashedZeroOff               =     5
-    BAatLayoutFeatureSelectorFormInterrobangOn            =     6
-    BAatLayoutFeatureSelectorFormInterrobangOff           =     7
-    BAatLayoutFeatureSelectorSmartQuotesOn                =     8
-    BAatLayoutFeatureSelectorSmartQuotesOff               =     9
-    BAatLayoutFeatureSelectorPeriodsToEllipsisOn          =    10
-    BAatLayoutFeatureSelectorPeriodsToEllipsisOff         =    11
-    BAatLayoutFeatureSelectorHyphenToMinusOn              =     0
-    BAatLayoutFeatureSelectorHyphenToMinusOff             =     1
-    BAatLayoutFeatureSelectorAsteriskToMultiplyOn         =     2
-    BAatLayoutFeatureSelectorAsteriskToMultiplyOff        =     3
-    BAatLayoutFeatureSelectorSlashToDivideOn              =     4
-    BAatLayoutFeatureSelectorSlashToDivideOff             =     5
-    BAatLayoutFeatureSelectorInequalityLigaturesOn        =     6
-    BAatLayoutFeatureSelectorInequalityLigaturesOff       =     7
-    BAatLayoutFeatureSelectorExponentsOn                  =     8
-    BAatLayoutFeatureSelectorExponentsOff                 =     9
-    BAatLayoutFeatureSelectorMathematicalGreekOn          =    10
-    BAatLayoutFeatureSelectorMathematicalGreekOff         =    11
-    BAatLayoutFeatureSelectorNoOrnaments                  =     0
-    BAatLayoutFeatureSelectorDingbats                     =     1
-    BAatLayoutFeatureSelectorPiCharacters                 =     2
-    BAatLayoutFeatureSelectorFleurons                     =     3
-    BAatLayoutFeatureSelectorDecorativeBorders            =     4
-    BAatLayoutFeatureSelectorInternationalSymbols         =     5
-    BAatLayoutFeatureSelectorMathSymbols                  =     6
-    BAatLayoutFeatureSelectorNoAlternates                 =     0
-    BAatLayoutFeatureSelectorDesignLevel1                 =     0
-    BAatLayoutFeatureSelectorDesignLevel2                 =     1
-    BAatLayoutFeatureSelectorDesignLevel3                 =     2
-    BAatLayoutFeatureSelectorDesignLevel4                 =     3
-    BAatLayoutFeatureSelectorDesignLevel5                 =     4
-    BAatLayoutFeatureSelectorNoStyleOptions               =     0
-    BAatLayoutFeatureSelectorDisplayText                  =     1
-    BAatLayoutFeatureSelectorEngravedText                 =     2
-    BAatLayoutFeatureSelectorIlluminatedCaps              =     3
-    BAatLayoutFeatureSelectorTitlingCaps                  =     4
-    BAatLayoutFeatureSelectorTallCaps                     =     5
-    BAatLayoutFeatureSelectorTraditionalCharacters        =     0
-    BAatLayoutFeatureSelectorSimplifiedCharacters         =     1
-    BAatLayoutFeatureSelectorJis1978Characters            =     2
-    BAatLayoutFeatureSelectorJis1983Characters            =     3
-    BAatLayoutFeatureSelectorJis1990Characters            =     4
-    BAatLayoutFeatureSelectorTraditionalAltOne            =     5
-    BAatLayoutFeatureSelectorTraditionalAltTwo            =     6
-    BAatLayoutFeatureSelectorTraditionalAltThree          =     7
-    BAatLayoutFeatureSelectorTraditionalAltFour           =     8
-    BAatLayoutFeatureSelectorTraditionalAltFive           =     9
-    BAatLayoutFeatureSelectorExpertCharacters             =    10
-    BAatLayoutFeatureSelectorJis2004Characters            =    11
-    BAatLayoutFeatureSelectorHojoCharacters               =    12
-    BAatLayoutFeatureSelectorNlccharacters                =    13
-    BAatLayoutFeatureSelectorTraditionalNamesCharacters   =    14
-    BAatLayoutFeatureSelectorLowerCaseNumbers             =     0
-    BAatLayoutFeatureSelectorUpperCaseNumbers             =     1
-    BAatLayoutFeatureSelectorProportionalText             =     0
-    BAatLayoutFeatureSelectorMonospacedText               =     1
-    BAatLayoutFeatureSelectorHalfWidthText                =     2
-    BAatLayoutFeatureSelectorThirdWidthText               =     3
-    BAatLayoutFeatureSelectorQuarterWidthText             =     4
-    BAatLayoutFeatureSelectorAltProportionalText          =     5
-    BAatLayoutFeatureSelectorAltHalfWidthText             =     6
-    BAatLayoutFeatureSelectorNoTransliteration            =     0
-    BAatLayoutFeatureSelectorHanjaToHangul                =     1
-    BAatLayoutFeatureSelectorHiraganaToKatakana           =     2
-    BAatLayoutFeatureSelectorKatakanaToHiragana           =     3
-    BAatLayoutFeatureSelectorKanaToRomanization           =     4
-    BAatLayoutFeatureSelectorRomanizationToHiragana       =     5
-    BAatLayoutFeatureSelectorRomanizationToKatakana       =     6
-    BAatLayoutFeatureSelectorHanjaToHangulAltOne          =     7
-    BAatLayoutFeatureSelectorHanjaToHangulAltTwo          =     8
-    BAatLayoutFeatureSelectorHanjaToHangulAltThree        =     9
-    BAatLayoutFeatureSelectorNoAnnotation                 =     0
-    BAatLayoutFeatureSelectorBoxAnnotation                =     1
-    BAatLayoutFeatureSelectorRoundedBoxAnnotation         =     2
-    BAatLayoutFeatureSelectorCircleAnnotation             =     3
-    BAatLayoutFeatureSelectorInvertedCircleAnnotation     =     4
-    BAatLayoutFeatureSelectorParenthesisAnnotation        =     5
-    BAatLayoutFeatureSelectorPeriodAnnotation             =     6
-    BAatLayoutFeatureSelectorRomanNumeralAnnotation       =     7
-    BAatLayoutFeatureSelectorDiamondAnnotation            =     8
-    BAatLayoutFeatureSelectorInvertedBoxAnnotation        =     9
-    BAatLayoutFeatureSelectorInvertedRoundedBoxAnnotation =    10
-    BAatLayoutFeatureSelectorFullWidthKana                =     0
-    BAatLayoutFeatureSelectorProportionalKana             =     1
-    BAatLayoutFeatureSelectorFullWidthIdeographs          =     0
-    BAatLayoutFeatureSelectorProportionalIdeographs       =     1
-    BAatLayoutFeatureSelectorHalfWidthIdeographs          =     2
-    BAatLayoutFeatureSelectorCanonicalCompositionOn       =     0
-    BAatLayoutFeatureSelectorCanonicalCompositionOff      =     1
-    BAatLayoutFeatureSelectorCompatibilityCompositionOn   =     2
-    BAatLayoutFeatureSelectorCompatibilityCompositionOff  =     3
-    BAatLayoutFeatureSelectorTranscodingCompositionOn     =     4
-    BAatLayoutFeatureSelectorTranscodingCompositionOff    =     5
-    BAatLayoutFeatureSelectorNoRubyKana                   =     0
-    BAatLayoutFeatureSelectorRubyKana                     =     1
-    BAatLayoutFeatureSelectorRubyKanaOn                   =     2
-    BAatLayoutFeatureSelectorRubyKanaOff                  =     3
-    BAatLayoutFeatureSelectorNoCjkSymbolAlternatives      =     0
-    BAatLayoutFeatureSelectorCjkSymbolAltOne              =     1
-    BAatLayoutFeatureSelectorCjkSymbolAltTwo              =     2
-    BAatLayoutFeatureSelectorCjkSymbolAltThree            =     3
-    BAatLayoutFeatureSelectorCjkSymbolAltFour             =     4
-    BAatLayoutFeatureSelectorCjkSymbolAltFive             =     5
-    BAatLayoutFeatureSelectorNoIdeographicAlternatives    =     0
-    BAatLayoutFeatureSelectorIdeographicAltOne            =     1
-    BAatLayoutFeatureSelectorIdeographicAltTwo            =     2
-    BAatLayoutFeatureSelectorIdeographicAltThree          =     3
-    BAatLayoutFeatureSelectorIdeographicAltFour           =     4
-    BAatLayoutFeatureSelectorIdeographicAltFive           =     5
-    BAatLayoutFeatureSelectorCjkVerticalRomanCentered     =     0
-    BAatLayoutFeatureSelectorCjkVerticalRomanHbaseline    =     1
-    BAatLayoutFeatureSelectorNoCjkItalicRoman             =     0
-    BAatLayoutFeatureSelectorCjkItalicRoman               =     1
-    BAatLayoutFeatureSelectorCjkItalicRomanOn             =     2
-    BAatLayoutFeatureSelectorCjkItalicRomanOff            =     3
-    BAatLayoutFeatureSelectorCaseSensitiveLayoutOn        =     0
-    BAatLayoutFeatureSelectorCaseSensitiveLayoutOff       =     1
-    BAatLayoutFeatureSelectorCaseSensitiveSpacingOn       =     2
-    BAatLayoutFeatureSelectorCaseSensitiveSpacingOff      =     3
-    BAatLayoutFeatureSelectorAlternateHorizKanaOn         =     0
-    BAatLayoutFeatureSelectorAlternateHorizKanaOff        =     1
-    BAatLayoutFeatureSelectorAlternateVertKanaOn          =     2
-    BAatLayoutFeatureSelectorAlternateVertKanaOff         =     3
-    BAatLayoutFeatureSelectorNoStylisticAlternates        =     0
-    BAatLayoutFeatureSelectorStylisticAltOneOn            =     2
-    BAatLayoutFeatureSelectorStylisticAltOneOff           =     3
-    BAatLayoutFeatureSelectorStylisticAltTwoOn            =     4
-    BAatLayoutFeatureSelectorStylisticAltTwoOff           =     5
-    BAatLayoutFeatureSelectorStylisticAltThreeOn          =     6
-    BAatLayoutFeatureSelectorStylisticAltThreeOff         =     7
-    BAatLayoutFeatureSelectorStylisticAltFourOn           =     8
-    BAatLayoutFeatureSelectorStylisticAltFourOff          =     9
-    BAatLayoutFeatureSelectorStylisticAltFiveOn           =    10
-    BAatLayoutFeatureSelectorStylisticAltFiveOff          =    11
-    BAatLayoutFeatureSelectorStylisticAltSixOn            =    12
-    BAatLayoutFeatureSelectorStylisticAltSixOff           =    13
-    BAatLayoutFeatureSelectorStylisticAltSevenOn          =    14
-    BAatLayoutFeatureSelectorStylisticAltSevenOff         =    15
-    BAatLayoutFeatureSelectorStylisticAltEightOn          =    16
-    BAatLayoutFeatureSelectorStylisticAltEightOff         =    17
-    BAatLayoutFeatureSelectorStylisticAltNineOn           =    18
-    BAatLayoutFeatureSelectorStylisticAltNineOff          =    19
-    BAatLayoutFeatureSelectorStylisticAltTenOn            =    20
-    BAatLayoutFeatureSelectorStylisticAltTenOff           =    21
-    BAatLayoutFeatureSelectorStylisticAltElevenOn         =    22
-    BAatLayoutFeatureSelectorStylisticAltElevenOff        =    23
-    BAatLayoutFeatureSelectorStylisticAltTwelveOn         =    24
-    BAatLayoutFeatureSelectorStylisticAltTwelveOff        =    25
-    BAatLayoutFeatureSelectorStylisticAltThirteenOn       =    26
-    BAatLayoutFeatureSelectorStylisticAltThirteenOff      =    27
-    BAatLayoutFeatureSelectorStylisticAltFourteenOn       =    28
-    BAatLayoutFeatureSelectorStylisticAltFourteenOff      =    29
-    BAatLayoutFeatureSelectorStylisticAltFifteenOn        =    30
-    BAatLayoutFeatureSelectorStylisticAltFifteenOff       =    31
-    BAatLayoutFeatureSelectorStylisticAltSixteenOn        =    32
-    BAatLayoutFeatureSelectorStylisticAltSixteenOff       =    33
-    BAatLayoutFeatureSelectorStylisticAltSeventeenOn      =    34
-    BAatLayoutFeatureSelectorStylisticAltSeventeenOff     =    35
-    BAatLayoutFeatureSelectorStylisticAltEighteenOn       =    36
-    BAatLayoutFeatureSelectorStylisticAltEighteenOff      =    37
-    BAatLayoutFeatureSelectorStylisticAltNineteenOn       =    38
-    BAatLayoutFeatureSelectorStylisticAltNineteenOff      =    39
-    BAatLayoutFeatureSelectorStylisticAltTwentyOn         =    40
-    BAatLayoutFeatureSelectorStylisticAltTwentyOff        =    41
-    BAatLayoutFeatureSelectorContextualAlternatesOn       =     0
-    BAatLayoutFeatureSelectorContextualAlternatesOff      =     1
-    BAatLayoutFeatureSelectorSwashAlternatesOn            =     2
-    BAatLayoutFeatureSelectorSwashAlternatesOff           =     3
-    BAatLayoutFeatureSelectorContextualSwashAlternatesOn  =     4
-    BAatLayoutFeatureSelectorContextualSwashAlternatesOff =     5
-    BAatLayoutFeatureSelectorDefaultLowerCase             =     0
-    BAatLayoutFeatureSelectorLowerCaseSmallCaps           =     1
-    BAatLayoutFeatureSelectorLowerCasePetiteCaps          =     2
-    BAatLayoutFeatureSelectorDefaultUpperCase             =     0
-    BAatLayoutFeatureSelectorUpperCaseSmallCaps           =     1
-    BAatLayoutFeatureSelectorUpperCasePetiteCaps          =     2
-    BAatLayoutFeatureSelectorHalfWidthCjkRoman            =     0
-    BAatLayoutFeatureSelectorProportionalCjkRoman         =     1
-    BAatLayoutFeatureSelectorDefaultCjkRoman              =     2
-    BAatLayoutFeatureSelectorFullWidthCjkRoman            =     3
-  end
-
-  @[Flags]
-  enum AatLayoutFeatureTypeT : UInt32
-    BAatLayoutFeatureTypeInvalid                       = 65535
-    BAatLayoutFeatureTypeAllTypographic                =     0
-    BAatLayoutFeatureTypeLigatures                     =     1
-    BAatLayoutFeatureTypeCursiveConnection             =     2
-    BAatLayoutFeatureTypeLetterCase                    =     3
-    BAatLayoutFeatureTypeVerticalSubstitution          =     4
-    BAatLayoutFeatureTypeLinguisticRearrangement       =     5
-    BAatLayoutFeatureTypeNumberSpacing                 =     6
-    BAatLayoutFeatureTypeSmartSwashType                =     8
-    BAatLayoutFeatureTypeDiacriticsType                =     9
-    BAatLayoutFeatureTypeVerticalPosition              =    10
-    BAatLayoutFeatureTypeFractions                     =    11
-    BAatLayoutFeatureTypeOverlappingCharactersType     =    13
-    BAatLayoutFeatureTypeTypographicExtras             =    14
-    BAatLayoutFeatureTypeMathematicalExtras            =    15
-    BAatLayoutFeatureTypeOrnamentSetsType              =    16
-    BAatLayoutFeatureTypeCharacterAlternatives         =    17
-    BAatLayoutFeatureTypeDesignComplexityType          =    18
-    BAatLayoutFeatureTypeStyleOptions                  =    19
-    BAatLayoutFeatureTypeCharacterShape                =    20
-    BAatLayoutFeatureTypeNumberCase                    =    21
-    BAatLayoutFeatureTypeTextSpacing                   =    22
-    BAatLayoutFeatureTypeTransliteration               =    23
-    BAatLayoutFeatureTypeAnnotationType                =    24
-    BAatLayoutFeatureTypeKanaSpacingType               =    25
-    BAatLayoutFeatureTypeIdeographicSpacingType        =    26
-    BAatLayoutFeatureTypeUnicodeDecompositionType      =    27
-    BAatLayoutFeatureTypeRubyKana                      =    28
-    BAatLayoutFeatureTypeCjkSymbolAlternativesType     =    29
-    BAatLayoutFeatureTypeIdeographicAlternativesType   =    30
-    BAatLayoutFeatureTypeCjkVerticalRomanPlacementType =    31
-    BAatLayoutFeatureTypeItalicCjkRoman                =    32
-    BAatLayoutFeatureTypeCaseSensitiveLayout           =    33
-    BAatLayoutFeatureTypeAlternateKana                 =    34
-    BAatLayoutFeatureTypeStylisticAlternatives         =    35
-    BAatLayoutFeatureTypeContextualAlternatives        =    36
-    BAatLayoutFeatureTypeLowerCase                     =    37
-    BAatLayoutFeatureTypeUpperCase                     =    38
-    BAatLayoutFeatureTypeLanguageTagType               =    39
-    BAatLayoutFeatureTypeCjkRomanSpacingType           =   103
-  end
 
   @[Flags]
   enum BufferDiffFlagsT : UInt32
@@ -736,6 +1134,11 @@ module HarfBuzz
     ClusterMismatch     =  32
     GlyphFlagsMismatch  =  64
     PositionMismatch    = 128
+
+    # Returns the type id (GType) registered in GLib type system.
+    def self.g_type : UInt64
+      LibHarfBuzz.hb_gobject_buffer_diff_flags_get_type
+    end
   end
 
   @[Flags]
@@ -750,6 +1153,11 @@ module HarfBuzz
     ProduceUnsafeToConcat      =  64
     ProduceSafeToInsertTatweel = 128
     Defined                    = 255
+
+    # Returns the type id (GType) registered in GLib type system.
+    def self.g_type : UInt64
+      LibHarfBuzz.hb_gobject_buffer_flags_get_type
+    end
   end
 
   @[Flags]
@@ -762,13 +1170,11 @@ module HarfBuzz
     GlyphFlags   = 16
     NoAdvances   = 32
     Defined      = 63
-  end
 
-  @[Flags]
-  enum BufferSerializeFormatT : UInt32
-    Text    = 1413830740
-    Json    = 1246973774
-    Invalid =          0
+    # Returns the type id (GType) registered in GLib type system.
+    def self.g_type : UInt64
+      LibHarfBuzz.hb_gobject_buffer_serialize_flags_get_type
+    end
   end
 
   @[Flags]
@@ -777,6 +1183,11 @@ module HarfBuzz
     UnsafeToConcat      = 2
     SafeToInsertTatweel = 4
     Defined             = 7
+
+    # Returns the type id (GType) registered in GLib type system.
+    def self.g_type : UInt64
+      LibHarfBuzz.hb_gobject_glyph_flags_get_type
+    end
   end
 
   @[Flags]
@@ -784,254 +1195,31 @@ module HarfBuzz
     Default                   = 0
     UsableWithLightBackground = 1
     UsableWithDarkBackground  = 2
-  end
 
-  @[Flags]
-  enum OtLayoutBaselineTagT : UInt32
-    BOtLayoutBaselineTagRoman                 = 1919905134
-    BOtLayoutBaselineTagHanging               = 1751215719
-    BOtLayoutBaselineTagIdeoFaceBottomOrLeft  = 1768121954
-    BOtLayoutBaselineTagIdeoFaceTopOrRight    = 1768121972
-    BOtLayoutBaselineTagIdeoFaceCentral       = 1231251043
-    BOtLayoutBaselineTagIdeoEmboxBottomOrLeft = 1768187247
-    BOtLayoutBaselineTagIdeoEmboxTopOrRight   = 1768191088
-    BOtLayoutBaselineTagIdeoEmboxCentral      = 1231315813
-    BOtLayoutBaselineTagMath                  = 1835103336
+    # Returns the type id (GType) registered in GLib type system.
+    def self.g_type : UInt64
+      LibHarfBuzz.hb_gobject_ot_color_palette_flags_get_type
+    end
   end
 
   @[Flags]
   enum OtMathGlyphPartFlagsT : UInt32
-    OtMathGlyphPartFlagExtender = 1
-  end
+    Extender = 1
 
-  @[Flags]
-  enum OtMetaTagT : UInt32
-    BOtMetaTagDesignLanguages    = 1684827751
-    BOtMetaTagSupportedLanguages = 1936485991
-  end
-
-  @[Flags]
-  enum OtMetricsTagT : UInt32
-    BOtMetricsTagHorizontalAscender        = 1751216995
-    BOtMetricsTagHorizontalDescender       = 1751413603
-    BOtMetricsTagHorizontalLineGap         = 1751934832
-    BOtMetricsTagHorizontalClippingAscent  = 1751346273
-    BOtMetricsTagHorizontalClippingDescent = 1751346276
-    BOtMetricsTagVerticalAscender          = 1986098019
-    BOtMetricsTagVerticalDescender         = 1986294627
-    BOtMetricsTagVerticalLineGap           = 1986815856
-    BOtMetricsTagHorizontalCaretRise       = 1751347827
-    BOtMetricsTagHorizontalCaretRun        = 1751347822
-    BOtMetricsTagHorizontalCaretOffset     = 1751347046
-    BOtMetricsTagVerticalCaretRise         = 1986228851
-    BOtMetricsTagVerticalCaretRun          = 1986228846
-    BOtMetricsTagVerticalCaretOffset       = 1986228070
-    BOtMetricsTagXHeight                   = 2020108148
-    BOtMetricsTagCapHeight                 = 1668311156
-    BOtMetricsTagSubscriptEmXSize          = 1935833203
-    BOtMetricsTagSubscriptEmYSize          = 1935833459
-    BOtMetricsTagSubscriptEmXOffset        = 1935833199
-    BOtMetricsTagSubscriptEmYOffset        = 1935833455
-    BOtMetricsTagSuperscriptEmXSize        = 1936750707
-    BOtMetricsTagSuperscriptEmYSize        = 1936750963
-    BOtMetricsTagSuperscriptEmXOffset      = 1936750703
-    BOtMetricsTagSuperscriptEmYOffset      = 1936750959
-    BOtMetricsTagStrikeoutSize             = 1937011315
-    BOtMetricsTagStrikeoutOffset           = 1937011311
-    BOtMetricsTagUnderlineSize             = 1970168947
-    BOtMetricsTagUnderlineOffset           = 1970168943
+    # Returns the type id (GType) registered in GLib type system.
+    def self.g_type : UInt64
+      LibHarfBuzz.hb_gobject_ot_math_glyph_part_flags_get_type
+    end
   end
 
   @[Flags]
   enum OtVarAxisFlagsT : UInt32
-    BOtVarAxisFlagHidden = 1
-  end
+    Hidden = 1
 
-  @[Flags]
-  enum ScriptT : UInt32
-    BScriptCommon                = 1517910393
-    BScriptInherited             = 1516858984
-    BScriptUnknown               = 1517976186
-    BScriptArabic                = 1098015074
-    BScriptArmenian              = 1098018158
-    BScriptBengali               = 1113943655
-    BScriptCyrillic              = 1132032620
-    BScriptDevanagari            = 1147500129
-    BScriptGeorgian              = 1197830002
-    BScriptGreek                 = 1198679403
-    BScriptGujarati              = 1198877298
-    BScriptGurmukhi              = 1198879349
-    BScriptHangul                = 1214344807
-    BScriptHan                   = 1214344809
-    BScriptHebrew                = 1214603890
-    BScriptHiragana              = 1214870113
-    BScriptKannada               = 1265525857
-    BScriptKatakana              = 1264676449
-    BScriptLao                   = 1281453935
-    BScriptLatin                 = 1281455214
-    BScriptMalayalam             = 1298954605
-    BScriptOriya                 = 1332902241
-    BScriptTamil                 = 1415671148
-    BScriptTelugu                = 1415933045
-    BScriptThai                  = 1416126825
-    BScriptTibetan               = 1416192628
-    BScriptBopomofo              = 1114599535
-    BScriptBraille               = 1114792297
-    BScriptCanadianSyllabics     = 1130458739
-    BScriptCherokee              = 1130915186
-    BScriptEthiopic              = 1165256809
-    BScriptKhmer                 = 1265134962
-    BScriptMongolian             = 1299148391
-    BScriptMyanmar               = 1299803506
-    BScriptOgham                 = 1332175213
-    BScriptRunic                 = 1383427698
-    BScriptSinhala               = 1399418472
-    BScriptSyriac                = 1400468067
-    BScriptThaana                = 1416126817
-    BScriptYi                    = 1500080489
-    BScriptDeseret               = 1148416628
-    BScriptGothic                = 1198486632
-    BScriptOldItalic             = 1232363884
-    BScriptBuhid                 = 1114990692
-    BScriptHanunoo               = 1214344815
-    BScriptTagalog               = 1416064103
-    BScriptTagbanwa              = 1415669602
-    BScriptCypriot               = 1131442804
-    BScriptLimbu                 = 1281977698
-    BScriptLinearB               = 1281977954
-    BScriptOsmanya               = 1332964705
-    BScriptShavian               = 1399349623
-    BScriptTaiLe                 = 1415670885
-    BScriptUgaritic              = 1432838514
-    BScriptBuginese              = 1114990441
-    BScriptCoptic                = 1131376756
-    BScriptGlagolitic            = 1198285159
-    BScriptKharoshthi            = 1265131890
-    BScriptNewTaiLue             = 1415670901
-    BScriptOldPersian            = 1483761007
-    BScriptSylotiNagri           = 1400466543
-    BScriptTifinagh              = 1415999079
-    BScriptBalinese              = 1113681001
-    BScriptCuneiform             = 1483961720
-    BScriptNko                   = 1315663727
-    BScriptPhagsPa               = 1349017959
-    BScriptPhoenician            = 1349021304
-    BScriptCarian                = 1130459753
-    BScriptCham                  = 1130914157
-    BScriptKayahLi               = 1264675945
-    BScriptLepcha                = 1281716323
-    BScriptLycian                = 1283023721
-    BScriptLydian                = 1283023977
-    BScriptOlChiki               = 1332503403
-    BScriptRejang                = 1382706791
-    BScriptSaurashtra            = 1398895986
-    BScriptSundanese             = 1400204900
-    BScriptVai                   = 1449224553
-    BScriptAvestan               = 1098281844
-    BScriptBamum                 = 1113681269
-    BScriptEgyptianHieroglyphs   = 1164409200
-    BScriptImperialAramaic       = 1098018153
-    BScriptInscriptionalPahlavi  = 1349020777
-    BScriptInscriptionalParthian = 1349678185
-    BScriptJavanese              = 1247901281
-    BScriptKaithi                = 1265920105
-    BScriptLisu                  = 1281979253
-    BScriptMeeteiMayek           = 1299473769
-    BScriptOldSouthArabian       = 1398895202
-    BScriptOldTurkic             = 1332898664
-    BScriptSamaritan             = 1398893938
-    BScriptTaiTham               = 1281453665
-    BScriptTaiViet               = 1415673460
-    BScriptBatak                 = 1113683051
-    BScriptBrahmi                = 1114792296
-    BScriptMandaic               = 1298230884
-    BScriptChakma                = 1130457965
-    BScriptMeroiticCursive       = 1298494051
-    BScriptMeroiticHieroglyphs   = 1298494063
-    BScriptMiao                  = 1349284452
-    BScriptSharada               = 1399353956
-    BScriptSoraSompeng           = 1399812705
-    BScriptTakri                 = 1415670642
-    BScriptBassaVah              = 1113682803
-    BScriptCaucasianAlbanian     = 1097295970
-    BScriptDuployan              = 1148547180
-    BScriptElbasan               = 1164730977
-    BScriptGrantha               = 1198678382
-    BScriptKhojki                = 1265135466
-    BScriptKhudawadi             = 1399418468
-    BScriptLinearA               = 1281977953
-    BScriptMahajani              = 1298229354
-    BScriptManichaean            = 1298230889
-    BScriptMendeKikakui          = 1298493028
-    BScriptModi                  = 1299145833
-    BScriptMro                   = 1299345263
-    BScriptNabataean             = 1315070324
-    BScriptOldNorthArabian       = 1315009122
-    BScriptOldPermic             = 1348825709
-    BScriptPahawhHmong           = 1215131239
-    BScriptPalmyrene             = 1348562029
-    BScriptPauCinHau             = 1348564323
-    BScriptPsalterPahlavi        = 1349020784
-    BScriptSiddham               = 1399415908
-    BScriptTirhuta               = 1416196712
-    BScriptWarangCiti            = 1466004065
-    BScriptAhom                  = 1097363309
-    BScriptAnatolianHieroglyphs  = 1215067511
-    BScriptHatran                = 1214346354
-    BScriptMultani               = 1299541108
-    BScriptOldHungarian          = 1215655527
-    BScriptSignwriting           = 1399287415
-    BScriptAdlam                 = 1097100397
-    BScriptBhaiksuki             = 1114139507
-    BScriptMarchen               = 1298231907
-    BScriptOsage                 = 1332963173
-    BScriptTangut                = 1415671399
-    BScriptNewa                  = 1315272545
-    BScriptMasaramGondi          = 1198485101
-    BScriptNushu                 = 1316186229
-    BScriptSoyombo               = 1399814511
-    BScriptZanabazarSquare       = 1516334690
-    BScriptDogra                 = 1148151666
-    BScriptGunjalaGondi          = 1198485095
-    BScriptHanifiRohingya        = 1383032935
-    BScriptMakasar               = 1298230113
-    BScriptMedefaidrin           = 1298490470
-    BScriptOldSogdian            = 1399809903
-    BScriptSogdian               = 1399809892
-    BScriptElymaic               = 1164736877
-    BScriptNandinagari           = 1315008100
-    BScriptNyiakengPuachueHmong  = 1215131248
-    BScriptWancho                = 1466132591
-    BScriptChorasmian            = 1130918515
-    BScriptDivesAkuru            = 1147756907
-    BScriptKhitanSmallScript     = 1265202291
-    BScriptYezidi                = 1499822697
-    BScriptCyproMinoan           = 1131441518
-    BScriptOldUyghur             = 1333094258
-    BScriptTangsa                = 1416524641
-    BScriptToto                  = 1416590447
-    BScriptVithkuqi              = 1449751656
-    BScriptMath                  = 1517122664
-    BScriptKawi                  = 1264678761
-    BScriptNagMundari            = 1315006317
-    BScriptGaray                 = 1197568609
-    BScriptGurungKhema           = 1198877544
-    BScriptKiratRai              = 1265787241
-    BScriptOlOnal                = 1332633967
-    BScriptSunuwar               = 1400204917
-    BScriptTodhri                = 1416586354
-    BScriptTuluTigalari          = 1416983655
-    BScriptInvalid               =          0
-  end
-
-  @[Flags]
-  enum StyleTagT : UInt32
-    BStyleTagItalic      = 1769234796
-    BStyleTagOpticalSize = 1869640570
-    BStyleTagSlantAngle  = 1936486004
-    BStyleTagSlantRatio  = 1399615092
-    BStyleTagWidth       = 2003072104
-    BStyleTagWeight      = 2003265652
+    # Returns the type id (GType) registered in GLib type system.
+    def self.g_type : UInt64
+      LibHarfBuzz.hb_gobject_ot_var_axis_flags_get_type
+    end
   end
 
   def self.aat_layout_feature_type_get_name_id(face : HarfBuzz::FaceT, feature_type : HarfBuzz::AatLayoutFeatureTypeT) : UInt32
@@ -1072,19 +1260,23 @@ module HarfBuzz
     _retval
   end
 
-  def self.aat_layout_get_feature_types(face : HarfBuzz::FaceT, start_offset : UInt32, features : Enumerable(HarfBuzz::AatLayoutFeatureTypeT)) : UInt32
+  def self.aat_layout_get_feature_types(face : HarfBuzz::FaceT, start_offset : UInt32, features : Enumerable(HarfBuzz::AatLayoutFeatureTypeT)?) : UInt32
     # hb_aat_layout_get_feature_types: (None)
     # @face:
     # @start_offset:
     # @feature_count: (out) (transfer full) (optional)
-    # @features: (out) (caller-allocates) (array length=feature_count element-type Interface)
+    # @features: (out) (nullable) (caller-allocates) (array length=feature_count element-type Interface)
     # Returns: (transfer none)
 
     # Generator::OutArgUsedInReturnPlan
     feature_count = Pointer(UInt32).null # Generator::ArrayLengthArgPlan
-    feature_count = features.size
-    # Generator::ArrayArgPlan
-    features = features.to_a.map(&.to_unsafe).to_unsafe.as(Pointer(UInt32))
+    feature_count = features.try(&.size) || 0
+    # Generator::NullableArrayPlan
+    features = if features.nil?
+                 Pointer(UInt32).null
+               else
+                 features.to_a.map(&.to_unsafe).to_unsafe.as(Pointer(UInt32))
+               end
 
     # C call
     _retval = LibHarfBuzz.hb_aat_layout_get_feature_types(face, start_offset, feature_count, features)
@@ -1390,6 +1582,17 @@ module HarfBuzz
 
     # C call
     LibHarfBuzz.hb_buffer_append(buffer, source, start, _end)
+
+    # Return value handling
+  end
+
+  def self.buffer_changed(buffer : HarfBuzz::BufferT) : Nil
+    # hb_buffer_changed: (None)
+    # @buffer:
+    # Returns: (transfer none)
+
+    # C call
+    LibHarfBuzz.hb_buffer_changed(buffer)
 
     # Return value handling
   end
@@ -2252,6 +2455,30 @@ module HarfBuzz
     ::String.new(_retval)
   end
 
+  def self.draw_circle(dfuncs : HarfBuzz::DrawFuncsT, draw_data : Pointer(Void)?, st : HarfBuzz::DrawStateT, cx : Float32, cy : Float32, r : Float32, stroke_width : Float32) : Nil
+    # hb_draw_circle: (None)
+    # @dfuncs:
+    # @draw_data: (nullable)
+    # @st:
+    # @cx:
+    # @cy:
+    # @r:
+    # @stroke_width:
+    # Returns: (transfer none)
+
+    # Generator::NullableArrayPlan
+    draw_data = if draw_data.nil?
+                  Pointer(Void).null
+                else
+                  draw_data.to_unsafe
+                end
+
+    # C call
+    LibHarfBuzz.hb_draw_circle(dfuncs, draw_data, st, cx, cy, r, stroke_width)
+
+    # Return value handling
+  end
+
   def self.draw_close_path(dfuncs : HarfBuzz::DrawFuncsT, draw_data : Pointer(Void)?, st : HarfBuzz::DrawStateT) : Nil
     # hb_draw_close_path: (None)
     # @dfuncs:
@@ -2448,6 +2675,33 @@ module HarfBuzz
     # Return value handling
   end
 
+  def self.draw_line(dfuncs : HarfBuzz::DrawFuncsT, draw_data : Pointer(Void)?, st : HarfBuzz::DrawStateT, x0 : Float32, y0 : Float32, w0 : Float32, x1 : Float32, y1 : Float32, w1 : Float32, cap : HarfBuzz::DrawLineCapT) : Nil
+    # hb_draw_line: (None)
+    # @dfuncs:
+    # @draw_data: (nullable)
+    # @st:
+    # @x0:
+    # @y0:
+    # @w0:
+    # @x1:
+    # @y1:
+    # @w1:
+    # @cap:
+    # Returns: (transfer none)
+
+    # Generator::NullableArrayPlan
+    draw_data = if draw_data.nil?
+                  Pointer(Void).null
+                else
+                  draw_data.to_unsafe
+                end
+
+    # C call
+    LibHarfBuzz.hb_draw_line(dfuncs, draw_data, st, x0, y0, w0, x1, y1, w1, cap)
+
+    # Return value handling
+  end
+
   def self.draw_line_to(dfuncs : HarfBuzz::DrawFuncsT, draw_data : Pointer(Void)?, st : HarfBuzz::DrawStateT, to_x : Float32, to_y : Float32) : Nil
     # hb_draw_line_to: (None)
     # @dfuncs:
@@ -2512,6 +2766,31 @@ module HarfBuzz
 
     # C call
     LibHarfBuzz.hb_draw_quadratic_to(dfuncs, draw_data, st, control_x, control_y, to_x, to_y)
+
+    # Return value handling
+  end
+
+  def self.draw_rectangle(dfuncs : HarfBuzz::DrawFuncsT, draw_data : Pointer(Void)?, st : HarfBuzz::DrawStateT, x : Float32, y : Float32, w : Float32, h : Float32, stroke_width : Float32) : Nil
+    # hb_draw_rectangle: (None)
+    # @dfuncs:
+    # @draw_data: (nullable)
+    # @st:
+    # @x:
+    # @y:
+    # @w:
+    # @h:
+    # @stroke_width:
+    # Returns: (transfer none)
+
+    # Generator::NullableArrayPlan
+    draw_data = if draw_data.nil?
+                  Pointer(Void).null
+                else
+                  draw_data.to_unsafe
+                end
+
+    # C call
+    LibHarfBuzz.hb_draw_rectangle(dfuncs, draw_data, st, x, y, w, h, stroke_width)
 
     # Return value handling
   end
@@ -2751,18 +3030,22 @@ module HarfBuzz
     _retval
   end
 
-  def self.face_get_table_tags(face : HarfBuzz::FaceT, start_offset : UInt32, table_tags : Enumerable(UInt32)) : UInt32
+  def self.face_get_table_tags(face : HarfBuzz::FaceT, start_offset : UInt32, table_tags : Enumerable(UInt32)?) : UInt32
     # hb_face_get_table_tags: (None)
     # @face:
     # @start_offset:
     # @table_count: (out) (transfer full)
-    # @table_tags: (out) (transfer full) (array length=table_count element-type UInt32)
+    # @table_tags: (out) (transfer full) (nullable) (array length=table_count element-type UInt32)
     # Returns: (transfer none)
 
     # Generator::ArrayLengthArgPlan
-    table_count = table_tags.size
-    # Generator::ArrayArgPlan
-    table_tags = table_tags.to_a.to_unsafe.as(Pointer(UInt32))
+    table_count = table_tags.try(&.size) || 0
+    # Generator::NullableArrayPlan
+    table_tags = if table_tags.nil?
+                   Pointer(UInt32).null
+                 else
+                   table_tags.to_a.to_unsafe.as(Pointer(UInt32))
+                 end
 
     # C call
     _retval = LibHarfBuzz.hb_face_get_table_tags(face, start_offset, table_count, table_tags)
@@ -3012,6 +3295,28 @@ module HarfBuzz
     # Return value handling
   end
 
+  def self.font_draw_glyph_or_fail(font : HarfBuzz::FontT, glyph : UInt32, dfuncs : HarfBuzz::DrawFuncsT, draw_data : Pointer(Void)?) : Int32
+    # hb_font_draw_glyph_or_fail: (None)
+    # @font:
+    # @glyph:
+    # @dfuncs:
+    # @draw_data: (nullable)
+    # Returns: (transfer none)
+
+    # Generator::NullableArrayPlan
+    draw_data = if draw_data.nil?
+                  Pointer(Void).null
+                else
+                  draw_data.to_unsafe
+                end
+
+    # C call
+    _retval = LibHarfBuzz.hb_font_draw_glyph_or_fail(font, glyph, dfuncs, draw_data)
+
+    # Return value handling
+    _retval
+  end
+
   def self.font_funcs_create : HarfBuzz::FontFuncsT
     # hb_font_funcs_create: (None)
     # Returns: (transfer full)
@@ -3057,6 +3362,7 @@ module HarfBuzz
     # Return value handling
   end
 
+  @[Deprecated]
   def self.font_funcs_set_draw_glyph_func(ffuncs : HarfBuzz::FontFuncsT, func : HarfBuzz::FontDrawGlyphFuncT, user_data : Pointer(Void)?, destroy : HarfBuzz::DestroyFuncT?) : Nil
     # hb_font_funcs_set_draw_glyph_func: (None)
     # @ffuncs:
@@ -3074,6 +3380,27 @@ module HarfBuzz
 
     # C call
     LibHarfBuzz.hb_font_funcs_set_draw_glyph_func(ffuncs, func, user_data, destroy)
+
+    # Return value handling
+  end
+
+  def self.font_funcs_set_draw_glyph_or_fail_func(ffuncs : HarfBuzz::FontFuncsT, func : HarfBuzz::FontDrawGlyphOrFailFuncT, user_data : Pointer(Void)?, destroy : HarfBuzz::DestroyFuncT?) : Nil
+    # hb_font_funcs_set_draw_glyph_or_fail_func: (None)
+    # @ffuncs:
+    # @func:
+    # @user_data: (nullable)
+    # @destroy: (nullable)
+    # Returns: (transfer none)
+
+    # Generator::NullableArrayPlan
+    user_data = if user_data.nil?
+                  Pointer(Void).null
+                else
+                  user_data.to_unsafe
+                end
+
+    # C call
+    LibHarfBuzz.hb_font_funcs_set_draw_glyph_or_fail_func(ffuncs, func, user_data, destroy)
 
     # Return value handling
   end
@@ -3289,6 +3616,27 @@ module HarfBuzz
     # Return value handling
   end
 
+  def self.font_funcs_set_glyph_h_origins_func(ffuncs : HarfBuzz::FontFuncsT, func : HarfBuzz::FontGetGlyphOriginsFuncT, user_data : Pointer(Void)?, destroy : HarfBuzz::DestroyFuncT?) : Nil
+    # hb_font_funcs_set_glyph_h_origins_func: (None)
+    # @ffuncs:
+    # @func:
+    # @user_data: (nullable)
+    # @destroy: (nullable)
+    # Returns: (transfer none)
+
+    # Generator::NullableArrayPlan
+    user_data = if user_data.nil?
+                  Pointer(Void).null
+                else
+                  user_data.to_unsafe
+                end
+
+    # C call
+    LibHarfBuzz.hb_font_funcs_set_glyph_h_origins_func(ffuncs, func, user_data, destroy)
+
+    # Return value handling
+  end
+
   def self.font_funcs_set_glyph_name_func(ffuncs : HarfBuzz::FontFuncsT, func : HarfBuzz::FontGetGlyphNameFuncT, user_data : Pointer(Void)?, destroy : HarfBuzz::DestroyFuncT?) : Nil
     # hb_font_funcs_set_glyph_name_func: (None)
     # @ffuncs:
@@ -3417,6 +3765,27 @@ module HarfBuzz
     # Return value handling
   end
 
+  def self.font_funcs_set_glyph_v_origins_func(ffuncs : HarfBuzz::FontFuncsT, func : HarfBuzz::FontGetGlyphOriginsFuncT, user_data : Pointer(Void)?, destroy : HarfBuzz::DestroyFuncT?) : Nil
+    # hb_font_funcs_set_glyph_v_origins_func: (None)
+    # @ffuncs:
+    # @func:
+    # @user_data: (nullable)
+    # @destroy: (nullable)
+    # Returns: (transfer none)
+
+    # Generator::NullableArrayPlan
+    user_data = if user_data.nil?
+                  Pointer(Void).null
+                else
+                  user_data.to_unsafe
+                end
+
+    # C call
+    LibHarfBuzz.hb_font_funcs_set_glyph_v_origins_func(ffuncs, func, user_data, destroy)
+
+    # Return value handling
+  end
+
   def self.font_funcs_set_nominal_glyph_func(ffuncs : HarfBuzz::FontFuncsT, func : HarfBuzz::FontGetNominalGlyphFuncT, user_data : Pointer(Void)?, destroy : HarfBuzz::DestroyFuncT?) : Nil
     # hb_font_funcs_set_nominal_glyph_func: (None)
     # @ffuncs:
@@ -3459,6 +3828,7 @@ module HarfBuzz
     # Return value handling
   end
 
+  @[Deprecated]
   def self.font_funcs_set_paint_glyph_func(ffuncs : HarfBuzz::FontFuncsT, func : HarfBuzz::FontPaintGlyphFuncT, user_data : Pointer(Void)?, destroy : HarfBuzz::DestroyFuncT?) : Nil
     # hb_font_funcs_set_paint_glyph_func: (None)
     # @ffuncs:
@@ -3476,6 +3846,27 @@ module HarfBuzz
 
     # C call
     LibHarfBuzz.hb_font_funcs_set_paint_glyph_func(ffuncs, func, user_data, destroy)
+
+    # Return value handling
+  end
+
+  def self.font_funcs_set_paint_glyph_or_fail_func(ffuncs : HarfBuzz::FontFuncsT, func : HarfBuzz::FontPaintGlyphOrFailFuncT, user_data : Pointer(Void)?, destroy : HarfBuzz::DestroyFuncT?) : Nil
+    # hb_font_funcs_set_paint_glyph_or_fail_func: (None)
+    # @ffuncs:
+    # @func:
+    # @user_data: (nullable)
+    # @destroy: (nullable)
+    # Returns: (transfer none)
+
+    # Generator::NullableArrayPlan
+    user_data = if user_data.nil?
+                  Pointer(Void).null
+                else
+                  user_data.to_unsafe
+                end
+
+    # C call
+    LibHarfBuzz.hb_font_funcs_set_paint_glyph_or_fail_func(ffuncs, func, user_data, destroy)
 
     # Return value handling
   end
@@ -3731,6 +4122,25 @@ module HarfBuzz
     _retval
   end
 
+  def self.font_get_glyph_h_origins(font : HarfBuzz::FontT, count : UInt32, first_glyph : Pointer(UInt32), glyph_stride : UInt32, first_x : Int32, x_stride : UInt32, first_y : Int32, y_stride : UInt32) : Int32
+    # hb_font_get_glyph_h_origins: (None)
+    # @font:
+    # @count:
+    # @first_glyph:
+    # @glyph_stride:
+    # @first_x: (out) (transfer full)
+    # @x_stride:
+    # @first_y: (out) (transfer full)
+    # @y_stride:
+    # Returns: (transfer none)
+
+    # C call
+    _retval = LibHarfBuzz.hb_font_get_glyph_h_origins(font, count, first_glyph, glyph_stride, first_x, x_stride, first_y, y_stride)
+
+    # Return value handling
+    _retval
+  end
+
   def self.font_get_glyph_kerning_for_direction(font : HarfBuzz::FontT, first_glyph : UInt32, second_glyph : UInt32, direction : HarfBuzz::DirectionT, x : Int32, y : Int32) : Nil
     # hb_font_get_glyph_kerning_for_direction: (None)
     # @font:
@@ -3858,6 +4268,25 @@ module HarfBuzz
 
     # C call
     _retval = LibHarfBuzz.hb_font_get_glyph_v_origin(font, glyph, x, y)
+
+    # Return value handling
+    _retval
+  end
+
+  def self.font_get_glyph_v_origins(font : HarfBuzz::FontT, count : UInt32, first_glyph : Pointer(UInt32), glyph_stride : UInt32, first_x : Int32, x_stride : UInt32, first_y : Int32, y_stride : UInt32) : Int32
+    # hb_font_get_glyph_v_origins: (None)
+    # @font:
+    # @count:
+    # @first_glyph:
+    # @glyph_stride:
+    # @first_x: (out) (transfer full)
+    # @x_stride:
+    # @first_y: (out) (transfer full)
+    # @y_stride:
+    # Returns: (transfer none)
+
+    # C call
+    _retval = LibHarfBuzz.hb_font_get_glyph_v_origins(font, count, first_glyph, glyph_stride, first_x, x_stride, first_y, y_stride)
 
     # Return value handling
     _retval
@@ -4116,6 +4545,18 @@ module HarfBuzz
     _retval
   end
 
+  def self.font_is_synthetic(font : HarfBuzz::FontT) : Int32
+    # hb_font_is_synthetic: (None)
+    # @font:
+    # Returns: (transfer none)
+
+    # C call
+    _retval = LibHarfBuzz.hb_font_is_synthetic(font)
+
+    # Return value handling
+    _retval
+  end
+
   def self.font_list_funcs : Enumerable(::String)
     # hb_font_list_funcs: (None)
     # Returns: (transfer none) (array zero-terminated=1 element-type Utf8)
@@ -4161,6 +4602,30 @@ module HarfBuzz
     # Return value handling
   end
 
+  def self.font_paint_glyph_or_fail(font : HarfBuzz::FontT, glyph : UInt32, pfuncs : HarfBuzz::PaintFuncsT, paint_data : Pointer(Void)?, palette_index : UInt32, foreground : UInt32) : Int32
+    # hb_font_paint_glyph_or_fail: (None)
+    # @font:
+    # @glyph:
+    # @pfuncs:
+    # @paint_data: (nullable)
+    # @palette_index:
+    # @foreground:
+    # Returns: (transfer none)
+
+    # Generator::NullableArrayPlan
+    paint_data = if paint_data.nil?
+                   Pointer(Void).null
+                 else
+                   paint_data.to_unsafe
+                 end
+
+    # C call
+    _retval = LibHarfBuzz.hb_font_paint_glyph_or_fail(font, glyph, pfuncs, paint_data, palette_index, foreground)
+
+    # Return value handling
+    _retval
+  end
+
   def self.font_set_face(font : HarfBuzz::FontT, face : HarfBuzz::FaceT) : Nil
     # hb_font_set_face: (None)
     # @font:
@@ -4169,6 +4634,47 @@ module HarfBuzz
 
     # C call
     LibHarfBuzz.hb_font_set_face(font, face)
+
+    # Return value handling
+  end
+
+  def self.font_set_funcs(font : HarfBuzz::FontT, klass : HarfBuzz::FontFuncsT, font_data : Pointer(Void)?, destroy : HarfBuzz::DestroyFuncT?) : Nil
+    # hb_font_set_funcs: (None)
+    # @font:
+    # @klass:
+    # @font_data: (nullable)
+    # @destroy: (nullable)
+    # Returns: (transfer none)
+
+    # Generator::NullableArrayPlan
+    font_data = if font_data.nil?
+                  Pointer(Void).null
+                else
+                  font_data.to_unsafe
+                end
+
+    # C call
+    LibHarfBuzz.hb_font_set_funcs(font, klass, font_data, destroy)
+
+    # Return value handling
+  end
+
+  def self.font_set_funcs_data(font : HarfBuzz::FontT, font_data : Pointer(Void)?, destroy : HarfBuzz::DestroyFuncT?) : Nil
+    # hb_font_set_funcs_data: (None)
+    # @font:
+    # @font_data: (nullable)
+    # @destroy: (nullable)
+    # Returns: (transfer none)
+
+    # Generator::NullableArrayPlan
+    font_data = if font_data.nil?
+                  Pointer(Void).null
+                else
+                  font_data.to_unsafe
+                end
+
+    # C call
+    LibHarfBuzz.hb_font_set_funcs_data(font, font_data, destroy)
 
     # Return value handling
   end
@@ -4795,6 +5301,46 @@ module HarfBuzz
     # Return value handling
   end
 
+  def self.ot_color_get_svg_document_count(face : HarfBuzz::FaceT) : UInt32
+    # hb_ot_color_get_svg_document_count: (None)
+    # @face:
+    # Returns: (transfer none)
+
+    # C call
+    _retval = LibHarfBuzz.hb_ot_color_get_svg_document_count(face)
+
+    # Return value handling
+    _retval
+  end
+
+  def self.ot_color_get_svg_document_glyph_range(face : HarfBuzz::FaceT, svg_document_index : UInt32, start_glyph_id : UInt32?, end_glyph_id : UInt32?) : Int32
+    # hb_ot_color_get_svg_document_glyph_range: (None)
+    # @face:
+    # @svg_document_index:
+    # @start_glyph_id: (out) (transfer full) (nullable)
+    # @end_glyph_id: (out) (transfer full) (nullable)
+    # Returns: (transfer none)
+
+    # Generator::NullableArrayPlan
+    start_glyph_id = if start_glyph_id.nil?
+                       UInt32.null
+                     else
+                       start_glyph_id.to_unsafe
+                     end
+    # Generator::NullableArrayPlan
+    end_glyph_id = if end_glyph_id.nil?
+                     UInt32.null
+                   else
+                     end_glyph_id.to_unsafe
+                   end
+
+    # C call
+    _retval = LibHarfBuzz.hb_ot_color_get_svg_document_glyph_range(face, svg_document_index, start_glyph_id, end_glyph_id)
+
+    # Return value handling
+    _retval
+  end
+
   def self.ot_color_glyph_get_layers(face : HarfBuzz::FaceT, glyph : UInt32, start_offset : UInt32, layers : Enumerable(HarfBuzz::OtColorLayerT)?) : UInt32
     # hb_ot_color_glyph_get_layers: (None)
     # @face:
@@ -4816,6 +5362,27 @@ module HarfBuzz
 
     # C call
     _retval = LibHarfBuzz.hb_ot_color_glyph_get_layers(face, glyph, start_offset, layer_count, layers)
+
+    # Return value handling
+    _retval
+  end
+
+  def self.ot_color_glyph_get_svg_document_index(face : HarfBuzz::FaceT, glyph : UInt32, svg_document_index : UInt32?) : Int32
+    # hb_ot_color_glyph_get_svg_document_index: (None)
+    # @face:
+    # @glyph:
+    # @svg_document_index: (out) (transfer full) (nullable)
+    # Returns: (transfer none)
+
+    # Generator::NullableArrayPlan
+    svg_document_index = if svg_document_index.nil?
+                           UInt32.null
+                         else
+                           svg_document_index.to_unsafe
+                         end
+
+    # C call
+    _retval = LibHarfBuzz.hb_ot_color_glyph_get_svg_document_index(face, glyph, svg_document_index)
 
     # Return value handling
     _retval
@@ -4997,6 +5564,32 @@ module HarfBuzz
     _retval
   end
 
+  def self.ot_fetch_bits(face : HarfBuzz::FaceT, tag : HarfBuzz::OtBitsTagT) : UInt32
+    # hb_ot_fetch_bits: (None)
+    # @face:
+    # @tag:
+    # Returns: (transfer none)
+
+    # C call
+    _retval = LibHarfBuzz.hb_ot_fetch_bits(face, tag)
+
+    # Return value handling
+    _retval
+  end
+
+  def self.ot_fetch_number(face : HarfBuzz::FaceT, tag : HarfBuzz::OtNumberTagT) : Int32
+    # hb_ot_fetch_number: (None)
+    # @face:
+    # @tag:
+    # Returns: (transfer none)
+
+    # C call
+    _retval = LibHarfBuzz.hb_ot_fetch_number(face, tag)
+
+    # Return value handling
+    _retval
+  end
+
   def self.ot_font_set_funcs(font : HarfBuzz::FontT) : Nil
     # hb_ot_font_set_funcs: (None)
     # @font:
@@ -5100,21 +5693,24 @@ module HarfBuzz
     lookup_indexes
   end
 
-  def self.ot_layout_feature_get_characters(face : HarfBuzz::FaceT, table_tag : UInt32, feature_index : UInt32, start_offset : UInt32, characters : Enumerable(UInt32)) : UInt32
+  def self.ot_layout_feature_get_characters(face : HarfBuzz::FaceT, table_tag : UInt32, feature_index : UInt32, start_offset : UInt32, characters : Enumerable(UInt32)?) : UInt32
     # hb_ot_layout_feature_get_characters: (None)
     # @face:
     # @table_tag:
     # @feature_index:
     # @start_offset:
-    # @char_count: (out) (transfer full) (optional)
-    # @characters: (out) (caller-allocates) (array length=char_count element-type UInt32)
+    # @char_count: (out) (transfer full) (nullable)
+    # @characters: (out) (nullable) (caller-allocates) (array length=char_count element-type UInt32)
     # Returns: (transfer none)
 
-    # Generator::OutArgUsedInReturnPlan
-    char_count = Pointer(UInt32).null # Generator::ArrayLengthArgPlan
-    char_count = characters.size
-    # Generator::ArrayArgPlan
-    characters = characters.to_a.to_unsafe.as(Pointer(UInt32))
+    # Generator::ArrayLengthArgPlan
+    char_count = characters.try(&.size) || 0
+    # Generator::NullableArrayPlan
+    characters = if characters.nil?
+                   Pointer(UInt32).null
+                 else
+                   characters.to_a.to_unsafe.as(Pointer(UInt32))
+                 end
 
     # C call
     _retval = LibHarfBuzz.hb_ot_layout_feature_get_characters(face, table_tag, feature_index, start_offset, char_count, characters)
@@ -5123,21 +5719,24 @@ module HarfBuzz
     _retval
   end
 
-  def self.ot_layout_feature_get_lookups(face : HarfBuzz::FaceT, table_tag : UInt32, feature_index : UInt32, start_offset : UInt32, lookup_indexes : Enumerable(UInt32)) : UInt32
+  def self.ot_layout_feature_get_lookups(face : HarfBuzz::FaceT, table_tag : UInt32, feature_index : UInt32, start_offset : UInt32, lookup_indexes : Enumerable(UInt32)?) : UInt32
     # hb_ot_layout_feature_get_lookups: (None)
     # @face:
     # @table_tag:
     # @feature_index:
     # @start_offset:
-    # @lookup_count: (out) (transfer full) (optional)
-    # @lookup_indexes: (out) (transfer full) (array length=lookup_count element-type UInt32)
+    # @lookup_count: (out) (transfer full) (nullable)
+    # @lookup_indexes: (out) (transfer full) (nullable) (array length=lookup_count element-type UInt32)
     # Returns: (transfer none)
 
-    # Generator::OutArgUsedInReturnPlan
-    lookup_count = Pointer(UInt32).null # Generator::ArrayLengthArgPlan
-    lookup_count = lookup_indexes.size
-    # Generator::ArrayArgPlan
-    lookup_indexes = lookup_indexes.to_a.to_unsafe.as(Pointer(UInt32))
+    # Generator::ArrayLengthArgPlan
+    lookup_count = lookup_indexes.try(&.size) || 0
+    # Generator::NullableArrayPlan
+    lookup_indexes = if lookup_indexes.nil?
+                       Pointer(UInt32).null
+                     else
+                       lookup_indexes.to_a.to_unsafe.as(Pointer(UInt32))
+                     end
 
     # C call
     _retval = LibHarfBuzz.hb_ot_layout_feature_get_lookups(face, table_tag, feature_index, start_offset, lookup_count, lookup_indexes)
@@ -5146,24 +5745,49 @@ module HarfBuzz
     _retval
   end
 
-  def self.ot_layout_feature_get_name_ids(face : HarfBuzz::FaceT, table_tag : UInt32, feature_index : UInt32) : Int32
+  def self.ot_layout_feature_get_name_ids(face : HarfBuzz::FaceT, table_tag : UInt32, feature_index : UInt32, label_id : UInt32?, tooltip_id : UInt32?, sample_id : UInt32?, num_named_parameters : UInt32?, first_param_id : UInt32?) : Int32
     # hb_ot_layout_feature_get_name_ids: (None)
     # @face:
     # @table_tag:
     # @feature_index:
-    # @label_id: (out) (transfer full) (optional)
-    # @tooltip_id: (out) (transfer full) (optional)
-    # @sample_id: (out) (transfer full) (optional)
-    # @num_named_parameters: (out) (transfer full) (optional)
-    # @first_param_id: (out) (transfer full) (optional)
+    # @label_id: (out) (transfer full) (nullable)
+    # @tooltip_id: (out) (transfer full) (nullable)
+    # @sample_id: (out) (transfer full) (nullable)
+    # @num_named_parameters: (out) (transfer full) (nullable)
+    # @first_param_id: (out) (transfer full) (nullable)
     # Returns: (transfer none)
 
-    # Generator::OutArgUsedInReturnPlan
-    label_id = Pointer(UInt32).null             # Generator::OutArgUsedInReturnPlan
-    tooltip_id = Pointer(UInt32).null           # Generator::OutArgUsedInReturnPlan
-    sample_id = Pointer(UInt32).null            # Generator::OutArgUsedInReturnPlan
-    num_named_parameters = Pointer(UInt32).null # Generator::OutArgUsedInReturnPlan
-    first_param_id = Pointer(UInt32).null
+    # Generator::NullableArrayPlan
+    label_id = if label_id.nil?
+                 UInt32.null
+               else
+                 label_id.to_unsafe
+               end
+    # Generator::NullableArrayPlan
+    tooltip_id = if tooltip_id.nil?
+                   UInt32.null
+                 else
+                   tooltip_id.to_unsafe
+                 end
+    # Generator::NullableArrayPlan
+    sample_id = if sample_id.nil?
+                  UInt32.null
+                else
+                  sample_id.to_unsafe
+                end
+    # Generator::NullableArrayPlan
+    num_named_parameters = if num_named_parameters.nil?
+                             UInt32.null
+                           else
+                             num_named_parameters.to_unsafe
+                           end
+    # Generator::NullableArrayPlan
+    first_param_id = if first_param_id.nil?
+                       UInt32.null
+                     else
+                       first_param_id.to_unsafe
+                     end
+
     # C call
     _retval = LibHarfBuzz.hb_ot_layout_feature_get_name_ids(face, table_tag, feature_index, label_id, tooltip_id, sample_id, num_named_parameters, first_param_id)
 
@@ -5171,22 +5795,25 @@ module HarfBuzz
     _retval
   end
 
-  def self.ot_layout_feature_with_variations_get_lookups(face : HarfBuzz::FaceT, table_tag : UInt32, feature_index : UInt32, variations_index : UInt32, start_offset : UInt32, lookup_indexes : Enumerable(UInt32)) : UInt32
+  def self.ot_layout_feature_with_variations_get_lookups(face : HarfBuzz::FaceT, table_tag : UInt32, feature_index : UInt32, variations_index : UInt32, start_offset : UInt32, lookup_indexes : Enumerable(UInt32)?) : UInt32
     # hb_ot_layout_feature_with_variations_get_lookups: (None)
     # @face:
     # @table_tag:
     # @feature_index:
     # @variations_index:
     # @start_offset:
-    # @lookup_count: (out) (transfer full) (optional)
-    # @lookup_indexes: (out) (transfer full) (array length=lookup_count element-type UInt32)
+    # @lookup_count: (out) (transfer full) (nullable)
+    # @lookup_indexes: (out) (transfer full) (nullable) (array length=lookup_count element-type UInt32)
     # Returns: (transfer none)
 
-    # Generator::OutArgUsedInReturnPlan
-    lookup_count = Pointer(UInt32).null # Generator::ArrayLengthArgPlan
-    lookup_count = lookup_indexes.size
-    # Generator::ArrayArgPlan
-    lookup_indexes = lookup_indexes.to_a.to_unsafe.as(Pointer(UInt32))
+    # Generator::ArrayLengthArgPlan
+    lookup_count = lookup_indexes.try(&.size) || 0
+    # Generator::NullableArrayPlan
+    lookup_indexes = if lookup_indexes.nil?
+                       Pointer(UInt32).null
+                     else
+                       lookup_indexes.to_a.to_unsafe.as(Pointer(UInt32))
+                     end
 
     # C call
     _retval = LibHarfBuzz.hb_ot_layout_feature_with_variations_get_lookups(face, table_tag, feature_index, variations_index, start_offset, lookup_count, lookup_indexes)
@@ -5195,20 +5822,23 @@ module HarfBuzz
     _retval
   end
 
-  def self.ot_layout_get_attach_points(face : HarfBuzz::FaceT, glyph : UInt32, start_offset : UInt32, point_array : Enumerable(UInt32)) : UInt32
+  def self.ot_layout_get_attach_points(face : HarfBuzz::FaceT, glyph : UInt32, start_offset : UInt32, point_array : Enumerable(UInt32)?) : UInt32
     # hb_ot_layout_get_attach_points: (None)
     # @face:
     # @glyph:
     # @start_offset:
-    # @point_count: (out) (transfer full) (optional)
-    # @point_array: (out) (transfer full) (array length=point_count element-type UInt32)
+    # @point_count: (out) (transfer full) (nullable)
+    # @point_array: (out) (transfer full) (nullable) (array length=point_count element-type UInt32)
     # Returns: (transfer none)
 
-    # Generator::OutArgUsedInReturnPlan
-    point_count = Pointer(UInt32).null # Generator::ArrayLengthArgPlan
-    point_count = point_array.size
-    # Generator::ArrayArgPlan
-    point_array = point_array.to_a.to_unsafe.as(Pointer(UInt32))
+    # Generator::ArrayLengthArgPlan
+    point_count = point_array.try(&.size) || 0
+    # Generator::NullableArrayPlan
+    point_array = if point_array.nil?
+                    Pointer(UInt32).null
+                  else
+                    point_array.to_a.to_unsafe.as(Pointer(UInt32))
+                  end
 
     # C call
     _retval = LibHarfBuzz.hb_ot_layout_get_attach_points(face, glyph, start_offset, point_count, point_array)
@@ -5351,21 +5981,24 @@ module HarfBuzz
     HarfBuzz::OtLayoutBaselineTagT.new(_retval)
   end
 
-  def self.ot_layout_get_ligature_carets(font : HarfBuzz::FontT, direction : HarfBuzz::DirectionT, glyph : UInt32, start_offset : UInt32, caret_array : Enumerable(Int32)) : UInt32
+  def self.ot_layout_get_ligature_carets(font : HarfBuzz::FontT, direction : HarfBuzz::DirectionT, glyph : UInt32, start_offset : UInt32, caret_array : Enumerable(Int32)?) : UInt32
     # hb_ot_layout_get_ligature_carets: (None)
     # @font:
     # @direction:
     # @glyph:
     # @start_offset:
-    # @caret_count: (out) (transfer full) (optional)
-    # @caret_array: (out) (transfer full) (array length=caret_count element-type Int32)
+    # @caret_count: (out) (transfer full) (nullable)
+    # @caret_array: (out) (transfer full) (nullable) (array length=caret_count element-type Int32)
     # Returns: (transfer none)
 
-    # Generator::OutArgUsedInReturnPlan
-    caret_count = Pointer(UInt32).null # Generator::ArrayLengthArgPlan
-    caret_count = caret_array.size
-    # Generator::ArrayArgPlan
-    caret_array = caret_array.to_a.to_unsafe.as(Pointer(Int32))
+    # Generator::ArrayLengthArgPlan
+    caret_count = caret_array.try(&.size) || 0
+    # Generator::NullableArrayPlan
+    caret_array = if caret_array.nil?
+                    Pointer(Int32).null
+                  else
+                    caret_array.to_a.to_unsafe.as(Pointer(Int32))
+                  end
 
     # C call
     _retval = LibHarfBuzz.hb_ot_layout_get_ligature_carets(font, direction, glyph, start_offset, caret_count, caret_array)
@@ -5444,22 +6077,25 @@ module HarfBuzz
     _retval
   end
 
-  def self.ot_layout_language_get_feature_indexes(face : HarfBuzz::FaceT, table_tag : UInt32, script_index : UInt32, language_index : UInt32, start_offset : UInt32, feature_indexes : Enumerable(UInt32)) : UInt32
+  def self.ot_layout_language_get_feature_indexes(face : HarfBuzz::FaceT, table_tag : UInt32, script_index : UInt32, language_index : UInt32, start_offset : UInt32, feature_indexes : Enumerable(UInt32)?) : UInt32
     # hb_ot_layout_language_get_feature_indexes: (None)
     # @face:
     # @table_tag:
     # @script_index:
     # @language_index:
     # @start_offset:
-    # @feature_count: (out) (transfer full) (optional)
-    # @feature_indexes: (out) (transfer full) (array length=feature_count element-type UInt32)
+    # @feature_count: (out) (transfer full) (nullable)
+    # @feature_indexes: (out) (transfer full) (nullable) (array length=feature_count element-type UInt32)
     # Returns: (transfer none)
 
-    # Generator::OutArgUsedInReturnPlan
-    feature_count = Pointer(UInt32).null # Generator::ArrayLengthArgPlan
-    feature_count = feature_indexes.size
-    # Generator::ArrayArgPlan
-    feature_indexes = feature_indexes.to_a.to_unsafe.as(Pointer(UInt32))
+    # Generator::ArrayLengthArgPlan
+    feature_count = feature_indexes.try(&.size) || 0
+    # Generator::NullableArrayPlan
+    feature_indexes = if feature_indexes.nil?
+                        Pointer(UInt32).null
+                      else
+                        feature_indexes.to_a.to_unsafe.as(Pointer(UInt32))
+                      end
 
     # C call
     _retval = LibHarfBuzz.hb_ot_layout_language_get_feature_indexes(face, table_tag, script_index, language_index, start_offset, feature_count, feature_indexes)
@@ -5468,22 +6104,25 @@ module HarfBuzz
     _retval
   end
 
-  def self.ot_layout_language_get_feature_tags(face : HarfBuzz::FaceT, table_tag : UInt32, script_index : UInt32, language_index : UInt32, start_offset : UInt32, feature_tags : Enumerable(UInt32)) : UInt32
+  def self.ot_layout_language_get_feature_tags(face : HarfBuzz::FaceT, table_tag : UInt32, script_index : UInt32, language_index : UInt32, start_offset : UInt32, feature_tags : Enumerable(UInt32)?) : UInt32
     # hb_ot_layout_language_get_feature_tags: (None)
     # @face:
     # @table_tag:
     # @script_index:
     # @language_index:
     # @start_offset:
-    # @feature_count: (out) (transfer full) (optional)
-    # @feature_tags: (out) (transfer full) (array length=feature_count element-type UInt32)
+    # @feature_count: (out) (transfer full) (nullable)
+    # @feature_tags: (out) (transfer full) (nullable) (array length=feature_count element-type UInt32)
     # Returns: (transfer none)
 
-    # Generator::OutArgUsedInReturnPlan
-    feature_count = Pointer(UInt32).null # Generator::ArrayLengthArgPlan
-    feature_count = feature_tags.size
-    # Generator::ArrayArgPlan
-    feature_tags = feature_tags.to_a.to_unsafe.as(Pointer(UInt32))
+    # Generator::ArrayLengthArgPlan
+    feature_count = feature_tags.try(&.size) || 0
+    # Generator::NullableArrayPlan
+    feature_tags = if feature_tags.nil?
+                     Pointer(UInt32).null
+                   else
+                     feature_tags.to_a.to_unsafe.as(Pointer(UInt32))
+                   end
 
     # C call
     _retval = LibHarfBuzz.hb_ot_layout_language_get_feature_tags(face, table_tag, script_index, language_index, start_offset, feature_count, feature_tags)
@@ -5525,44 +6164,39 @@ module HarfBuzz
     _retval
   end
 
-  def self.ot_layout_lookup_collect_glyphs(face : HarfBuzz::FaceT, table_tag : UInt32, lookup_index : UInt32) : HarfBuzz::SetT
-    # hb_ot_layout_lookup_collect_glyphs: (None)
+  def self.ot_layout_lookup_collect_glyph_alternates(face : HarfBuzz::FaceT, lookup_index : UInt32, alternate_count : HarfBuzz::MapT, alternate_glyphs : HarfBuzz::MapT) : Int32
+    # hb_ot_layout_lookup_collect_glyph_alternates: (None)
     # @face:
-    # @table_tag:
     # @lookup_index:
-    # @glyphs_before: (out) (caller-allocates)
-    # @glyphs_input: (out) (caller-allocates)
-    # @glyphs_after: (out) (caller-allocates)
-    # @glyphs_output: (out) (caller-allocates)
+    # @alternate_count: (inout) (transfer full)
+    # @alternate_glyphs: (inout) (transfer full)
     # Returns: (transfer none)
 
-    # Generator::CallerAllocatesPlan
-    glyphs_before = HarfBuzz::SetT.new # Generator::CallerAllocatesPlan
-    glyphs_input = HarfBuzz::SetT.new  # Generator::CallerAllocatesPlan
-    glyphs_after = HarfBuzz::SetT.new  # Generator::CallerAllocatesPlan
-    glyphs_output = HarfBuzz::SetT.new
     # C call
-    LibHarfBuzz.hb_ot_layout_lookup_collect_glyphs(face, table_tag, lookup_index, glyphs_before, glyphs_input, glyphs_after, glyphs_output)
+    _retval = LibHarfBuzz.hb_ot_layout_lookup_collect_glyph_alternates(face, lookup_index, alternate_count, alternate_glyphs)
 
     # Return value handling
-    glyphs_before
+    _retval
   end
 
-  def self.ot_layout_lookup_get_glyph_alternates(face : HarfBuzz::FaceT, lookup_index : UInt32, glyph : UInt32, start_offset : UInt32, alternate_glyphs : Enumerable(UInt32)) : UInt32
+  def self.ot_layout_lookup_get_glyph_alternates(face : HarfBuzz::FaceT, lookup_index : UInt32, glyph : UInt32, start_offset : UInt32, alternate_glyphs : Enumerable(UInt32)?) : UInt32
     # hb_ot_layout_lookup_get_glyph_alternates: (None)
     # @face:
     # @lookup_index:
     # @glyph:
     # @start_offset:
-    # @alternate_count: (out) (transfer full) (optional)
-    # @alternate_glyphs: (out) (caller-allocates) (array length=alternate_count element-type UInt32)
+    # @alternate_count: (out) (transfer full) (nullable)
+    # @alternate_glyphs: (out) (nullable) (caller-allocates) (array length=alternate_count element-type UInt32)
     # Returns: (transfer none)
 
-    # Generator::OutArgUsedInReturnPlan
-    alternate_count = Pointer(UInt32).null # Generator::ArrayLengthArgPlan
-    alternate_count = alternate_glyphs.size
-    # Generator::ArrayArgPlan
-    alternate_glyphs = alternate_glyphs.to_a.to_unsafe.as(Pointer(UInt32))
+    # Generator::ArrayLengthArgPlan
+    alternate_count = alternate_glyphs.try(&.size) || 0
+    # Generator::NullableArrayPlan
+    alternate_glyphs = if alternate_glyphs.nil?
+                         Pointer(UInt32).null
+                       else
+                         alternate_glyphs.to_a.to_unsafe.as(Pointer(UInt32))
+                       end
 
     # C call
     _retval = LibHarfBuzz.hb_ot_layout_lookup_get_glyph_alternates(face, lookup_index, glyph, start_offset, alternate_count, alternate_glyphs)
@@ -5651,21 +6285,24 @@ module HarfBuzz
     _retval
   end
 
-  def self.ot_layout_script_get_language_tags(face : HarfBuzz::FaceT, table_tag : UInt32, script_index : UInt32, start_offset : UInt32, language_tags : Enumerable(UInt32)) : UInt32
+  def self.ot_layout_script_get_language_tags(face : HarfBuzz::FaceT, table_tag : UInt32, script_index : UInt32, start_offset : UInt32, language_tags : Enumerable(UInt32)?) : UInt32
     # hb_ot_layout_script_get_language_tags: (None)
     # @face:
     # @table_tag:
     # @script_index:
     # @start_offset:
-    # @language_count: (out) (transfer full) (optional)
-    # @language_tags: (out) (transfer full) (array length=language_count element-type UInt32)
+    # @language_count: (out) (transfer full) (nullable)
+    # @language_tags: (out) (transfer full) (nullable) (array length=language_count element-type UInt32)
     # Returns: (transfer none)
 
-    # Generator::OutArgUsedInReturnPlan
-    language_count = Pointer(UInt32).null # Generator::ArrayLengthArgPlan
-    language_count = language_tags.size
-    # Generator::ArrayArgPlan
-    language_tags = language_tags.to_a.to_unsafe.as(Pointer(UInt32))
+    # Generator::ArrayLengthArgPlan
+    language_count = language_tags.try(&.size) || 0
+    # Generator::NullableArrayPlan
+    language_tags = if language_tags.nil?
+                      Pointer(UInt32).null
+                    else
+                      language_tags.to_a.to_unsafe.as(Pointer(UInt32))
+                    end
 
     # C call
     _retval = LibHarfBuzz.hb_ot_layout_script_get_language_tags(face, table_tag, script_index, start_offset, language_count, language_tags)
@@ -5756,20 +6393,23 @@ module HarfBuzz
     _retval
   end
 
-  def self.ot_layout_table_get_feature_tags(face : HarfBuzz::FaceT, table_tag : UInt32, start_offset : UInt32, feature_tags : Enumerable(UInt32)) : UInt32
+  def self.ot_layout_table_get_feature_tags(face : HarfBuzz::FaceT, table_tag : UInt32, start_offset : UInt32, feature_tags : Enumerable(UInt32)?) : UInt32
     # hb_ot_layout_table_get_feature_tags: (None)
     # @face:
     # @table_tag:
     # @start_offset:
-    # @feature_count: (out) (transfer full) (optional)
-    # @feature_tags: (out) (transfer full) (array length=feature_count element-type UInt32)
+    # @feature_count: (out) (transfer full) (nullable)
+    # @feature_tags: (out) (transfer full) (nullable) (array length=feature_count element-type UInt32)
     # Returns: (transfer none)
 
-    # Generator::OutArgUsedInReturnPlan
-    feature_count = Pointer(UInt32).null # Generator::ArrayLengthArgPlan
-    feature_count = feature_tags.size
-    # Generator::ArrayArgPlan
-    feature_tags = feature_tags.to_a.to_unsafe.as(Pointer(UInt32))
+    # Generator::ArrayLengthArgPlan
+    feature_count = feature_tags.try(&.size) || 0
+    # Generator::NullableArrayPlan
+    feature_tags = if feature_tags.nil?
+                     Pointer(UInt32).null
+                   else
+                     feature_tags.to_a.to_unsafe.as(Pointer(UInt32))
+                   end
 
     # C call
     _retval = LibHarfBuzz.hb_ot_layout_table_get_feature_tags(face, table_tag, start_offset, feature_count, feature_tags)
@@ -5791,20 +6431,23 @@ module HarfBuzz
     _retval
   end
 
-  def self.ot_layout_table_get_script_tags(face : HarfBuzz::FaceT, table_tag : UInt32, start_offset : UInt32, script_tags : Enumerable(UInt32)) : UInt32
+  def self.ot_layout_table_get_script_tags(face : HarfBuzz::FaceT, table_tag : UInt32, start_offset : UInt32, script_tags : Enumerable(UInt32)?) : UInt32
     # hb_ot_layout_table_get_script_tags: (None)
     # @face:
     # @table_tag:
     # @start_offset:
-    # @script_count: (out) (transfer full) (optional)
-    # @script_tags: (out) (transfer full) (array length=script_count element-type UInt32)
+    # @script_count: (out) (transfer full) (nullable)
+    # @script_tags: (out) (transfer full) (nullable) (array length=script_count element-type UInt32)
     # Returns: (transfer none)
 
-    # Generator::OutArgUsedInReturnPlan
-    script_count = Pointer(UInt32).null # Generator::ArrayLengthArgPlan
-    script_count = script_tags.size
-    # Generator::ArrayArgPlan
-    script_tags = script_tags.to_a.to_unsafe.as(Pointer(UInt32))
+    # Generator::ArrayLengthArgPlan
+    script_count = script_tags.try(&.size) || 0
+    # Generator::NullableArrayPlan
+    script_tags = if script_tags.nil?
+                    Pointer(UInt32).null
+                  else
+                    script_tags.to_a.to_unsafe.as(Pointer(UInt32))
+                  end
 
     # C call
     _retval = LibHarfBuzz.hb_ot_layout_table_get_script_tags(face, table_tag, start_offset, script_count, script_tags)
@@ -5813,19 +6456,29 @@ module HarfBuzz
     _retval
   end
 
-  def self.ot_layout_table_select_script(face : HarfBuzz::FaceT, table_tag : UInt32, script_count : UInt32, script_tags : Pointer(UInt32)) : Int32
+  def self.ot_layout_table_select_script(face : HarfBuzz::FaceT, table_tag : UInt32, script_count : UInt32, script_tags : Pointer(UInt32), script_index : UInt32?, chosen_script : UInt32?) : Int32
     # hb_ot_layout_table_select_script: (None)
     # @face:
     # @table_tag:
     # @script_count:
     # @script_tags:
-    # @script_index: (out) (transfer full) (optional)
-    # @chosen_script: (out) (transfer full) (optional)
+    # @script_index: (out) (transfer full) (nullable)
+    # @chosen_script: (out) (transfer full) (nullable)
     # Returns: (transfer none)
 
-    # Generator::OutArgUsedInReturnPlan
-    script_index = Pointer(UInt32).null # Generator::OutArgUsedInReturnPlan
-    chosen_script = Pointer(UInt32).null
+    # Generator::NullableArrayPlan
+    script_index = if script_index.nil?
+                     UInt32.null
+                   else
+                     script_index.to_unsafe
+                   end
+    # Generator::NullableArrayPlan
+    chosen_script = if chosen_script.nil?
+                      UInt32.null
+                    else
+                      chosen_script.to_unsafe
+                    end
+
     # C call
     _retval = LibHarfBuzz.hb_ot_layout_table_select_script(face, table_tag, script_count, script_tags, script_index, chosen_script)
 
@@ -5846,21 +6499,25 @@ module HarfBuzz
     _retval
   end
 
-  def self.ot_math_get_glyph_assembly(font : HarfBuzz::FontT, glyph : UInt32, direction : HarfBuzz::DirectionT, start_offset : UInt32, parts : Enumerable(HarfBuzz::OtMathGlyphPartT), italics_correction : Int32) : UInt32
+  def self.ot_math_get_glyph_assembly(font : HarfBuzz::FontT, glyph : UInt32, direction : HarfBuzz::DirectionT, start_offset : UInt32, parts : Enumerable(HarfBuzz::OtMathGlyphPartT)?, italics_correction : Int32) : UInt32
     # hb_ot_math_get_glyph_assembly: (None)
     # @font:
     # @glyph:
     # @direction:
     # @start_offset:
     # @parts_count: (out) (transfer full)
-    # @parts: (out) (caller-allocates) (array length=parts_count element-type Interface)
+    # @parts: (out) (nullable) (caller-allocates) (array length=parts_count element-type Interface)
     # @italics_correction: (out) (transfer full)
     # Returns: (transfer none)
 
     # Generator::ArrayLengthArgPlan
-    parts_count = parts.size
-    # Generator::ArrayArgPlan
-    parts = parts.to_a.map(&.to_unsafe).to_unsafe.as(Pointer(LibHarfBuzz::OtMathGlyphPartT))
+    parts_count = parts.try(&.size) || 0
+    # Generator::NullableArrayPlan
+    parts = if parts.nil?
+              Pointer(LibHarfBuzz::OtMathGlyphPartT).null
+            else
+              parts.to_a.map(&.to_unsafe).to_unsafe.as(Pointer(LibHarfBuzz::OtMathGlyphPartT))
+            end
 
     # C call
     _retval = LibHarfBuzz.hb_ot_math_get_glyph_assembly(font, glyph, direction, start_offset, parts_count, parts, italics_correction)
@@ -5897,21 +6554,25 @@ module HarfBuzz
     _retval
   end
 
-  def self.ot_math_get_glyph_kernings(font : HarfBuzz::FontT, glyph : UInt32, kern : HarfBuzz::OtMathKernT, start_offset : UInt32, kern_entries : Enumerable(HarfBuzz::OtMathKernEntryT)) : UInt32
+  def self.ot_math_get_glyph_kernings(font : HarfBuzz::FontT, glyph : UInt32, kern : HarfBuzz::OtMathKernT, start_offset : UInt32, kern_entries : Enumerable(HarfBuzz::OtMathKernEntryT)?) : UInt32
     # hb_ot_math_get_glyph_kernings: (None)
     # @font:
     # @glyph:
     # @kern:
     # @start_offset:
     # @entries_count: (out) (transfer full) (optional)
-    # @kern_entries: (out) (caller-allocates) (array length=entries_count element-type Interface)
+    # @kern_entries: (out) (nullable) (caller-allocates) (array length=entries_count element-type Interface)
     # Returns: (transfer none)
 
     # Generator::OutArgUsedInReturnPlan
     entries_count = Pointer(UInt32).null # Generator::ArrayLengthArgPlan
-    entries_count = kern_entries.size
-    # Generator::ArrayArgPlan
-    kern_entries = kern_entries.to_a.map(&.to_unsafe).to_unsafe.as(Pointer(LibHarfBuzz::OtMathKernEntryT))
+    entries_count = kern_entries.try(&.size) || 0
+    # Generator::NullableArrayPlan
+    kern_entries = if kern_entries.nil?
+                     Pointer(LibHarfBuzz::OtMathKernEntryT).null
+                   else
+                     kern_entries.to_a.map(&.to_unsafe).to_unsafe.as(Pointer(LibHarfBuzz::OtMathKernEntryT))
+                   end
 
     # C call
     _retval = LibHarfBuzz.hb_ot_math_get_glyph_kernings(font, glyph, kern, start_offset, entries_count, kern_entries)
@@ -5933,20 +6594,24 @@ module HarfBuzz
     _retval
   end
 
-  def self.ot_math_get_glyph_variants(font : HarfBuzz::FontT, glyph : UInt32, direction : HarfBuzz::DirectionT, start_offset : UInt32, variants : Enumerable(HarfBuzz::OtMathGlyphVariantT)) : UInt32
+  def self.ot_math_get_glyph_variants(font : HarfBuzz::FontT, glyph : UInt32, direction : HarfBuzz::DirectionT, start_offset : UInt32, variants : Enumerable(HarfBuzz::OtMathGlyphVariantT)?) : UInt32
     # hb_ot_math_get_glyph_variants: (None)
     # @font:
     # @glyph:
     # @direction:
     # @start_offset:
     # @variants_count: (out) (transfer full)
-    # @variants: (out) (caller-allocates) (array length=variants_count element-type Interface)
+    # @variants: (out) (nullable) (caller-allocates) (array length=variants_count element-type Interface)
     # Returns: (transfer none)
 
     # Generator::ArrayLengthArgPlan
-    variants_count = variants.size
-    # Generator::ArrayArgPlan
-    variants = variants.to_a.map(&.to_unsafe).to_unsafe.as(Pointer(LibHarfBuzz::OtMathGlyphVariantT))
+    variants_count = variants.try(&.size) || 0
+    # Generator::NullableArrayPlan
+    variants = if variants.nil?
+                 Pointer(LibHarfBuzz::OtMathGlyphVariantT).null
+               else
+                 variants.to_a.map(&.to_unsafe).to_unsafe.as(Pointer(LibHarfBuzz::OtMathGlyphVariantT))
+               end
 
     # C call
     _retval = LibHarfBuzz.hb_ot_math_get_glyph_variants(font, glyph, direction, start_offset, variants_count, variants)
@@ -5993,19 +6658,23 @@ module HarfBuzz
     _retval
   end
 
-  def self.ot_meta_get_entry_tags(face : HarfBuzz::FaceT, start_offset : UInt32, entries : Enumerable(HarfBuzz::OtMetaTagT)) : UInt32
+  def self.ot_meta_get_entry_tags(face : HarfBuzz::FaceT, start_offset : UInt32, entries : Enumerable(HarfBuzz::OtMetaTagT)?) : UInt32
     # hb_ot_meta_get_entry_tags: (None)
     # @face:
     # @start_offset:
     # @entries_count: (out) (transfer full) (optional)
-    # @entries: (out) (caller-allocates) (array length=entries_count element-type Interface)
+    # @entries: (out) (nullable) (caller-allocates) (array length=entries_count element-type Interface)
     # Returns: (transfer none)
 
     # Generator::OutArgUsedInReturnPlan
     entries_count = Pointer(UInt32).null # Generator::ArrayLengthArgPlan
-    entries_count = entries.size
-    # Generator::ArrayArgPlan
-    entries = entries.to_a.map(&.to_unsafe).to_unsafe.as(Pointer(UInt32))
+    entries_count = entries.try(&.size) || 0
+    # Generator::NullableArrayPlan
+    entries = if entries.nil?
+                Pointer(UInt32).null
+              else
+                entries.to_a.map(&.to_unsafe).to_unsafe.as(Pointer(UInt32))
+              end
 
     # C call
     _retval = LibHarfBuzz.hb_ot_meta_get_entry_tags(face, start_offset, entries_count, entries)
@@ -6176,6 +6845,17 @@ module HarfBuzz
 
     # Return value handling
     GICrystal.transfer_array(_retval, num_entries, GICrystal::Transfer::None)
+  end
+
+  def self.ot_shape_get_buffer_format_serial : UInt32
+    # hb_ot_shape_get_buffer_format_serial: (None)
+    # Returns: (transfer none)
+
+    # C call
+    _retval = LibHarfBuzz.hb_ot_shape_get_buffer_format_serial
+
+    # Return value handling
+    _retval
   end
 
   def self.ot_shape_glyphs_closure(font : HarfBuzz::FontT, buffer : HarfBuzz::BufferT, features : Enumerable(HarfBuzz::FeatureT)) : HarfBuzz::SetT
@@ -6368,19 +7048,23 @@ module HarfBuzz
   end
 
   @[Deprecated]
-  def self.ot_var_get_axes(face : HarfBuzz::FaceT, start_offset : UInt32, axes_array : Enumerable(HarfBuzz::OtVarAxisT)) : UInt32
+  def self.ot_var_get_axes(face : HarfBuzz::FaceT, start_offset : UInt32, axes_array : Enumerable(HarfBuzz::OtVarAxisT)?) : UInt32
     # hb_ot_var_get_axes: (None)
     # @face:
     # @start_offset:
     # @axes_count: (out) (transfer full) (optional)
-    # @axes_array: (out) (caller-allocates) (array length=axes_count element-type Interface)
+    # @axes_array: (out) (nullable) (caller-allocates) (array length=axes_count element-type Interface)
     # Returns: (transfer none)
 
     # Generator::OutArgUsedInReturnPlan
     axes_count = Pointer(UInt32).null # Generator::ArrayLengthArgPlan
-    axes_count = axes_array.size
-    # Generator::ArrayArgPlan
-    axes_array = axes_array.to_a.map(&.to_unsafe).to_unsafe.as(Pointer(LibHarfBuzz::OtVarAxisT))
+    axes_count = axes_array.try(&.size) || 0
+    # Generator::NullableArrayPlan
+    axes_array = if axes_array.nil?
+                   Pointer(LibHarfBuzz::OtVarAxisT).null
+                 else
+                   axes_array.to_a.map(&.to_unsafe).to_unsafe.as(Pointer(LibHarfBuzz::OtVarAxisT))
+                 end
 
     # C call
     _retval = LibHarfBuzz.hb_ot_var_get_axes(face, start_offset, axes_count, axes_array)
@@ -6401,19 +7085,23 @@ module HarfBuzz
     _retval
   end
 
-  def self.ot_var_get_axis_infos(face : HarfBuzz::FaceT, start_offset : UInt32, axes_array : Enumerable(HarfBuzz::OtVarAxisInfoT)) : UInt32
+  def self.ot_var_get_axis_infos(face : HarfBuzz::FaceT, start_offset : UInt32, axes_array : Enumerable(HarfBuzz::OtVarAxisInfoT)?) : UInt32
     # hb_ot_var_get_axis_infos: (None)
     # @face:
     # @start_offset:
     # @axes_count: (out) (transfer full) (optional)
-    # @axes_array: (out) (caller-allocates) (array length=axes_count element-type Interface)
+    # @axes_array: (out) (nullable) (caller-allocates) (array length=axes_count element-type Interface)
     # Returns: (transfer none)
 
     # Generator::OutArgUsedInReturnPlan
     axes_count = Pointer(UInt32).null # Generator::ArrayLengthArgPlan
-    axes_count = axes_array.size
-    # Generator::ArrayArgPlan
-    axes_array = axes_array.to_a.map(&.to_unsafe).to_unsafe.as(Pointer(LibHarfBuzz::OtVarAxisInfoT))
+    axes_count = axes_array.try(&.size) || 0
+    # Generator::NullableArrayPlan
+    axes_array = if axes_array.nil?
+                   Pointer(LibHarfBuzz::OtVarAxisInfoT).null
+                 else
+                   axes_array.to_a.map(&.to_unsafe).to_unsafe.as(Pointer(LibHarfBuzz::OtVarAxisInfoT))
+                 end
 
     # C call
     _retval = LibHarfBuzz.hb_ot_var_get_axis_infos(face, start_offset, axes_count, axes_array)
@@ -6446,19 +7134,23 @@ module HarfBuzz
     _retval
   end
 
-  def self.ot_var_named_instance_get_design_coords(face : HarfBuzz::FaceT, instance_index : UInt32, coords : Enumerable(Float32)) : UInt32
+  def self.ot_var_named_instance_get_design_coords(face : HarfBuzz::FaceT, instance_index : UInt32, coords : Enumerable(Float32)?) : UInt32
     # hb_ot_var_named_instance_get_design_coords: (None)
     # @face:
     # @instance_index:
     # @coords_length: (out) (transfer full) (optional)
-    # @coords: (out) (transfer full) (array length=coords_length element-type Float)
+    # @coords: (out) (transfer full) (nullable) (array length=coords_length element-type Float)
     # Returns: (transfer none)
 
     # Generator::OutArgUsedInReturnPlan
     coords_length = Pointer(UInt32).null # Generator::ArrayLengthArgPlan
-    coords_length = coords.size
-    # Generator::ArrayArgPlan
-    coords = coords.to_a.to_unsafe.as(Pointer(Float32))
+    coords_length = coords.try(&.size) || 0
+    # Generator::NullableArrayPlan
+    coords = if coords.nil?
+               Pointer(Float32).null
+             else
+               coords.to_a.to_unsafe.as(Pointer(Float32))
+             end
 
     # C call
     _retval = LibHarfBuzz.hb_ot_var_named_instance_get_design_coords(face, instance_index, coords_length, coords)
@@ -6592,6 +7284,29 @@ module HarfBuzz
     _retval
   end
 
+  def self.paint_fill_glyph(funcs : HarfBuzz::PaintFuncsT, paint_data : Pointer(Void)?, glyph : UInt32, font : HarfBuzz::FontT, is_foreground : Int32, color : UInt32) : Nil
+    # hb_paint_fill_glyph: (None)
+    # @funcs:
+    # @paint_data: (nullable)
+    # @glyph:
+    # @font:
+    # @is_foreground:
+    # @color:
+    # Returns: (transfer none)
+
+    # Generator::NullableArrayPlan
+    paint_data = if paint_data.nil?
+                   Pointer(Void).null
+                 else
+                   paint_data.to_unsafe
+                 end
+
+    # C call
+    LibHarfBuzz.hb_paint_fill_glyph(funcs, paint_data, glyph, font, is_foreground, color)
+
+    # Return value handling
+  end
+
   def self.paint_funcs_create : HarfBuzz::PaintFuncsT
     # hb_paint_funcs_create: (None)
     # Returns: (transfer full)
@@ -6696,6 +7411,27 @@ module HarfBuzz
 
     # C call
     LibHarfBuzz.hb_paint_funcs_set_custom_palette_color_func(funcs, func, user_data, destroy)
+
+    # Return value handling
+  end
+
+  def self.paint_funcs_set_fill_glyph_func(funcs : HarfBuzz::PaintFuncsT, func : HarfBuzz::PaintFillGlyphFuncT, user_data : Pointer(Void)?, destroy : HarfBuzz::DestroyFuncT?) : Nil
+    # hb_paint_funcs_set_fill_glyph_func: (None)
+    # @funcs:
+    # @func:
+    # @user_data: (nullable)
+    # @destroy: (nullable)
+    # Returns: (transfer none)
+
+    # Generator::NullableArrayPlan
+    user_data = if user_data.nil?
+                  Pointer(Void).null
+                else
+                  user_data.to_unsafe
+                end
+
+    # C call
+    LibHarfBuzz.hb_paint_funcs_set_fill_glyph_func(funcs, func, user_data, destroy)
 
     # Return value handling
   end
@@ -6826,6 +7562,48 @@ module HarfBuzz
     # Return value handling
   end
 
+  def self.paint_funcs_set_push_clip_path_end_func(funcs : HarfBuzz::PaintFuncsT, func : HarfBuzz::PaintPushClipPathEndFuncT, user_data : Pointer(Void)?, destroy : HarfBuzz::DestroyFuncT?) : Nil
+    # hb_paint_funcs_set_push_clip_path_end_func: (None)
+    # @funcs:
+    # @func:
+    # @user_data: (nullable)
+    # @destroy: (nullable)
+    # Returns: (transfer none)
+
+    # Generator::NullableArrayPlan
+    user_data = if user_data.nil?
+                  Pointer(Void).null
+                else
+                  user_data.to_unsafe
+                end
+
+    # C call
+    LibHarfBuzz.hb_paint_funcs_set_push_clip_path_end_func(funcs, func, user_data, destroy)
+
+    # Return value handling
+  end
+
+  def self.paint_funcs_set_push_clip_path_start_func(funcs : HarfBuzz::PaintFuncsT, func : HarfBuzz::PaintPushClipPathStartFuncT, user_data : Pointer(Void)?, destroy : HarfBuzz::DestroyFuncT?) : Nil
+    # hb_paint_funcs_set_push_clip_path_start_func: (None)
+    # @funcs:
+    # @func:
+    # @user_data: (nullable)
+    # @destroy: (nullable)
+    # Returns: (transfer none)
+
+    # Generator::NullableArrayPlan
+    user_data = if user_data.nil?
+                  Pointer(Void).null
+                else
+                  user_data.to_unsafe
+                end
+
+    # C call
+    LibHarfBuzz.hb_paint_funcs_set_push_clip_path_start_func(funcs, func, user_data, destroy)
+
+    # Return value handling
+  end
+
   def self.paint_funcs_set_push_clip_rectangle_func(funcs : HarfBuzz::PaintFuncsT, func : HarfBuzz::PaintPushClipRectangleFuncT, user_data : Pointer(Void)?, destroy : HarfBuzz::DestroyFuncT?) : Nil
     # hb_paint_funcs_set_push_clip_rectangle_func: (None)
     # @funcs:
@@ -6843,6 +7621,27 @@ module HarfBuzz
 
     # C call
     LibHarfBuzz.hb_paint_funcs_set_push_clip_rectangle_func(funcs, func, user_data, destroy)
+
+    # Return value handling
+  end
+
+  def self.paint_funcs_set_push_group_for_func(funcs : HarfBuzz::PaintFuncsT, func : HarfBuzz::PaintPushGroupForFuncT, user_data : Pointer(Void)?, destroy : HarfBuzz::DestroyFuncT?) : Nil
+    # hb_paint_funcs_set_push_group_for_func: (None)
+    # @funcs:
+    # @func:
+    # @user_data: (nullable)
+    # @destroy: (nullable)
+    # Returns: (transfer none)
+
+    # Generator::NullableArrayPlan
+    user_data = if user_data.nil?
+                  Pointer(Void).null
+                else
+                  user_data.to_unsafe
+                end
+
+    # C call
+    LibHarfBuzz.hb_paint_funcs_set_push_group_for_func(funcs, func, user_data, destroy)
 
     # Return value handling
   end
@@ -6988,6 +7787,25 @@ module HarfBuzz
     # Return value handling
   end
 
+  def self.paint_normalize_color_line(stops : Enumerable(HarfBuzz::ColorStopT), min : Float32, max : Float32) : Nil
+    # hb_paint_normalize_color_line: (None)
+    # @stops: (inout) (transfer full) (array length=len element-type Interface)
+    # @len: (inout)
+    # @min: (out) (transfer full)
+    # @max: (out) (transfer full)
+    # Returns: (transfer none)
+
+    # Generator::ArrayLengthArgPlan
+    len = stops.size
+    # Generator::ArrayArgPlan
+    stops = stops.to_a.map(&.to_unsafe).to_unsafe.as(Pointer(LibHarfBuzz::ColorStopT))
+
+    # C call
+    LibHarfBuzz.hb_paint_normalize_color_line(stops, len, min, max)
+
+    # Return value handling
+  end
+
   def self.paint_pop_clip(funcs : HarfBuzz::PaintFuncsT, paint_data : Pointer(Void)?) : Nil
     # hb_paint_pop_clip: (None)
     # @funcs:
@@ -7067,6 +7885,52 @@ module HarfBuzz
     # Return value handling
   end
 
+  def self.paint_push_clip_path_end(funcs : HarfBuzz::PaintFuncsT, paint_data : Pointer(Void)?) : Nil
+    # hb_paint_push_clip_path_end: (None)
+    # @funcs:
+    # @paint_data: (nullable)
+    # Returns: (transfer none)
+
+    # Generator::NullableArrayPlan
+    paint_data = if paint_data.nil?
+                   Pointer(Void).null
+                 else
+                   paint_data.to_unsafe
+                 end
+
+    # C call
+    LibHarfBuzz.hb_paint_push_clip_path_end(funcs, paint_data)
+
+    # Return value handling
+  end
+
+  def self.paint_push_clip_path_start(funcs : HarfBuzz::PaintFuncsT, paint_data : Pointer(Void)?, draw_data : Pointer(Void)?) : HarfBuzz::DrawFuncsT
+    # hb_paint_push_clip_path_start: (None)
+    # @funcs:
+    # @paint_data: (nullable)
+    # @draw_data: (out) (transfer full) (nullable)
+    # Returns: (transfer none)
+
+    # Generator::NullableArrayPlan
+    paint_data = if paint_data.nil?
+                   Pointer(Void).null
+                 else
+                   paint_data.to_unsafe
+                 end
+    # Generator::NullableArrayPlan
+    draw_data = if draw_data.nil?
+                  Pointer(Void).null
+                else
+                  draw_data.to_unsafe
+                end
+
+    # C call
+    _retval = LibHarfBuzz.hb_paint_push_clip_path_start(funcs, paint_data, draw_data)
+
+    # Return value handling
+    HarfBuzz::DrawFuncsT.new(_retval, GICrystal::Transfer::None)
+  end
+
   def self.paint_push_clip_rectangle(funcs : HarfBuzz::PaintFuncsT, paint_data : Pointer(Void)?, xmin : Float32, ymin : Float32, xmax : Float32, ymax : Float32) : Nil
     # hb_paint_push_clip_rectangle: (None)
     # @funcs:
@@ -7125,6 +7989,26 @@ module HarfBuzz
 
     # C call
     LibHarfBuzz.hb_paint_push_group(funcs, paint_data)
+
+    # Return value handling
+  end
+
+  def self.paint_push_group_for(funcs : HarfBuzz::PaintFuncsT, paint_data : Pointer(Void)?, mode : HarfBuzz::PaintCompositeModeT) : Nil
+    # hb_paint_push_group_for: (None)
+    # @funcs:
+    # @paint_data: (nullable)
+    # @mode:
+    # Returns: (transfer none)
+
+    # Generator::NullableArrayPlan
+    paint_data = if paint_data.nil?
+                   Pointer(Void).null
+                 else
+                   paint_data.to_unsafe
+                 end
+
+    # C call
+    LibHarfBuzz.hb_paint_push_group_for(funcs, paint_data, mode)
 
     # Return value handling
   end
@@ -7200,6 +8084,26 @@ module HarfBuzz
     # Return value handling
   end
 
+  def self.paint_reduce_linear_anchors(x0 : Float32, y0 : Float32, x1 : Float32, y1 : Float32, x2 : Float32, y2 : Float32, xx0 : Float32, yy0 : Float32, xx1 : Float32, yy1 : Float32) : Nil
+    # hb_paint_reduce_linear_anchors: (None)
+    # @x0:
+    # @y0:
+    # @x1:
+    # @y1:
+    # @x2:
+    # @y2:
+    # @xx0: (out) (transfer full)
+    # @yy0: (out) (transfer full)
+    # @xx1: (out) (transfer full)
+    # @yy1: (out) (transfer full)
+    # Returns: (transfer none)
+
+    # C call
+    LibHarfBuzz.hb_paint_reduce_linear_anchors(x0, y0, x1, y1, x2, y2, xx0, yy0, xx1, yy1)
+
+    # Return value handling
+  end
+
   def self.paint_sweep_gradient(funcs : HarfBuzz::PaintFuncsT, paint_data : Pointer(Void)?, color_line : HarfBuzz::ColorLineT, x0 : Float32, y0 : Float32, start_angle : Float32, end_angle : Float32) : Nil
     # hb_paint_sweep_gradient: (None)
     # @funcs:
@@ -7220,6 +8124,34 @@ module HarfBuzz
 
     # C call
     LibHarfBuzz.hb_paint_sweep_gradient(funcs, paint_data, color_line, x0, y0, start_angle, end_angle)
+
+    # Return value handling
+  end
+
+  def self.paint_sweep_gradient_tiles(stops : Enumerable(HarfBuzz::ColorStopT), extend _extend : HarfBuzz::PaintExtendT, start_angle : Float32, end_angle : Float32, emit_patch : HarfBuzz::PaintSweepGradientTileFuncT, user_data : Pointer(Void)?) : Nil
+    # hb_paint_sweep_gradient_tiles: (None)
+    # @stops: (inout) (transfer full) (array length=n_stops element-type Interface)
+    # @n_stops: (inout)
+    # @extend:
+    # @start_angle:
+    # @end_angle:
+    # @emit_patch:
+    # @user_data: (nullable)
+    # Returns: (transfer none)
+
+    # Generator::ArrayLengthArgPlan
+    n_stops = stops.size
+    # Generator::ArrayArgPlan
+    stops = stops.to_a.map(&.to_unsafe).to_unsafe.as(Pointer(LibHarfBuzz::ColorStopT))
+    # Generator::NullableArrayPlan
+    user_data = if user_data.nil?
+                  Pointer(Void).null
+                else
+                  user_data.to_unsafe
+                end
+
+    # C call
+    LibHarfBuzz.hb_paint_sweep_gradient_tiles(stops, n_stops, _extend, start_angle, end_angle, emit_patch, user_data)
 
     # Return value handling
   end

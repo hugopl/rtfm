@@ -70,6 +70,7 @@ require "./user_message.cr"
 require "./user_script.cr"
 require "./user_style_sheet.cr"
 require "./web_context.cr"
+require "./web_extension.cr"
 require "./web_extension_match_pattern.cr"
 require "./web_inspector.cr"
 require "./web_resource.cr"
@@ -83,6 +84,7 @@ require "./website_data_access_permission_request.cr"
 require "./website_data_manager.cr"
 require "./website_policies.cr"
 require "./window_properties.cr"
+require "./xr_permission_request.cr"
 
 module WebKit
   EDITING_COMMAND_COPY                = "Copy"
@@ -95,8 +97,8 @@ module WebKit
   EDITING_COMMAND_SELECT_ALL          = "SelectAll"
   EDITING_COMMAND_UNDO                = "Undo"
   MAJOR_VERSION                       =  2
-  MICRO_VERSION                       =  0
-  MINOR_VERSION                       = 48
+  MICRO_VERSION                       =  5
+  MINOR_VERSION                       = 52
 
   # Callbacks
 
@@ -469,6 +471,17 @@ module WebKit
     end
   end
 
+  enum XRSessionMode : UInt32
+    Inline      = 0
+    ImmersiveVr = 1
+    ImmersiveAr = 2
+
+    # Returns the type id (GType) registered in GLib type system.
+    def self.g_type : UInt64
+      LibWebKit.webkit_xr_session_mode_get_type
+    end
+  end
+
   # Flags
 
   @[Flags]
@@ -558,6 +571,23 @@ module WebKit
     # Returns the type id (GType) registered in GLib type system.
     def self.g_type : UInt64
       LibWebKit.webkit_website_data_types_get_type
+    end
+  end
+
+  @[Flags]
+  enum XRSessionFeatures : UInt32
+    Viewer       =   1
+    Local        =   2
+    LocalFloor   =   4
+    BoundedFloor =   8
+    Unbounded    =  16
+    HandTracking =  32
+    HitTest      =  64
+    Layers       = 128
+
+    # Returns the type id (GType) registered in GLib type system.
+    def self.g_type : UInt64
+      LibWebKit.webkit_xr_session_features_get_type
     end
   end
 
@@ -764,6 +794,17 @@ module WebKit
     _retval
   end
 
+  def self.web_extension_error_quark : UInt32
+    # webkit_web_extension_error_quark: (None)
+    # Returns: (transfer none)
+
+    # C call
+    _retval = LibWebKit.webkit_web_extension_error_quark
+
+    # Return value handling
+    _retval
+  end
+
   def self.web_extension_match_pattern_error_quark : UInt32
     # webkit_web_extension_match_pattern_error_quark: (None)
     # Returns: (transfer none)
@@ -775,6 +816,7 @@ module WebKit
     _retval
   end
 
+  @[Deprecated]
   def self.web_extension_match_pattern_register_custom_URL_scheme(urlScheme : ::String) : Nil
     # webkit_web_extension_match_pattern_register_custom_URL_scheme: (None)
     # @urlScheme:
@@ -782,6 +824,17 @@ module WebKit
 
     # C call
     LibWebKit.webkit_web_extension_match_pattern_register_custom_URL_scheme(urlScheme)
+
+    # Return value handling
+  end
+
+  def self.web_extension_match_pattern_register_custom_url_scheme(urlScheme : ::String) : Nil
+    # webkit_web_extension_match_pattern_register_custom_url_scheme: (None)
+    # @urlScheme:
+    # Returns: (transfer none)
+
+    # C call
+    LibWebKit.webkit_web_extension_match_pattern_register_custom_url_scheme(urlScheme)
 
     # Return value handling
   end
@@ -1105,6 +1158,107 @@ module WebKit
     end
   end
 
+  class WebExtensionError < WebKitError
+    class Unknown < WebExtensionError
+      def initialize(message : String = "")
+        domain_quark = LibGLib.g_quark_from_static_string("WebKitWebExtensionError")
+        @pointer = LibGLib.g_error_new_literal(domain_quark, 899, message)
+      end
+
+      def initialize(pointer : Pointer(LibGLib::Error), transfer : GICrystal::Transfer)
+        super
+      end
+    end
+
+    class ResourceNotFound < WebExtensionError
+      def initialize(message : String = "")
+        domain_quark = LibGLib.g_quark_from_static_string("WebKitWebExtensionError")
+        @pointer = LibGLib.g_error_new_literal(domain_quark, 800, message)
+      end
+
+      def initialize(pointer : Pointer(LibGLib::Error), transfer : GICrystal::Transfer)
+        super
+      end
+    end
+
+    class InvalidResourceCodeSignature < WebExtensionError
+      def initialize(message : String = "")
+        domain_quark = LibGLib.g_quark_from_static_string("WebKitWebExtensionError")
+        @pointer = LibGLib.g_error_new_literal(domain_quark, 801, message)
+      end
+
+      def initialize(pointer : Pointer(LibGLib::Error), transfer : GICrystal::Transfer)
+        super
+      end
+    end
+
+    class InvalidManifest < WebExtensionError
+      def initialize(message : String = "")
+        domain_quark = LibGLib.g_quark_from_static_string("WebKitWebExtensionError")
+        @pointer = LibGLib.g_error_new_literal(domain_quark, 802, message)
+      end
+
+      def initialize(pointer : Pointer(LibGLib::Error), transfer : GICrystal::Transfer)
+        super
+      end
+    end
+
+    class UnsupportedManifestVersion < WebExtensionError
+      def initialize(message : String = "")
+        domain_quark = LibGLib.g_quark_from_static_string("WebKitWebExtensionError")
+        @pointer = LibGLib.g_error_new_literal(domain_quark, 803, message)
+      end
+
+      def initialize(pointer : Pointer(LibGLib::Error), transfer : GICrystal::Transfer)
+        super
+      end
+    end
+
+    class InvalidManifestEntry < WebExtensionError
+      def initialize(message : String = "")
+        domain_quark = LibGLib.g_quark_from_static_string("WebKitWebExtensionError")
+        @pointer = LibGLib.g_error_new_literal(domain_quark, 804, message)
+      end
+
+      def initialize(pointer : Pointer(LibGLib::Error), transfer : GICrystal::Transfer)
+        super
+      end
+    end
+
+    class InvalidDeclarativeNetRequestEntry < WebExtensionError
+      def initialize(message : String = "")
+        domain_quark = LibGLib.g_quark_from_static_string("WebKitWebExtensionError")
+        @pointer = LibGLib.g_error_new_literal(domain_quark, 805, message)
+      end
+
+      def initialize(pointer : Pointer(LibGLib::Error), transfer : GICrystal::Transfer)
+        super
+      end
+    end
+
+    class InvalidBackgroundPersistence < WebExtensionError
+      def initialize(message : String = "")
+        domain_quark = LibGLib.g_quark_from_static_string("WebKitWebExtensionError")
+        @pointer = LibGLib.g_error_new_literal(domain_quark, 806, message)
+      end
+
+      def initialize(pointer : Pointer(LibGLib::Error), transfer : GICrystal::Transfer)
+        super
+      end
+    end
+
+    class InvalidArchive < WebExtensionError
+      def initialize(message : String = "")
+        domain_quark = LibGLib.g_quark_from_static_string("WebKitWebExtensionError")
+        @pointer = LibGLib.g_error_new_literal(domain_quark, 807, message)
+      end
+
+      def initialize(pointer : Pointer(LibGLib::Error), transfer : GICrystal::Transfer)
+        super
+      end
+    end
+  end
+
   class WebExtensionMatchPatternError < WebKitError
     class Unknown < WebExtensionMatchPatternError
       def initialize(message : String = "")
@@ -1216,6 +1370,18 @@ module WebKit
 
     if error_domain == LibGLib.g_quark_try_string("WebKitUserMessageError")
       return UserMessageError::Message.new(error, transfer) if error_code == 0
+    end
+
+    if error_domain == LibGLib.g_quark_try_string("WebKitWebExtensionError")
+      return WebExtensionError::Unknown.new(error, transfer) if error_code == 899
+      return WebExtensionError::ResourceNotFound.new(error, transfer) if error_code == 800
+      return WebExtensionError::InvalidResourceCodeSignature.new(error, transfer) if error_code == 801
+      return WebExtensionError::InvalidManifest.new(error, transfer) if error_code == 802
+      return WebExtensionError::UnsupportedManifestVersion.new(error, transfer) if error_code == 803
+      return WebExtensionError::InvalidManifestEntry.new(error, transfer) if error_code == 804
+      return WebExtensionError::InvalidDeclarativeNetRequestEntry.new(error, transfer) if error_code == 805
+      return WebExtensionError::InvalidBackgroundPersistence.new(error, transfer) if error_code == 806
+      return WebExtensionError::InvalidArchive.new(error, transfer) if error_code == 807
     end
 
     if error_domain == LibGLib.g_quark_try_string("WebKitWebExtensionMatchPatternError")

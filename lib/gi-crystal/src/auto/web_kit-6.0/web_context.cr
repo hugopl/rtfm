@@ -508,7 +508,8 @@ module WebKit
         handler = ->(_lib_sender : Pointer(Void), lib_message : Pointer(Void), _lib_box : Pointer(Void)) {
           # Generator::BuiltInTypeArgPlan
           message = WebKit::UserMessage.new(lib_message, GICrystal::Transfer::None)
-          ::Box(Proc(WebKit::UserMessage, Bool)).unbox(_lib_box).call(message)
+          _retval = ::Box(Proc(WebKit::UserMessage, Bool)).unbox(_lib_box).call(message)
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,
@@ -522,7 +523,8 @@ module WebKit
           _sender = WebKit::WebContext.new(_lib_sender, GICrystal::Transfer::None)
           # Generator::BuiltInTypeArgPlan
           message = WebKit::UserMessage.new(lib_message, GICrystal::Transfer::None)
-          ::Box(Proc(WebKit::WebContext, WebKit::UserMessage, Bool)).unbox(_lib_box).call(_sender, message)
+          _retval = ::Box(Proc(WebKit::WebContext, WebKit::UserMessage, Bool)).unbox(_lib_box).call(_sender, message)
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,

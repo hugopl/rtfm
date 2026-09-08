@@ -61,11 +61,12 @@ module Pango
   GLYPH_EMPTY                     =  268435455_u32
   GLYPH_INVALID_INPUT             = 4294967295_u32
   GLYPH_UNKNOWN_FLAG              =  268435456_u32
+  RENDER_COMPONENT_ALL            =             62
   SCALE                           =           1024
   VERSION_MAJOR                   =              1
-  VERSION_MICRO                   =              3
-  VERSION_MINOR                   =             56
-  VERSION_STRING                  = "1.56.3"
+  VERSION_MICRO                   =              2
+  VERSION_MINOR                   =             58
+  VERSION_STRING                  = "1.58.2"
 
   # Callbacks
 
@@ -131,6 +132,7 @@ module Pango
     Sentence           = 35
     BaselineShift      = 36
     FontScale          = 37
+    Width              = 38
 
     # Returns the type id (GType) registered in GLib type system.
     def self.g_type : UInt64
@@ -216,6 +218,17 @@ module Pango
     # Returns the type id (GType) registered in GLib type system.
     def self.g_type : UInt64
       LibPango.pango_ellipsize_mode_get_type
+    end
+  end
+
+  enum FontColor : UInt32
+    Forbidden = 0
+    Required  = 1
+    DontCare  = 2
+
+    # Returns the type id (GType) registered in GLib type system.
+    def self.g_type : UInt64
+      LibPango.pango_font_color_get_type
     end
   end
 
@@ -507,6 +520,23 @@ module Pango
     end
   end
 
+  enum Width : UInt32
+    UltraCondensed =  500
+    ExtraCondensed =  625
+    Condensed      =  750
+    SemiCondensed  =  875
+    Normal         = 1000
+    SemiExpanded   = 1125
+    Expanded       = 1250
+    ExtraExpanded  = 1500
+    UltraExpanded  = 2000
+
+    # Returns the type id (GType) registered in GLib type system.
+    def self.g_type : UInt64
+      LibPango.pango_width_get_type
+    end
+  end
+
   enum WrapMode : UInt32
     Word     = 0
     Char     = 1
@@ -527,11 +557,13 @@ module Pango
     Style      =   2
     Variant    =   4
     Weight     =   8
+    Width      =  16
     Stretch    =  16
     Size       =  32
     Gravity    =  64
     Variations = 128
     Features   = 256
+    Color      = 512
 
     # Returns the type id (GType) registered in GLib type system.
     def self.g_type : UInt64
@@ -559,6 +591,21 @@ module Pango
     # Returns the type id (GType) registered in GLib type system.
     def self.g_type : UInt64
       LibPango.pango_layout_serialize_flags_get_type
+    end
+  end
+
+  @[Flags]
+  enum RenderComponent : UInt32
+    PlainGlyph    =  2
+    ColorGlyph    =  4
+    Background    =  8
+    Underline     =  8
+    Strikethrough = 16
+    Overline      = 32
+
+    # Returns the type id (GType) registered in GLib type system.
+    def self.g_type : UInt64
+      LibPango.pango_render_component_get_type
     end
   end
 
@@ -1106,6 +1153,18 @@ module Pango
     Pango::Attribute.new(_retval, GICrystal::Transfer::Full)
   end
 
+  def self.attr_width_new(width : Pango::Width) : Pango::Attribute
+    # pango_attr_width_new: (None)
+    # @width:
+    # Returns: (transfer full)
+
+    # C call
+    _retval = LibPango.pango_attr_width_new(width)
+
+    # Return value handling
+    Pango::Attribute.new(_retval, GICrystal::Transfer::Full)
+  end
+
   def self.attr_word_new : Pango::Attribute
     # pango_attr_word_new: (None)
     # Returns: (transfer full)
@@ -1179,25 +1238,15 @@ module Pango
     # Return value handling
   end
 
-  def self.extents_to_pixels(inclusive : Pango::Rectangle?, nearest : Pango::Rectangle?) : Nil
+  def self.extents_to_pixels : Nil
     # pango_extents_to_pixels: (None)
-    # @inclusive: (nullable)
-    # @nearest: (nullable)
+    # @inclusive: (inout) (transfer full) (optional)
+    # @nearest: (inout) (transfer full) (optional)
     # Returns: (transfer none)
 
-    # Generator::NullableArrayPlan
-    inclusive = if inclusive.nil?
-                  Pointer(Void).null
-                else
-                  inclusive.to_unsafe
-                end
-    # Generator::NullableArrayPlan
-    nearest = if nearest.nil?
-                Pointer(Void).null
-              else
-                nearest.to_unsafe
-              end
-
+    # Generator::OutArgUsedInReturnPlan
+    inclusive = Pointer(Void).null # Generator::OutArgUsedInReturnPlan
+    nearest = Pointer(Void).null
     # C call
     LibPango.pango_extents_to_pixels(inclusive, nearest)
 
@@ -1217,14 +1266,17 @@ module Pango
     Pango::Direction.new(_retval)
   end
 
-  def self.find_paragraph_boundary(text : ::String, length : Int32, paragraph_delimiter_index : Int32, next_paragraph_start : Int32) : Nil
+  def self.find_paragraph_boundary(text : ::String, length : Int32) : Nil
     # pango_find_paragraph_boundary: (None)
     # @text:
     # @length:
-    # @paragraph_delimiter_index: (out) (transfer full)
-    # @next_paragraph_start: (out) (transfer full)
+    # @paragraph_delimiter_index: (out) (transfer full) (optional)
+    # @next_paragraph_start: (out) (transfer full) (optional)
     # Returns: (transfer none)
 
+    # Generator::OutArgUsedInReturnPlan
+    paragraph_delimiter_index = Pointer(Int32).null # Generator::OutArgUsedInReturnPlan
+    next_paragraph_start = Pointer(Int32).null
     # C call
     LibPango.pango_find_paragraph_boundary(text, length, paragraph_delimiter_index, next_paragraph_start)
 

@@ -16,8 +16,12 @@ require "./clip_node.cr"
 require "./color_matrix_node.cr"
 require "./color_node.cr"
 require "./color_stop.cr"
+require "./component_transfer.cr"
+require "./component_transfer_node.cr"
+require "./composite_node.cr"
 require "./conic_gradient_node.cr"
 require "./container_node.cr"
+require "./copy_node.cr"
 require "./cross_fade_node.cr"
 require "./debug_node.cr"
 require "./fill_node.cr"
@@ -25,18 +29,21 @@ require "./gl_renderer.cr"
 require "./gl_shader.cr"
 require "./gl_shader_node.cr"
 require "./inset_shadow_node.cr"
+require "./isolation_node.cr"
 require "./linear_gradient_node.cr"
 require "./mask_node.cr"
 require "./ngl_renderer.cr"
 require "./opacity_node.cr"
 require "./outset_shadow_node.cr"
 require "./parse_location.cr"
+require "./paste_node.cr"
 require "./path.cr"
 require "./path_builder.cr"
 require "./path_measure.cr"
 require "./path_point.cr"
 require "./radial_gradient_node.cr"
 require "./render_node.cr"
+require "./render_replay.cr"
 require "./renderer.cr"
 require "./repeat_node.cr"
 require "./repeating_linear_gradient_node.cr"
@@ -61,7 +68,15 @@ module Gsk
 
   alias ParseErrorFunc = Proc(Gsk::ParseLocation, Gsk::ParseLocation, GLib::Error, Nil)
 
-  alias PathForeachFunc = Proc(Gsk::PathOperation, Graphene::Point, UInt64, Float32, Bool)
+  alias PathForeachFunc = Proc(Gsk::PathOperation, Enumerable(Graphene::Point), UInt64, Float32, Bool)
+
+  alias PathIntersectionFunc = Proc(Gsk::Path, Gsk::PathPoint, Gsk::Path, Gsk::PathPoint, Gsk::PathIntersection, Bool)
+
+  alias RenderReplayFontFilter = Proc(Gsk::RenderReplay, Pango::Font, Pango::Font)
+
+  alias RenderReplayNodeFilter = Proc(Gsk::RenderReplay, Gsk::RenderNode, Gsk::RenderNode)
+
+  alias RenderReplayTextureFilter = Proc(Gsk::RenderReplay, Gdk::Texture, Gdk::Texture)
 
   # Base class for all errors in this module.
   class GskError < GLib::Error
@@ -177,6 +192,18 @@ module Gsk
     end
   end
 
+  enum PathIntersection : UInt32
+    None   = 0
+    Normal = 1
+    Start  = 2
+    End    = 3
+
+    # Returns the type id (GType) registered in GLib type system.
+    def self.g_type : UInt64
+      LibGsk.gsk_path_intersection_get_type
+    end
+  end
+
   enum PathOperation : UInt32
     Move  = 0
     Close = 1
@@ -188,6 +215,26 @@ module Gsk
     # Returns the type id (GType) registered in GLib type system.
     def self.g_type : UInt64
       LibGsk.gsk_path_operation_get_type
+    end
+  end
+
+  enum PorterDuff : UInt32
+    Source         =  0
+    Dest           =  1
+    SourceOverDest =  2
+    DestOverSource =  3
+    SourceInDest   =  4
+    DestInSource   =  5
+    SourceOutDest  =  6
+    DestOutSource  =  7
+    SourceAtopDest =  8
+    DestAtopSource =  9
+    Xor            = 10
+    Clear          = 11
+
+    # Returns the type id (GType) registered in GLib type system.
+    def self.g_type : UInt64
+      LibGsk.gsk_porter_duff_get_type
     end
   end
 
@@ -223,6 +270,13 @@ module Gsk
     FillNode                    = 28
     StrokeNode                  = 29
     SubsurfaceNode              = 30
+    ComponentTransferNode       = 31
+    CopyNode                    = 32
+    PasteNode                   = 33
+    CompositeNode               = 34
+    IsolationNode               = 35
+    DisplacementNode            = 36
+    ArithmeticNode              = 37
 
     # Returns the type id (GType) registered in GLib type system.
     def self.g_type : UInt64
@@ -259,6 +313,17 @@ module Gsk
   # Flags
 
   @[Flags]
+  enum Isolation : Int32
+    Background = 1
+    CopyPaste  = 2
+
+    # Returns the type id (GType) registered in GLib type system.
+    def self.g_type : UInt64
+      LibGsk.gsk_isolation_get_type
+    end
+  end
+
+  @[Flags]
   enum PathForeachFlags : UInt32
     OnlyLines = 0
     Quad      = 1
@@ -269,6 +334,19 @@ module Gsk
     def self.g_type : UInt64
       LibGsk.gsk_path_foreach_flags_get_type
     end
+  end
+
+  def self.component_transfer_equal(self _self : Pointer(Void), other : Pointer(Void)) : Bool
+    # gsk_component_transfer_equal: (None)
+    # @self:
+    # @other:
+    # Returns: (transfer none)
+
+    # C call
+    _retval = LibGsk.gsk_component_transfer_equal(_self, other)
+
+    # Return value handling
+    GICrystal.to_bool(_retval)
   end
 
   def self.path_parse(string : ::String) : Gsk::Path?

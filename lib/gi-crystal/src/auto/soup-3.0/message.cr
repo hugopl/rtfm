@@ -937,7 +937,8 @@ module Soup
           tls_peer_certificate = Gio::TlsCertificate.new(lib_tls_peer_certificate, GICrystal::Transfer::None)
           # Generator::BuiltInTypeArgPlan
           tls_peer_errors = Gio::TlsCertificateFlags.new(lib_tls_peer_errors)
-          ::Box(Proc(Gio::TlsCertificate, Gio::TlsCertificateFlags, Bool)).unbox(_lib_box).call(tls_peer_certificate, tls_peer_errors)
+          _retval = ::Box(Proc(Gio::TlsCertificate, Gio::TlsCertificateFlags, Bool)).unbox(_lib_box).call(tls_peer_certificate, tls_peer_errors)
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,
@@ -953,7 +954,8 @@ module Soup
           tls_peer_certificate = Gio::TlsCertificate.new(lib_tls_peer_certificate, GICrystal::Transfer::None)
           # Generator::BuiltInTypeArgPlan
           tls_peer_errors = Gio::TlsCertificateFlags.new(lib_tls_peer_errors)
-          ::Box(Proc(Soup::Message, Gio::TlsCertificate, Gio::TlsCertificateFlags, Bool)).unbox(_lib_box).call(_sender, tls_peer_certificate, tls_peer_errors)
+          _retval = ::Box(Proc(Soup::Message, Gio::TlsCertificate, Gio::TlsCertificateFlags, Bool)).unbox(_lib_box).call(_sender, tls_peer_certificate, tls_peer_errors)
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,
@@ -986,7 +988,8 @@ module Soup
           auth = Soup::Auth.new(lib_auth, GICrystal::Transfer::None)
           # Generator::BuiltInTypeArgPlan
           retrying = GICrystal.to_bool(lib_retrying)
-          ::Box(Proc(Soup::Auth, Bool, Bool)).unbox(_lib_box).call(auth, retrying)
+          _retval = ::Box(Proc(Soup::Auth, Bool, Bool)).unbox(_lib_box).call(auth, retrying)
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,
@@ -1002,7 +1005,8 @@ module Soup
           auth = Soup::Auth.new(lib_auth, GICrystal::Transfer::None)
           # Generator::BuiltInTypeArgPlan
           retrying = GICrystal.to_bool(lib_retrying)
-          ::Box(Proc(Soup::Message, Soup::Auth, Bool, Bool)).unbox(_lib_box).call(_sender, auth, retrying)
+          _retval = ::Box(Proc(Soup::Message, Soup::Auth, Bool, Bool)).unbox(_lib_box).call(_sender, auth, retrying)
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,
@@ -1381,7 +1385,8 @@ module Soup
         handler = ->(_lib_sender : Pointer(Void), lib_tls_connection : Pointer(Void), _lib_box : Pointer(Void)) {
           # Generator::BuiltInTypeArgPlan
           tls_connection = Gio::AbstractTlsClientConnection.new(lib_tls_connection, GICrystal::Transfer::None)
-          ::Box(Proc(Gio::TlsClientConnection, Bool)).unbox(_lib_box).call(tls_connection)
+          _retval = ::Box(Proc(Gio::TlsClientConnection, Bool)).unbox(_lib_box).call(tls_connection)
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,
@@ -1395,7 +1400,8 @@ module Soup
           _sender = Soup::Message.new(_lib_sender, GICrystal::Transfer::None)
           # Generator::BuiltInTypeArgPlan
           tls_connection = Gio::AbstractTlsClientConnection.new(lib_tls_connection, GICrystal::Transfer::None)
-          ::Box(Proc(Soup::Message, Gio::TlsClientConnection, Bool)).unbox(_lib_box).call(_sender, tls_connection)
+          _retval = ::Box(Proc(Soup::Message, Gio::TlsClientConnection, Bool)).unbox(_lib_box).call(_sender, tls_connection)
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,
@@ -1426,7 +1432,8 @@ module Soup
         handler = ->(_lib_sender : Pointer(Void), lib_tls_password : Pointer(Void), _lib_box : Pointer(Void)) {
           # Generator::BuiltInTypeArgPlan
           tls_password = Gio::TlsPassword.new(lib_tls_password, GICrystal::Transfer::None)
-          ::Box(Proc(Gio::TlsPassword, Bool)).unbox(_lib_box).call(tls_password)
+          _retval = ::Box(Proc(Gio::TlsPassword, Bool)).unbox(_lib_box).call(tls_password)
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,
@@ -1440,7 +1447,8 @@ module Soup
           _sender = Soup::Message.new(_lib_sender, GICrystal::Transfer::None)
           # Generator::BuiltInTypeArgPlan
           tls_password = Gio::TlsPassword.new(lib_tls_password, GICrystal::Transfer::None)
-          ::Box(Proc(Soup::Message, Gio::TlsPassword, Bool)).unbox(_lib_box).call(_sender, tls_password)
+          _retval = ::Box(Proc(Soup::Message, Gio::TlsPassword, Bool)).unbox(_lib_box).call(_sender, tls_password)
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,

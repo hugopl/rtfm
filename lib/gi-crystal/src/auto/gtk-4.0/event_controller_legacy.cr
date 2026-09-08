@@ -104,7 +104,8 @@ module Gtk
         handler = ->(_lib_sender : Pointer(Void), lib_event : Pointer(Void), _lib_box : Pointer(Void)) {
           # Generator::BuiltInTypeArgPlan
           event = Gdk::Event.new(lib_event, GICrystal::Transfer::None)
-          ::Box(Proc(Gdk::Event, Bool)).unbox(_lib_box).call(event)
+          _retval = ::Box(Proc(Gdk::Event, Bool)).unbox(_lib_box).call(event)
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,
@@ -118,7 +119,8 @@ module Gtk
           _sender = Gtk::EventControllerLegacy.new(_lib_sender, GICrystal::Transfer::None)
           # Generator::BuiltInTypeArgPlan
           event = Gdk::Event.new(lib_event, GICrystal::Transfer::None)
-          ::Box(Proc(Gtk::EventControllerLegacy, Gdk::Event, Bool)).unbox(_lib_box).call(_sender, event)
+          _retval = ::Box(Proc(Gtk::EventControllerLegacy, Gdk::Event, Bool)).unbox(_lib_box).call(_sender, event)
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,

@@ -390,7 +390,8 @@ module Gtk
           # Generator::BuiltInTypeArgPlan
           widget = Gtk::Widget.new(lib_widget, GICrystal::Transfer::None)
           # Generator::CallerAllocatesPlan
-          ::Box(Proc(Gtk::Widget, Bool)).unbox(_lib_box).call(widget)
+          _retval = ::Box(Proc(Gtk::Widget, Bool)).unbox(_lib_box).call(widget)
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,
@@ -405,7 +406,8 @@ module Gtk
           # Generator::BuiltInTypeArgPlan
           widget = Gtk::Widget.new(lib_widget, GICrystal::Transfer::None)
           # Generator::CallerAllocatesPlan
-          ::Box(Proc(Gtk::Overlay, Gtk::Widget, Bool)).unbox(_lib_box).call(_sender, widget)
+          _retval = ::Box(Proc(Gtk::Overlay, Gtk::Widget, Bool)).unbox(_lib_box).call(_sender, widget)
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,

@@ -23,27 +23,27 @@ require "./source.cr"
 require "./source_callback_funcs.cr"
 require "./source_funcs.cr"
 require "./tuples.cr"
-require "./unix_pipe.cr"
 require "./variant_builder.cr"
 require "./variant_dict.cr"
 require "./variant_type.cr"
 
 module GLib
-  ALLOCATOR_LIST                  =    1
-  ALLOCATOR_NODE                  =    3
-  ALLOCATOR_SLIST                 =    2
-  ALLOC_AND_FREE                  =    2
-  ALLOC_ONLY                      =    1
-  ATOMIC_REF_COUNT_INIT           =    1
-  MAJOR_VERSION                   =    2
-  MICRO_VERSION                   =    0
-  MINOR_VERSION                   =   84
-  PRIORITY_DEFAULT                =    0
-  PRIORITY_DEFAULT_IDLE           =  200
-  PRIORITY_HIGH                   = -100
-  PRIORITY_HIGH_IDLE              =  100
-  PRIORITY_LOW                    =  300
-  REF_COUNT_INIT                  =   -1
+  ALLOCATOR_LIST                  =              1
+  ALLOCATOR_NODE                  =              3
+  ALLOCATOR_SLIST                 =              2
+  ALLOC_AND_FREE                  =              2
+  ALLOC_ONLY                      =              1
+  ATOMIC_REF_COUNT_INIT           =              1
+  MAJOR_VERSION                   =              2
+  MICRO_VERSION                   =              3
+  MINOR_VERSION                   =             88
+  NSEC_PER_SEC                    = 1000000000_u64
+  PRIORITY_DEFAULT                =              0
+  PRIORITY_DEFAULT_IDLE           =            200
+  PRIORITY_HIGH                   =           -100
+  PRIORITY_HIGH_IDLE              =            100
+  PRIORITY_LOW                    =            300
+  REF_COUNT_INIT                  =             -1
   SOURCE_CONTINUE                 = true
   SOURCE_REMOVE                   = false
   TEST_OPTION_NONFATAL_ASSERTIONS = "nonfatal-assertions"
@@ -132,8 +132,6 @@ module GLib
   alias TranslateFunc = Proc(::String, ::String)
 
   alias TraverseFunc = Proc(Pointer(Void), Pointer(Void), Bool)
-
-  alias UnixFDSourceFunc = Proc(Int32, GLib::IOCondition, Bool)
 
   alias VoidFunc = Proc(Nil)
 
@@ -371,6 +369,7 @@ module GLib
     AksaraStart                = 45
     ViramaFinal                = 46
     Virama                     = 47
+    UnambiguousHyphen          = 48
 
     # Returns the type id (GType) registered in GLib type system.
     def self.g_type : UInt64
@@ -552,6 +551,10 @@ module GLib
     GurungKhema           = 169
     KiratRai              = 170
     OlOnal                = 171
+    Sidetic               = 172
+    TolongSiki            = 173
+    TaiYo                 = 174
+    BeriaErfe             = 175
 
     # Returns the type id (GType) registered in GLib type system.
     def self.g_type : UInt64
@@ -595,11 +598,6 @@ module GLib
     def self.g_type : UInt64
       LibGLib.g_unicode_type_get_type
     end
-  end
-
-  enum UnixPipeEnd : UInt32
-    Read  = 0
-    Write = 1
   end
 
   enum UserDirectory : UInt32
@@ -680,9 +678,9 @@ module GLib
 
   @[Flags]
   enum HookFlagMask : UInt32
-    Active =  1
-    InCall =  2
-    Mask   = 15
+    Active    = 1
+    InCall    = 2
+    Reserved1 = 4
   end
 
   @[Flags]
@@ -770,25 +768,22 @@ module GLib
 
   @[Flags]
   enum RegexCompileFlags : UInt32
-    Default          =        0
-    Caseless         =        1
-    Multiline        =        2
-    Dotall           =        4
-    Extended         =        8
-    Anchored         =       16
-    DollarEndonly    =       32
-    Ungreedy         =      512
-    Raw              =     2048
-    NoAutoCapture    =     4096
-    Optimize         =     8192
-    Firstline        =   262144
-    Dupnames         =   524288
-    NewlineCr        =  1048576
-    NewlineLf        =  2097152
-    NewlineCrlf      =  3145728
-    NewlineAnycrlf   =  5242880
-    BsrAnycrlf       =  8388608
-    JavascriptCompat = 33554432
+    Default          =       0
+    Caseless         =       1
+    Multiline        =       2
+    Dotall           =       4
+    Extended         =       8
+    Anchored         =      16
+    DollarEndonly    =      32
+    Ungreedy         =     512
+    Raw              =    2048
+    NoAutoCapture    =    4096
+    Optimize         =    8192
+    Firstline        =  262144
+    Dupnames         =  524288
+    NewlineCr        = 1048576
+    NewlineLf        = 2097152
+    NewlineReserved1 = 4194304
   end
 
   @[Flags]
@@ -830,10 +825,11 @@ module GLib
 
   @[Flags]
   enum TestSubprocessFlags : UInt32
-    Default       = 0
-    InheritStdin  = 1
-    InheritStdout = 2
-    InheritStderr = 4
+    Default            = 0
+    InheritStdin       = 1
+    InheritStdout      = 2
+    InheritStderr      = 4
+    InheritDescriptors = 8
   end
 
   @[Flags]
@@ -944,13 +940,20 @@ module GLib
     GLib::AsyncQueue.new(_retval, GICrystal::Transfer::Full)
   end
 
-  def self.atomic_int_compare_and_exchange_full(atomic : Pointer(Int32), oldval : Int32, newval : Int32, preval : Int32) : Bool
+  def self.atomic_int_compare_and_exchange_full(atomic : Pointer(Void)?, oldval : Int32, newval : Int32, preval : Int32) : Bool
     # g_atomic_int_compare_and_exchange_full: (None)
-    # @atomic:
+    # @atomic: (nullable)
     # @oldval:
     # @newval:
     # @preval: (out) (transfer full)
     # Returns: (transfer none)
+
+    # Generator::NullableArrayPlan
+    atomic = if atomic.nil?
+               Pointer(Void).null
+             else
+               atomic.to_unsafe
+             end
 
     # C call
     _retval = LibGLib.g_atomic_int_compare_and_exchange_full(atomic, oldval, newval, preval)
@@ -959,11 +962,18 @@ module GLib
     GICrystal.to_bool(_retval)
   end
 
-  def self.atomic_int_exchange(atomic : Pointer(Int32), newval : Int32) : Int32
+  def self.atomic_int_exchange(atomic : Pointer(Void)?, newval : Int32) : Int32
     # g_atomic_int_exchange: (None)
-    # @atomic:
+    # @atomic: (nullable)
     # @newval:
     # Returns: (transfer none)
+
+    # Generator::NullableArrayPlan
+    atomic = if atomic.nil?
+               Pointer(Void).null
+             else
+               atomic.to_unsafe
+             end
 
     # C call
     _retval = LibGLib.g_atomic_int_exchange(atomic, newval)
@@ -1026,6 +1036,27 @@ module GLib
     _retval unless _retval.null?
   end
 
+  def self.bit_lock_and_get(address : Pointer(Void)?, lock_bit : UInt32) : Nil
+    # g_bit_lock_and_get: (None)
+    # @address: (nullable)
+    # @lock_bit:
+    # @out_val: (out) (transfer full) (optional)
+    # Returns: (transfer none)
+
+    # Generator::NullableArrayPlan
+    address = if address.nil?
+                Pointer(Void).null
+              else
+                address.to_unsafe
+              end
+    # Generator::OutArgUsedInReturnPlan
+    out_val = Pointer(Int32).null
+    # C call
+    LibGLib.g_bit_lock_and_get(address, lock_bit, out_val)
+
+    # Return value handling
+  end
+
   def self.bit_nth_lsf(mask : UInt64, nth_bit : Int32) : Int32
     # g_bit_nth_lsf: (None)
     # @mask:
@@ -1064,6 +1095,28 @@ module GLib
     _retval
   end
 
+  def self.bit_unlock_and_set(address : Pointer(Void)?, lock_bit : UInt32, new_val : Int32, preserve_mask : Int32) : Nil
+    # g_bit_unlock_and_set: (None)
+    # @address: (nullable)
+    # @lock_bit:
+    # @new_val:
+    # @preserve_mask:
+    # Returns: (transfer none)
+
+    # Generator::NullableArrayPlan
+    address = if address.nil?
+                Pointer(Void).null
+              else
+                address.to_unsafe
+              end
+
+    # C call
+    LibGLib.g_bit_unlock_and_set(address, lock_bit, new_val, preserve_mask)
+
+    # Return value handling
+  end
+
+  @[Deprecated]
   def self.blow_chunks : Nil
     # g_blow_chunks: (None)
     # Returns: (transfer none)
@@ -1074,15 +1127,19 @@ module GLib
     # Return value handling
   end
 
-  def self.byte_array_append(array : ::Bytes, data : Pointer(UInt8), len : UInt32) : ::Bytes
+  def self.byte_array_append(array : ::Bytes, data : ::Bytes) : ::Bytes
     # g_byte_array_append: (None)
     # @array: (array element-type UInt8)
-    # @data:
+    # @data: (array length=len element-type UInt8)
     # @len:
     # Returns: (transfer none) (array element-type UInt8)
 
     # Generator::ArrayArgPlan
     array = array.to_a.to_unsafe.as(Pointer(UInt8))
+    # Generator::ArrayLengthArgPlan
+    len = data.size
+    # Generator::ArrayArgPlan
+    data = data.to_a.to_unsafe.as(Pointer(UInt8))
 
     # C call
     _retval = LibGLib.g_byte_array_append(array, data, len)
@@ -1091,15 +1148,19 @@ module GLib
     _retval
   end
 
-  def self.byte_array_prepend(array : ::Bytes, data : Pointer(UInt8), len : UInt32) : ::Bytes
+  def self.byte_array_prepend(array : ::Bytes, data : ::Bytes) : ::Bytes
     # g_byte_array_prepend: (None)
     # @array: (array element-type UInt8)
-    # @data:
+    # @data: (array length=len element-type UInt8)
     # @len:
     # Returns: (transfer none) (array element-type UInt8)
 
     # Generator::ArrayArgPlan
     array = array.to_a.to_unsafe.as(Pointer(UInt8))
+    # Generator::ArrayLengthArgPlan
+    len = data.size
+    # Generator::ArrayArgPlan
+    data = data.to_a.to_unsafe.as(Pointer(UInt8))
 
     # C call
     _retval = LibGLib.g_byte_array_prepend(array, data, len)
@@ -1268,18 +1329,6 @@ module GLib
     _retval
   end
 
-  def self.closefrom(lowfd : Int32) : Int32
-    # g_closefrom: (None)
-    # @lowfd:
-    # Returns: (transfer none)
-
-    # C call
-    _retval = LibGLib.g_closefrom(lowfd)
-
-    # Return value handling
-    _retval
-  end
-
   def self.creat(filename : ::String, mode : Int32) : Int32
     # g_creat: (None)
     # @filename:
@@ -1311,6 +1360,19 @@ module GLib
     # Return value handling
   end
 
+  def self.date_get_weeks_in_year(year : UInt16, first_day_of_week : GLib::DateWeekday) : UInt8
+    # g_date_get_weeks_in_year: (None)
+    # @year:
+    # @first_day_of_week:
+    # Returns: (transfer none)
+
+    # C call
+    _retval = LibGLib.g_date_get_weeks_in_year(year, first_day_of_week)
+
+    # Return value handling
+    _retval
+  end
+
   def self.error_domain_register(error_type_name : ::String, error_type_private_size : UInt64, error_type_init : GLib::ErrorInitFunc, error_type_copy : GLib::ErrorCopyFunc, error_type_clear : GLib::ErrorClearFunc) : UInt32
     # g_error_domain_register: (None)
     # @error_type_name:
@@ -1338,18 +1400,6 @@ module GLib
 
     # C call
     _retval = LibGLib.g_error_domain_register_static(error_type_name, error_type_private_size, error_type_init, error_type_copy, error_type_clear)
-
-    # Return value handling
-    _retval
-  end
-
-  def self.fdwalk_set_cloexec(lowfd : Int32) : Int32
-    # g_fdwalk_set_cloexec: (None)
-    # @lowfd:
-    # Returns: (transfer none)
-
-    # C call
-    _retval = LibGLib.g_fdwalk_set_cloexec(lowfd)
 
     # Return value handling
     _retval
@@ -1442,6 +1492,17 @@ module GLib
 
     # Return value handling
     ::String.new(_retval) unless _retval.null?
+  end
+
+  def self.monotonic_time_ns : UInt64
+    # g_get_monotonic_time_ns: (None)
+    # Returns: (transfer none)
+
+    # C call
+    _retval = LibGLib.g_get_monotonic_time_ns
+
+    # Return value handling
+    _retval
   end
 
   def self.os_info(key_name : ::String) : ::String?
@@ -1694,6 +1755,7 @@ module GLib
     GLib::Source.new(_retval, GICrystal::Transfer::Full)
   end
 
+  @[Deprecated]
   def self.list_pop_allocator : Nil
     # g_list_pop_allocator: (None)
     # Returns: (transfer none)
@@ -1704,6 +1766,7 @@ module GLib
     # Return value handling
   end
 
+  @[Deprecated]
   def self.list_push_allocator(allocator : GLib::Allocator) : Nil
     # g_list_push_allocator: (None)
     # @allocator:
@@ -1713,6 +1776,17 @@ module GLib
     LibGLib.g_list_push_allocator(allocator)
 
     # Return value handling
+  end
+
+  def self.log_get_always_fatal : GLib::LogLevelFlags
+    # g_log_get_always_fatal: (None)
+    # Returns: (transfer none)
+
+    # C call
+    _retval = LibGLib.g_log_get_always_fatal
+
+    # Return value handling
+    GLib::LogLevelFlags.new(_retval)
   end
 
   def self.log_writer_default_set_debug_domains(domains : ::String?) : Nil
@@ -1840,6 +1914,7 @@ module GLib
     GICrystal.transfer_full(_retval)
   end
 
+  @[Deprecated]
   def self.mem_chunk_info : Nil
     # g_mem_chunk_info: (None)
     # Returns: (transfer none)
@@ -1863,6 +1938,7 @@ module GLib
     _retval
   end
 
+  @[Deprecated]
   def self.node_pop_allocator : Nil
     # g_node_pop_allocator: (None)
     # Returns: (transfer none)
@@ -1873,6 +1949,7 @@ module GLib
     # Return value handling
   end
 
+  @[Deprecated]
   def self.node_push_allocator(allocator : GLib::Allocator) : Nil
     # g_node_push_allocator: (None)
     # @allocator:
@@ -2221,6 +2298,7 @@ module GLib
     # Return value handling
   end
 
+  @[Deprecated]
   def self.slist_pop_allocator : Nil
     # g_slist_pop_allocator: (None)
     # Returns: (transfer none)
@@ -2231,6 +2309,7 @@ module GLib
     # Return value handling
   end
 
+  @[Deprecated]
   def self.slist_push_allocator(allocator : GLib::Allocator) : Nil
     # g_slist_push_allocator: (None)
     # @allocator:
@@ -2328,12 +2407,15 @@ module GLib
     GICrystal.transfer_null_ended_array(_retval, GICrystal::Transfer::Full)
   end
 
-  def self.strsplit_set(string : ::String, delimiters : ::String, max_tokens : Int32) : Enumerable(::String)
+  def self.strsplit_set(string : ::String, delimiters : ::Bytes, max_tokens : Int32) : Enumerable(::String)
     # g_strsplit_set: (None)
     # @string:
-    # @delimiters:
+    # @delimiters: (array zero-terminated=1 element-type UInt8)
     # @max_tokens:
     # Returns: (transfer full) (array zero-terminated=1 element-type Utf8)
+
+    # Generator::ArrayArgPlan
+    delimiters = delimiters.to_a.to_unsafe.as(Pointer(UInt8))
 
     # C call
     _retval = LibGLib.g_strsplit_set(string, delimiters, max_tokens)
@@ -2350,6 +2432,17 @@ module GLib
     LibGLib.g_test_disable_crash_reporting
 
     # Return value handling
+  end
+
+  def self.test_trap_has_skipped : Bool
+    # g_test_trap_has_skipped: (None)
+    # Returns: (transfer none)
+
+    # C call
+    _retval = LibGLib.g_test_trap_has_skipped
+
+    # Return value handling
+    GICrystal.to_bool(_retval)
   end
 
   def self.test_trap_subprocess_with_envp(test_path : ::String?, envp : Enumerable(::String)?, usec_timeout : UInt64, test_flags : GLib::TestSubprocessFlags) : Nil

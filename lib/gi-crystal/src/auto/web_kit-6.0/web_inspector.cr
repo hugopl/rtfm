@@ -209,7 +209,8 @@ module WebKit
       def connect(handler : Proc(Bool), *, after : Bool = false) : GObject::SignalConnection
         _box = ::Box.box(handler)
         handler = ->(_lib_sender : Pointer(Void), _lib_box : Pointer(Void)) {
-          ::Box(Proc(Bool)).unbox(_lib_box).call
+          _retval = ::Box(Proc(Bool)).unbox(_lib_box).call
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,
@@ -221,7 +222,8 @@ module WebKit
         _box = ::Box.box(handler)
         handler = ->(_lib_sender : Pointer(Void), _lib_box : Pointer(Void)) {
           _sender = WebKit::WebInspector.new(_lib_sender, GICrystal::Transfer::None)
-          ::Box(Proc(WebKit::WebInspector, Bool)).unbox(_lib_box).call(_sender)
+          _retval = ::Box(Proc(WebKit::WebInspector, Bool)).unbox(_lib_box).call(_sender)
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,
@@ -250,7 +252,8 @@ module WebKit
       def connect(handler : Proc(Bool), *, after : Bool = false) : GObject::SignalConnection
         _box = ::Box.box(handler)
         handler = ->(_lib_sender : Pointer(Void), _lib_box : Pointer(Void)) {
-          ::Box(Proc(Bool)).unbox(_lib_box).call
+          _retval = ::Box(Proc(Bool)).unbox(_lib_box).call
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,
@@ -262,7 +265,8 @@ module WebKit
         _box = ::Box.box(handler)
         handler = ->(_lib_sender : Pointer(Void), _lib_box : Pointer(Void)) {
           _sender = WebKit::WebInspector.new(_lib_sender, GICrystal::Transfer::None)
-          ::Box(Proc(WebKit::WebInspector, Bool)).unbox(_lib_box).call(_sender)
+          _retval = ::Box(Proc(WebKit::WebInspector, Bool)).unbox(_lib_box).call(_sender)
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,
@@ -332,7 +336,8 @@ module WebKit
       def connect(handler : Proc(Bool), *, after : Bool = false) : GObject::SignalConnection
         _box = ::Box.box(handler)
         handler = ->(_lib_sender : Pointer(Void), _lib_box : Pointer(Void)) {
-          ::Box(Proc(Bool)).unbox(_lib_box).call
+          _retval = ::Box(Proc(Bool)).unbox(_lib_box).call
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,
@@ -344,7 +349,8 @@ module WebKit
         _box = ::Box.box(handler)
         handler = ->(_lib_sender : Pointer(Void), _lib_box : Pointer(Void)) {
           _sender = WebKit::WebInspector.new(_lib_sender, GICrystal::Transfer::None)
-          ::Box(Proc(WebKit::WebInspector, Bool)).unbox(_lib_box).call(_sender)
+          _retval = ::Box(Proc(WebKit::WebInspector, Bool)).unbox(_lib_box).call(_sender)
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,
@@ -373,7 +379,8 @@ module WebKit
       def connect(handler : Proc(Bool), *, after : Bool = false) : GObject::SignalConnection
         _box = ::Box.box(handler)
         handler = ->(_lib_sender : Pointer(Void), _lib_box : Pointer(Void)) {
-          ::Box(Proc(Bool)).unbox(_lib_box).call
+          _retval = ::Box(Proc(Bool)).unbox(_lib_box).call
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,
@@ -385,7 +392,8 @@ module WebKit
         _box = ::Box.box(handler)
         handler = ->(_lib_sender : Pointer(Void), _lib_box : Pointer(Void)) {
           _sender = WebKit::WebInspector.new(_lib_sender, GICrystal::Transfer::None)
-          ::Box(Proc(WebKit::WebInspector, Bool)).unbox(_lib_box).call(_sender)
+          _retval = ::Box(Proc(WebKit::WebInspector, Bool)).unbox(_lib_box).call(_sender)
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,

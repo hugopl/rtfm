@@ -6,6 +6,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### Changed
+- Updated gi-crystal to 0.26.0, so fibers keep running while the application main
+  loop is running. Requires Crystal 1.21 or newer.
 - Rewritten the find in page bar to behave like the web browsers ones: search as
   you type, a `current/total` match counter, wrap around navigation with
   Enter/Shift+Enter, F3/Shift+F3 and Ctrl+G/Ctrl+Shift+G, a match case toggle and

@@ -110,6 +110,25 @@ module Gtk
       Gtk::UriLauncher.new(_retval, GICrystal::Transfer::Full)
     end
 
+    def can_launch(parent : Gtk::Window?) : Bool
+      # gtk_uri_launcher_can_launch: (Method)
+      # @parent: (nullable)
+      # Returns: (transfer none)
+
+      # Generator::NullableArrayPlan
+      parent = if parent.nil?
+                 Pointer(Void).null
+               else
+                 parent.to_unsafe
+               end
+
+      # C call
+      _retval = LibGtk.gtk_uri_launcher_can_launch(to_unsafe, parent)
+
+      # Return value handling
+      GICrystal.to_bool(_retval)
+    end
+
     def uri : ::String?
       # gtk_uri_launcher_get_uri: (Method | Getter)
       # Returns: (transfer none) (nullable)

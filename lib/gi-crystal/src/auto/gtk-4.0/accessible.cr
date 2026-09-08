@@ -45,6 +45,17 @@ module Gtk
       # Return value handling
     end
 
+    def accessible_id : ::String?
+      # gtk_accessible_get_accessible_id: (Method)
+      # Returns: (transfer full) (nullable)
+
+      # C call
+      _retval = LibGtk.gtk_accessible_get_accessible_id(to_unsafe)
+
+      # Return value handling
+      GICrystal.transfer_full(_retval) unless _retval.null?
+    end
+
     def accessible_parent : Gtk::Accessible?
       # gtk_accessible_get_accessible_parent: (Method)
       # Returns: (transfer full) (nullable)
@@ -278,6 +289,48 @@ module Gtk
       LibGtk.gtk_accessible_update_state_value(to_unsafe, n_states, states, values)
 
       # Return value handling
+    end
+
+    # get_accessible_id: (None)
+    # Returns: (transfer full) (nullable)
+    private macro _register_get_accessible_id_vfunc(impl_method_name)
+      private def self._vfunc_get_accessible_id(%this : Pointer(Void), ) : Pointer(LibC::Char)
+        
+
+        %instance = LibGObject.g_object_get_qdata(%this, GICrystal::INSTANCE_QDATA_KEY)
+        raise GICrystal::ObjectCollectedError.new if %instance.null?
+
+        %retval = %instance.as(self).{{ impl_method_name.id }}()
+        
+        %retval.nil? ? Pointer(UInt8).null : %retval.to_unsafe
+      end
+
+      def self._install_iface_Gtk__Accessible(type_struct : Pointer(LibGObject::TypeInterface)) : Nil
+        vfunc_ptr = (type_struct.as(Pointer(Void)) + 64).as(Pointer(Pointer(Void)))
+        vfunc_ptr.value = (->_vfunc_get_accessible_id(Pointer(Void))).pointer
+        previous_def
+      end
+    end
+
+    # get_accessible_id: (None)
+    # Returns: (transfer full) (nullable)
+    private macro _register_unsafe_get_accessible_id_vfunc(impl_method_name)
+      private def self._vfunc_unsafe_get_accessible_id(%this : Pointer(Void), ) : Pointer(LibC::Char)
+
+        %instance = LibGObject.g_object_get_qdata(%this, GICrystal::INSTANCE_QDATA_KEY)
+        raise GICrystal::ObjectCollectedError.new if %instance.null?
+
+        %instance.as(self).{{ impl_method_name.id }}()
+      end
+
+      def self._install_iface_Gtk__Accessible(type_struct : Pointer(LibGObject::TypeInterface)) : Nil
+        vfunc_ptr = (type_struct.as(Pointer(Void)) + 64).as(Pointer(Pointer(Void)))
+        @@_gi_parent_vfunc_get_accessible_id = Proc(Pointer(Void), Pointer(LibC::Char)).new(vfunc_ptr.value, Pointer(Void).null) unless vfunc_ptr.value.null?
+        vfunc_ptr.value = (->_vfunc_unsafe_get_accessible_id(Pointer(Void))).pointer
+        previous_def
+      end
+
+      @@_gi_parent_vfunc_get_accessible_id : Proc(Pointer(Void), Pointer(LibC::Char))? = nil
     end
 
     # get_accessible_parent: (None)

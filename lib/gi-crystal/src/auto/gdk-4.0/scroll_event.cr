@@ -61,6 +61,17 @@ module Gdk
       Gdk::ScrollDirection.new(_retval)
     end
 
+    def relative_direction : Gdk::ScrollRelativeDirection
+      # gdk_scroll_event_get_relative_direction: (Method)
+      # Returns: (transfer none)
+
+      # C call
+      _retval = LibGdk.gdk_scroll_event_get_relative_direction(to_unsafe)
+
+      # Return value handling
+      Gdk::ScrollRelativeDirection.new(_retval)
+    end
+
     def unit : Gdk::ScrollUnit
       # gdk_scroll_event_get_unit: (Method)
       # Returns: (transfer none)

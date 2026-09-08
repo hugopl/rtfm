@@ -181,7 +181,8 @@ module Soup
           logger = Soup::Logger.new(lib_logger, GICrystal::Transfer::None)
           # Generator::BuiltInTypeArgPlan
           msg = Soup::Message.new(lib_msg, GICrystal::Transfer::None)
-          ::Box(Proc(Soup::Logger, Soup::Message, Soup::LoggerLogLevel)).unbox(lib_user_data).call(logger, msg)
+          _retval = ::Box(Proc(Soup::Logger, Soup::Message, Soup::LoggerLogLevel)).unbox(lib_user_data).call(logger, msg)
+          _retval.to_u32
         }.pointer
         filter_data = GICrystal::ClosureDataManager.register(_box)
         destroy = ->GICrystal::ClosureDataManager.deregister(Pointer(Void)).pointer
@@ -210,7 +211,8 @@ module Soup
           logger = Soup::Logger.new(lib_logger, GICrystal::Transfer::None)
           # Generator::BuiltInTypeArgPlan
           msg = Soup::Message.new(lib_msg, GICrystal::Transfer::None)
-          ::Box(Proc(Soup::Logger, Soup::Message, Soup::LoggerLogLevel)).unbox(lib_user_data).call(logger, msg)
+          _retval = ::Box(Proc(Soup::Logger, Soup::Message, Soup::LoggerLogLevel)).unbox(lib_user_data).call(logger, msg)
+          _retval.to_u32
         }.pointer
         filter_data = GICrystal::ClosureDataManager.register(_box)
         destroy = ->GICrystal::ClosureDataManager.deregister(Pointer(Void)).pointer

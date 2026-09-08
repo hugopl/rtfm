@@ -52,7 +52,7 @@ module Soup
   HSTS_POLICY_MAX_AGE_PAST  =   0
   HTTP_URI_FLAGS            = 482
   MAJOR_VERSION             =   3
-  MICRO_VERSION             =   5
+  MICRO_VERSION             =   6
   MINOR_VERSION             =   6
   VERSION_MIN_REQUIRED      =   2
 

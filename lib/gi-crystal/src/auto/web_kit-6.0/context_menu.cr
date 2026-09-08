@@ -130,6 +130,22 @@ module WebKit
       _retval
     end
 
+    def position : Bool
+      # webkit_context_menu_get_position: (Method)
+      # @x: (out) (transfer full) (optional)
+      # @y: (out) (transfer full) (optional)
+      # Returns: (transfer none)
+
+      # Generator::OutArgUsedInReturnPlan
+      x = Pointer(Int32).null # Generator::OutArgUsedInReturnPlan
+      y = Pointer(Int32).null
+      # C call
+      _retval = LibWebKit.webkit_context_menu_get_position(to_unsafe, x, y)
+
+      # Return value handling
+      GICrystal.to_bool(_retval)
+    end
+
     def user_data : GLib::Variant
       # webkit_context_menu_get_user_data: (Method)
       # Returns: (transfer none)

@@ -4,6 +4,7 @@ lib LibPango
   type FontMask = UInt32
   type LayoutDeserializeFlags = UInt32
   type LayoutSerializeFlags = UInt32
+  type RenderComponent = UInt32
   type ShapeFlags = UInt32
   type ShowFlags = UInt32
 
@@ -15,6 +16,7 @@ lib LibPango
   type CoverageLevel = UInt32
   type Direction = UInt32
   type EllipsizeMode = UInt32
+  type FontColor = UInt32
   type FontScale = UInt32
   type Gravity = UInt32
   type GravityHint = UInt32
@@ -29,6 +31,7 @@ lib LibPango
   type Underline = UInt32
   type Variant = UInt32
   type Weight = UInt32
+  type Width = UInt32
   type WrapMode = UInt32
 
   # Callbacks
@@ -440,6 +443,7 @@ lib LibPango
   fun pango_attr_underline_new(underline : UInt32) : Pointer(Void)
   fun pango_attr_variant_new(variant : UInt32) : Pointer(Void)
   fun pango_attr_weight_new(weight : UInt32) : Pointer(Void)
+  fun pango_attr_width_new(width : UInt32) : Pointer(Void)
   fun pango_attr_word_new : Pointer(Void)
   fun pango_attribute_as_color(this : Void*) : Pointer(Void)
   fun pango_attribute_as_float(this : Void*) : Pointer(Void)
@@ -507,6 +511,7 @@ lib LibPango
   fun pango_extents_to_pixels(inclusive : Pointer(Void), nearest : Pointer(Void)) : Void
   fun pango_find_base_dir(text : Pointer(LibC::Char), length : Int32) : UInt32
   fun pango_find_paragraph_boundary(text : Pointer(LibC::Char), length : Int32, paragraph_delimiter_index : Pointer(Int32), next_paragraph_start : Pointer(Int32)) : Void
+  fun pango_font_color_get_type : UInt64
   fun pango_font_describe(this : Void*) : Pointer(Void)
   fun pango_font_describe_with_absolute_size(this : Void*) : Pointer(Void)
   fun pango_font_description_better_match(this : Void*, old_match : Pointer(Void), new_match : Pointer(Void)) : LibC::Int
@@ -516,6 +521,7 @@ lib LibPango
   fun pango_font_description_free(this : Void*) : Void
   fun pango_font_description_from_string(str : Pointer(LibC::Char)) : Pointer(Void)
   fun pango_font_description_from_string(str : Pointer(LibC::Char)) : Pointer(Void)
+  fun pango_font_description_get_color(this : Void*) : UInt32
   fun pango_font_description_get_family(this : Void*) : Pointer(LibC::Char)
   fun pango_font_description_get_features(this : Void*) : Pointer(LibC::Char)
   fun pango_font_description_get_gravity(this : Void*) : UInt32
@@ -528,11 +534,13 @@ lib LibPango
   fun pango_font_description_get_variant(this : Void*) : UInt32
   fun pango_font_description_get_variations(this : Void*) : Pointer(LibC::Char)
   fun pango_font_description_get_weight(this : Void*) : UInt32
+  fun pango_font_description_get_width(this : Void*) : UInt32
   fun pango_font_description_hash(this : Void*) : UInt32
   fun pango_font_description_merge(this : Void*, desc_to_merge : Pointer(Void), replace_existing : LibC::Int) : Void
   fun pango_font_description_merge_static(this : Void*, desc_to_merge : Pointer(Void), replace_existing : LibC::Int) : Void
   fun pango_font_description_new : Pointer(Void)
   fun pango_font_description_set_absolute_size(this : Void*, size : Float64) : Void
+  fun pango_font_description_set_color(this : Void*, color : UInt32) : Void
   fun pango_font_description_set_family(this : Void*, family : Pointer(LibC::Char)) : Void
   fun pango_font_description_set_family_static(this : Void*, family : Pointer(LibC::Char)) : Void
   fun pango_font_description_set_features(this : Void*, features : Pointer(LibC::Char)) : Void
@@ -545,6 +553,7 @@ lib LibPango
   fun pango_font_description_set_variations(this : Void*, variations : Pointer(LibC::Char)) : Void
   fun pango_font_description_set_variations_static(this : Void*, variations : Pointer(LibC::Char)) : Void
   fun pango_font_description_set_weight(this : Void*, weight : UInt32) : Void
+  fun pango_font_description_set_width(this : Void*, width : UInt32) : Void
   fun pango_font_description_to_filename(this : Void*) : Pointer(LibC::Char)
   fun pango_font_description_to_string(this : Void*) : Pointer(LibC::Char)
   fun pango_font_description_unset_fields(this : Void*, to_unset : UInt32) : Void
@@ -792,6 +801,7 @@ lib LibPango
   fun pango_parse_weight(str : Pointer(LibC::Char), weight : Pointer(UInt32), warn : LibC::Int) : LibC::Int
   fun pango_quantize_line_geometry(thickness : Pointer(Int32), position : Pointer(Int32)) : Void
   fun pango_read_line(stream : Pointer(Void), str : Pointer(Void)) : Int32
+  fun pango_render_component_get_type : UInt64
   fun pango_render_part_get_type : UInt64
   fun pango_renderer_activate(this : Void*) : Void
   fun pango_renderer_deactivate(this : Void*) : Void
@@ -805,6 +815,7 @@ lib LibPango
   fun pango_renderer_draw_trapezoid(this : Void*, part : UInt32, y1_ : Float64, x11 : Float64, x21 : Float64, y2 : Float64, x12 : Float64, x22 : Float64) : Void
   fun pango_renderer_get_alpha(this : Void*, part : UInt32) : UInt16
   fun pango_renderer_get_color(this : Void*, part : UInt32) : Pointer(Void)
+  fun pango_renderer_get_components(this : Void*) : UInt32
   fun pango_renderer_get_layout(this : Void*) : Pointer(Void)
   fun pango_renderer_get_layout_line(this : Void*) : Pointer(Void)
   fun pango_renderer_get_matrix(this : Void*) : Pointer(Void)
@@ -812,6 +823,7 @@ lib LibPango
   fun pango_renderer_part_changed(this : Void*, part : UInt32) : Void
   fun pango_renderer_set_alpha(this : Void*, part : UInt32, alpha : UInt16) : Void
   fun pango_renderer_set_color(this : Void*, part : UInt32, color : Pointer(Void)) : Void
+  fun pango_renderer_set_components(this : Void*, components : UInt32) : Void
   fun pango_renderer_set_matrix(this : Void*, matrix : Pointer(Void)) : Void
   fun pango_reorder_items(items : Pointer(LibGLib::List)) : Pointer(LibGLib::List)
   fun pango_scan_int(pos : Pointer(Pointer(LibC::Char)), _out : Pointer(Int32)) : LibC::Int
@@ -865,5 +877,6 @@ lib LibPango
   fun pango_version_check(required_major : Int32, required_minor : Int32, required_micro : Int32) : Pointer(LibC::Char)
   fun pango_version_string : Pointer(LibC::Char)
   fun pango_weight_get_type : UInt64
+  fun pango_width_get_type : UInt64
   fun pango_wrap_mode_get_type : UInt64
 end

@@ -35,9 +35,9 @@ module Gio
       ptr
     end
 
-    def initialize(*, file_info : Gio::FileInfo? = nil, format : Gio::ZlibCompressorFormat? = nil, level : Int32? = nil)
-      _names = uninitialized Pointer(LibC::Char)[3]
-      _values = StaticArray(LibGObject::Value, 3).new(LibGObject::Value.new)
+    def initialize(*, file_info : Gio::FileInfo? = nil, format : Gio::ZlibCompressorFormat? = nil, level : Int32? = nil, os : Int32? = nil)
+      _names = uninitialized Pointer(LibC::Char)[4]
+      _values = StaticArray(LibGObject::Value, 4).new(LibGObject::Value.new)
       _n = 0
 
       if !file_info.nil?
@@ -53,6 +53,11 @@ module Gio
       if !level.nil?
         (_names.to_unsafe + _n).value = "level".to_unsafe
         GObject::Value.init_g_value(_values.to_unsafe + _n, level)
+        _n += 1
+      end
+      if !os.nil?
+        (_names.to_unsafe + _n).value = "os".to_unsafe
+        GObject::Value.init_g_value(_values.to_unsafe + _n, os)
         _n += 1
       end
 
@@ -122,6 +127,21 @@ module Gio
       value
     end
 
+    def os=(value : Int32) : Int32
+      unsafe_value = value
+
+      LibGObject.g_object_set(self, "os", unsafe_value, Pointer(Void).null)
+      value
+    end
+
+    def os : Int32
+      # Returns: None
+
+      value = uninitialized Int32
+      LibGObject.g_object_get(self, "os", pointerof(value), Pointer(Void).null)
+      value
+    end
+
     def self.new(format : Gio::ZlibCompressorFormat, level : Int32) : self
       # g_zlib_compressor_new: (Constructor)
       # @format:
@@ -146,6 +166,17 @@ module Gio
       Gio::FileInfo.new(_retval, GICrystal::Transfer::None) unless _retval.null?
     end
 
+    def os : Int32
+      # g_zlib_compressor_get_os: (Method | Getter)
+      # Returns: (transfer none)
+
+      # C call
+      _retval = LibGio.g_zlib_compressor_get_os(to_unsafe)
+
+      # Return value handling
+      _retval
+    end
+
     def file_info=(file_info : Gio::FileInfo?) : Nil
       # g_zlib_compressor_set_file_info: (Method | Setter)
       # @file_info: (nullable)
@@ -160,6 +191,17 @@ module Gio
 
       # C call
       LibGio.g_zlib_compressor_set_file_info(to_unsafe, file_info)
+
+      # Return value handling
+    end
+
+    def os=(os : Int32) : Nil
+      # g_zlib_compressor_set_os: (Method | Setter)
+      # @os:
+      # Returns: (transfer none)
+
+      # C call
+      LibGio.g_zlib_compressor_set_os(to_unsafe, os)
 
       # Return value handling
     end

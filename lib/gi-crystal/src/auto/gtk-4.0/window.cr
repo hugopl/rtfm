@@ -50,9 +50,9 @@ module Gtk
       ptr
     end
 
-    def initialize(*, accessible_role : Gtk::AccessibleRole? = nil, application : Gtk::Application? = nil, can_focus : Bool? = nil, can_target : Bool? = nil, child : Gtk::Widget? = nil, css_classes : Enumerable(::String)? = nil, css_name : ::String? = nil, cursor : Gdk::Cursor? = nil, decorated : Bool? = nil, default_height : Int32? = nil, default_widget : Gtk::Widget? = nil, default_width : Int32? = nil, deletable : Bool? = nil, destroy_with_parent : Bool? = nil, display : Gdk::Display? = nil, focus_on_click : Bool? = nil, focus_visible : Bool? = nil, focus_widget : Gtk::Widget? = nil, focusable : Bool? = nil, fullscreened : Bool? = nil, halign : Gtk::Align? = nil, handle_menubar_accel : Bool? = nil, has_default : Bool? = nil, has_focus : Bool? = nil, has_tooltip : Bool? = nil, height_request : Int32? = nil, hexpand : Bool? = nil, hexpand_set : Bool? = nil, hide_on_close : Bool? = nil, icon_name : ::String? = nil, is_active : Bool? = nil, layout_manager : Gtk::LayoutManager? = nil, limit_events : Bool? = nil, margin_bottom : Int32? = nil, margin_end : Int32? = nil, margin_start : Int32? = nil, margin_top : Int32? = nil, maximized : Bool? = nil, mnemonics_visible : Bool? = nil, modal : Bool? = nil, name : ::String? = nil, opacity : Float64? = nil, overflow : Gtk::Overflow? = nil, parent : Gtk::Widget? = nil, receives_default : Bool? = nil, resizable : Bool? = nil, root : Gtk::Root? = nil, scale_factor : Int32? = nil, sensitive : Bool? = nil, startup_id : ::String? = nil, suspended : Bool? = nil, title : ::String? = nil, titlebar : Gtk::Widget? = nil, tooltip_markup : ::String? = nil, tooltip_text : ::String? = nil, transient_for : Gtk::Window? = nil, valign : Gtk::Align? = nil, vexpand : Bool? = nil, vexpand_set : Bool? = nil, visible : Bool? = nil, width_request : Int32? = nil)
-      _names = uninitialized Pointer(LibC::Char)[61]
-      _values = StaticArray(LibGObject::Value, 61).new(LibGObject::Value.new)
+    def initialize(*, accessible_role : Gtk::AccessibleRole? = nil, application : Gtk::Application? = nil, can_focus : Bool? = nil, can_target : Bool? = nil, child : Gtk::Widget? = nil, css_classes : Enumerable(::String)? = nil, css_name : ::String? = nil, cursor : Gdk::Cursor? = nil, decorated : Bool? = nil, default_height : Int32? = nil, default_widget : Gtk::Widget? = nil, default_width : Int32? = nil, deletable : Bool? = nil, destroy_with_parent : Bool? = nil, display : Gdk::Display? = nil, focus_on_click : Bool? = nil, focus_visible : Bool? = nil, focus_widget : Gtk::Widget? = nil, focusable : Bool? = nil, fullscreened : Bool? = nil, gravity : Gtk::WindowGravity? = nil, halign : Gtk::Align? = nil, handle_menubar_accel : Bool? = nil, has_default : Bool? = nil, has_focus : Bool? = nil, has_tooltip : Bool? = nil, height_request : Int32? = nil, hexpand : Bool? = nil, hexpand_set : Bool? = nil, hide_on_close : Bool? = nil, icon_name : ::String? = nil, is_active : Bool? = nil, layout_manager : Gtk::LayoutManager? = nil, limit_events : Bool? = nil, margin_bottom : Int32? = nil, margin_end : Int32? = nil, margin_start : Int32? = nil, margin_top : Int32? = nil, maximized : Bool? = nil, mnemonics_visible : Bool? = nil, modal : Bool? = nil, name : ::String? = nil, opacity : Float64? = nil, overflow : Gtk::Overflow? = nil, parent : Gtk::Widget? = nil, receives_default : Bool? = nil, resizable : Bool? = nil, root : Gtk::Root? = nil, scale_factor : Int32? = nil, sensitive : Bool? = nil, startup_id : ::String? = nil, suspended : Bool? = nil, title : ::String? = nil, titlebar : Gtk::Widget? = nil, tooltip_markup : ::String? = nil, tooltip_text : ::String? = nil, transient_for : Gtk::Window? = nil, valign : Gtk::Align? = nil, vexpand : Bool? = nil, vexpand_set : Bool? = nil, visible : Bool? = nil, width_request : Int32? = nil)
+      _names = uninitialized Pointer(LibC::Char)[62]
+      _values = StaticArray(LibGObject::Value, 62).new(LibGObject::Value.new)
       _n = 0
 
       if !accessible_role.nil?
@@ -153,6 +153,11 @@ module Gtk
       if !fullscreened.nil?
         (_names.to_unsafe + _n).value = "fullscreened".to_unsafe
         GObject::Value.init_g_value(_values.to_unsafe + _n, fullscreened)
+        _n += 1
+      end
+      if !gravity.nil?
+        (_names.to_unsafe + _n).value = "gravity".to_unsafe
+        GObject::Value.init_g_value(_values.to_unsafe + _n, gravity)
         _n += 1
       end
       if !halign.nil?
@@ -560,6 +565,21 @@ module Gtk
       value = uninitialized LibC::Int
       LibGObject.g_object_get(self, "fullscreened", pointerof(value), Pointer(Void).null)
       GICrystal.to_bool(value)
+    end
+
+    def gravity=(value : Gtk::WindowGravity) : Gtk::WindowGravity
+      unsafe_value = value
+
+      LibGObject.g_object_set(self, "gravity", unsafe_value, Pointer(Void).null)
+      value
+    end
+
+    def gravity : Gtk::WindowGravity
+      # Returns: None
+
+      value = uninitialized UInt32
+      LibGObject.g_object_get(self, "gravity", pointerof(value), Pointer(Void).null)
+      Gtk::WindowGravity.new(value)
     end
 
     def handle_menubar_accel=(value : Bool) : Bool
@@ -985,6 +1005,17 @@ module Gtk
       GICrystal.to_bool(_retval)
     end
 
+    def gravity : Gtk::WindowGravity
+      # gtk_window_get_gravity: (Method | Getter)
+      # Returns: (transfer none)
+
+      # C call
+      _retval = LibGtk.gtk_window_get_gravity(to_unsafe)
+
+      # Return value handling
+      Gtk::WindowGravity.new(_retval)
+    end
+
     def group : Gtk::WindowGroup
       # gtk_window_get_group: (Method)
       # Returns: (transfer none)
@@ -1331,6 +1362,17 @@ module Gtk
       # Return value handling
     end
 
+    def gravity=(gravity : Gtk::WindowGravity) : Nil
+      # gtk_window_set_gravity: (Method | Setter)
+      # @gravity:
+      # Returns: (transfer none)
+
+      # C call
+      LibGtk.gtk_window_set_gravity(to_unsafe, gravity)
+
+      # Return value handling
+    end
+
     def handle_menubar_accel=(handle_menubar_accel : Bool) : Nil
       # gtk_window_set_handle_menubar_accel: (Method | Setter)
       # @handle_menubar_accel:
@@ -1593,7 +1635,8 @@ module Gtk
       def connect(handler : Proc(Bool), *, after : Bool = false) : GObject::SignalConnection
         _box = ::Box.box(handler)
         handler = ->(_lib_sender : Pointer(Void), _lib_box : Pointer(Void)) {
-          ::Box(Proc(Bool)).unbox(_lib_box).call
+          _retval = ::Box(Proc(Bool)).unbox(_lib_box).call
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,
@@ -1605,7 +1648,8 @@ module Gtk
         _box = ::Box.box(handler)
         handler = ->(_lib_sender : Pointer(Void), _lib_box : Pointer(Void)) {
           _sender = Gtk::Window.new(_lib_sender, GICrystal::Transfer::None)
-          ::Box(Proc(Gtk::Window, Bool)).unbox(_lib_box).call(_sender)
+          _retval = ::Box(Proc(Gtk::Window, Bool)).unbox(_lib_box).call(_sender)
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,
@@ -1636,7 +1680,8 @@ module Gtk
         handler = ->(_lib_sender : Pointer(Void), lib_toggle : LibC::Int, _lib_box : Pointer(Void)) {
           # Generator::BuiltInTypeArgPlan
           toggle = GICrystal.to_bool(lib_toggle)
-          ::Box(Proc(Bool, Bool)).unbox(_lib_box).call(toggle)
+          _retval = ::Box(Proc(Bool, Bool)).unbox(_lib_box).call(toggle)
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,
@@ -1650,7 +1695,8 @@ module Gtk
           _sender = Gtk::Window.new(_lib_sender, GICrystal::Transfer::None)
           # Generator::BuiltInTypeArgPlan
           toggle = GICrystal.to_bool(lib_toggle)
-          ::Box(Proc(Gtk::Window, Bool, Bool)).unbox(_lib_box).call(_sender, toggle)
+          _retval = ::Box(Proc(Gtk::Window, Bool, Bool)).unbox(_lib_box).call(_sender, toggle)
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,

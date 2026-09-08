@@ -1,6 +1,8 @@
 require "./widget"
 require "./accessible"
 
+require "./accessible_hypertext"
+
 require "./accessible_text"
 
 require "./buildable"
@@ -11,6 +13,7 @@ module Gtk
   @[GICrystal::GeneratedWrapper]
   class Label < Widget
     include Accessible
+    include AccessibleHypertext
     include AccessibleText
     include Buildable
     include ConstraintTarget
@@ -1323,7 +1326,8 @@ module Gtk
         handler = ->(_lib_sender : Pointer(Void), lib_uri : Pointer(LibC::Char), _lib_box : Pointer(Void)) {
           # Generator::BuiltInTypeArgPlan
           uri = ::String.new(lib_uri)
-          ::Box(Proc(::String, Bool)).unbox(_lib_box).call(uri)
+          _retval = ::Box(Proc(::String, Bool)).unbox(_lib_box).call(uri)
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,
@@ -1337,7 +1341,8 @@ module Gtk
           _sender = Gtk::Label.new(_lib_sender, GICrystal::Transfer::None)
           # Generator::BuiltInTypeArgPlan
           uri = ::String.new(lib_uri)
-          ::Box(Proc(Gtk::Label, ::String, Bool)).unbox(_lib_box).call(_sender, uri)
+          _retval = ::Box(Proc(Gtk::Label, ::String, Bool)).unbox(_lib_box).call(_sender, uri)
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,

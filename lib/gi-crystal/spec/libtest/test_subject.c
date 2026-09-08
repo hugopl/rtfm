@@ -376,6 +376,22 @@ void test_subject_set_str_list(TestSubject* self, const char** list) {
   priv->str_list = g_strdupv((char**)list);
 }
 
+GObject* test_subject_call_object_func(TestSubject* self, TestSubjectObjectFunc func, gpointer user_data,
+                                       GDestroyNotify destroy) {
+  GObject* retval = func(user_data);
+  if (destroy)
+    destroy(user_data);
+  return retval;
+}
+
+gboolean test_subject_call_bool_func(TestSubject* self, TestSubjectBoolFunc func, gpointer user_data,
+                                     GDestroyNotify destroy) {
+  gboolean retval = func(user_data);
+  if (destroy)
+    destroy(user_data);
+  return retval;
+}
+
 TestSubject* test_subject_may_return_null(TestSubject* self, gboolean return_nil) {
   return return_nil ? NULL : self;
 }
@@ -460,6 +476,15 @@ TestFlagFlags test_subject_return_or_on_flags(TestSubject* self, TestFlagFlags f
 
 TestFlagFlags test_subject_return_bad_flag() {
   return (TestFlagFlags)17;
+}
+
+guint64 test_subject_current_thread() {
+  return (guint64)(gsize)g_thread_self();
+}
+
+guint64 test_subject_block_thread(guint microseconds) {
+  g_usleep(microseconds);
+  return test_subject_current_thread();
 }
 
 void test_subject_put_42_on_out_argument(TestSubject* self, int* out) {

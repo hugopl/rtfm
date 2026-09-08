@@ -41,9 +41,9 @@ module WebKit
       ptr
     end
 
-    def initialize(*, accessible_role : Gtk::AccessibleRole? = nil, automation_presentation_type : WebKit::AutomationBrowsingContextPresentation? = nil, camera_capture_state : WebKit::MediaCaptureState? = nil, can_focus : Bool? = nil, can_target : Bool? = nil, css_classes : Enumerable(::String)? = nil, css_name : ::String? = nil, cursor : Gdk::Cursor? = nil, default_content_security_policy : ::String? = nil, display_capture_state : WebKit::MediaCaptureState? = nil, editable : Bool? = nil, estimated_load_progress : Float64? = nil, favicon : Gdk::Texture? = nil, focus_on_click : Bool? = nil, focusable : Bool? = nil, halign : Gtk::Align? = nil, has_default : Bool? = nil, has_focus : Bool? = nil, has_tooltip : Bool? = nil, height_request : Int32? = nil, hexpand : Bool? = nil, hexpand_set : Bool? = nil, is_controlled_by_automation : Bool? = nil, is_loading : Bool? = nil, is_muted : Bool? = nil, is_playing_audio : Bool? = nil, is_web_process_responsive : Bool? = nil, layout_manager : Gtk::LayoutManager? = nil, limit_events : Bool? = nil, margin_bottom : Int32? = nil, margin_end : Int32? = nil, margin_start : Int32? = nil, margin_top : Int32? = nil, microphone_capture_state : WebKit::MediaCaptureState? = nil, name : ::String? = nil, network_session : WebKit::NetworkSession? = nil, opacity : Float64? = nil, overflow : Gtk::Overflow? = nil, page_id : UInt64? = nil, parent : Gtk::Widget? = nil, receives_default : Bool? = nil, related_view : WebKit::WebView? = nil, root : Gtk::Root? = nil, scale_factor : Int32? = nil, sensitive : Bool? = nil, settings : WebKit::Settings? = nil, title : ::String? = nil, tooltip_markup : ::String? = nil, tooltip_text : ::String? = nil, uri : ::String? = nil, user_content_manager : WebKit::UserContentManager? = nil, valign : Gtk::Align? = nil, vexpand : Bool? = nil, vexpand_set : Bool? = nil, visible : Bool? = nil, web_context : WebKit::WebContext? = nil, web_extension_mode : WebKit::WebExtensionMode? = nil, website_policies : WebKit::WebsitePolicies? = nil, width_request : Int32? = nil, zoom_level : Float64? = nil)
-      _names = uninitialized Pointer(LibC::Char)[60]
-      _values = StaticArray(LibGObject::Value, 60).new(LibGObject::Value.new)
+    def initialize(*, accessible_role : Gtk::AccessibleRole? = nil, automation_presentation_type : WebKit::AutomationBrowsingContextPresentation? = nil, camera_capture_state : WebKit::MediaCaptureState? = nil, can_focus : Bool? = nil, can_target : Bool? = nil, css_classes : Enumerable(::String)? = nil, css_name : ::String? = nil, cursor : Gdk::Cursor? = nil, default_content_security_policy : ::String? = nil, display_capture_state : WebKit::MediaCaptureState? = nil, editable : Bool? = nil, estimated_load_progress : Float64? = nil, favicon : Gdk::Texture? = nil, focus_on_click : Bool? = nil, focusable : Bool? = nil, halign : Gtk::Align? = nil, has_default : Bool? = nil, has_focus : Bool? = nil, has_tooltip : Bool? = nil, height_request : Int32? = nil, hexpand : Bool? = nil, hexpand_set : Bool? = nil, is_controlled_by_automation : Bool? = nil, is_immersive_mode_enabled : Bool? = nil, is_loading : Bool? = nil, is_muted : Bool? = nil, is_playing_audio : Bool? = nil, is_web_process_responsive : Bool? = nil, layout_manager : Gtk::LayoutManager? = nil, limit_events : Bool? = nil, margin_bottom : Int32? = nil, margin_end : Int32? = nil, margin_start : Int32? = nil, margin_top : Int32? = nil, microphone_capture_state : WebKit::MediaCaptureState? = nil, name : ::String? = nil, network_session : WebKit::NetworkSession? = nil, opacity : Float64? = nil, overflow : Gtk::Overflow? = nil, page_id : UInt64? = nil, parent : Gtk::Widget? = nil, receives_default : Bool? = nil, related_view : WebKit::WebView? = nil, root : Gtk::Root? = nil, scale_factor : Int32? = nil, sensitive : Bool? = nil, settings : WebKit::Settings? = nil, theme_color : Gdk::RGBA? = nil, title : ::String? = nil, tooltip_markup : ::String? = nil, tooltip_text : ::String? = nil, uri : ::String? = nil, user_content_manager : WebKit::UserContentManager? = nil, valign : Gtk::Align? = nil, vexpand : Bool? = nil, vexpand_set : Bool? = nil, visible : Bool? = nil, web_context : WebKit::WebContext? = nil, web_extension_mode : WebKit::WebExtensionMode? = nil, website_policies : WebKit::WebsitePolicies? = nil, width_request : Int32? = nil, zoom_level : Float64? = nil)
+      _names = uninitialized Pointer(LibC::Char)[62]
+      _values = StaticArray(LibGObject::Value, 62).new(LibGObject::Value.new)
       _n = 0
 
       if !accessible_role.nil?
@@ -161,6 +161,11 @@ module WebKit
         GObject::Value.init_g_value(_values.to_unsafe + _n, is_controlled_by_automation)
         _n += 1
       end
+      if !is_immersive_mode_enabled.nil?
+        (_names.to_unsafe + _n).value = "is-immersive-mode-enabled".to_unsafe
+        GObject::Value.init_g_value(_values.to_unsafe + _n, is_immersive_mode_enabled)
+        _n += 1
+      end
       if !is_loading.nil?
         (_names.to_unsafe + _n).value = "is-loading".to_unsafe
         GObject::Value.init_g_value(_values.to_unsafe + _n, is_loading)
@@ -274,6 +279,11 @@ module WebKit
       if !settings.nil?
         (_names.to_unsafe + _n).value = "settings".to_unsafe
         GObject::Value.init_g_value(_values.to_unsafe + _n, settings)
+        _n += 1
+      end
+      if !theme_color.nil?
+        (_names.to_unsafe + _n).value = "theme-color".to_unsafe
+        GObject::Value.init_g_value(_values.to_unsafe + _n, theme_color)
         _n += 1
       end
       if !title.nil?
@@ -486,6 +496,14 @@ module WebKit
       GICrystal.to_bool(value)
     end
 
+    def is_immersive_mode_enabled? : Bool
+      # Returns: None
+
+      value = uninitialized LibC::Int
+      LibGObject.g_object_get(self, "is-immersive-mode-enabled", pointerof(value), Pointer(Void).null)
+      GICrystal.to_bool(value)
+    end
+
     def is_loading? : Bool
       # Returns: None
 
@@ -575,6 +593,14 @@ module WebKit
 
       LibGObject.g_object_set(self, "settings", unsafe_value, Pointer(Void).null)
       value
+    end
+
+    def theme_color : Gdk::RGBA?
+      # Returns: None
+
+      value = uninitialized Pointer(Void)
+      LibGObject.g_object_get(self, "theme-color", pointerof(value), Pointer(Void).null)
+      Gdk::RGBA.new(value, GICrystal::Transfer::None) unless value.null?
     end
 
     def title : ::String
@@ -1243,6 +1269,20 @@ module WebKit
       Gdk::Texture.new(_retval, GICrystal::Transfer::Full)
     end
 
+    def theme_color : Gdk::RGBA
+      # webkit_web_view_get_theme_color: (Method | Getter)
+      # @rgba: (out) (caller-allocates)
+      # Returns: (transfer none)
+
+      # Generator::CallerAllocatesPlan
+      rgba = Gdk::RGBA.new
+      # C call
+      _retval = LibWebKit.webkit_web_view_get_theme_color(to_unsafe, rgba)
+
+      # Return value handling
+      rgba
+    end
+
     def title : ::String
       # webkit_web_view_get_title: (Method | Getter)
       # Returns: (transfer none)
@@ -1386,6 +1426,17 @@ module WebKit
       GICrystal.to_bool(_retval)
     end
 
+    def is_immersive_mode_enabled? : Bool
+      # webkit_web_view_is_immersive_mode_enabled: (Method | Getter)
+      # Returns: (transfer none)
+
+      # C call
+      _retval = LibWebKit.webkit_web_view_is_immersive_mode_enabled(to_unsafe)
+
+      # Return value handling
+      GICrystal.to_bool(_retval)
+    end
+
     def is_loading? : Bool
       # webkit_web_view_is_loading: (Method | Getter)
       # Returns: (transfer none)
@@ -1406,6 +1457,16 @@ module WebKit
 
       # Return value handling
       GICrystal.to_bool(_retval)
+    end
+
+    def leave_immersive_mode : Nil
+      # webkit_web_view_leave_immersive_mode: (Method)
+      # Returns: (transfer none)
+
+      # C call
+      LibWebKit.webkit_web_view_leave_immersive_mode(to_unsafe)
+
+      # Return value handling
     end
 
     def load_alternate_html(content : ::String, content_uri : ::String, base_uri : ::String?) : Nil
@@ -1878,7 +1939,8 @@ module WebKit
         handler = ->(_lib_sender : Pointer(Void), lib_request : Pointer(Void), _lib_box : Pointer(Void)) {
           # Generator::BuiltInTypeArgPlan
           request = WebKit::AuthenticationRequest.new(lib_request, GICrystal::Transfer::None)
-          ::Box(Proc(WebKit::AuthenticationRequest, Bool)).unbox(_lib_box).call(request)
+          _retval = ::Box(Proc(WebKit::AuthenticationRequest, Bool)).unbox(_lib_box).call(request)
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,
@@ -1892,7 +1954,8 @@ module WebKit
           _sender = WebKit::WebView.new(_lib_sender, GICrystal::Transfer::None)
           # Generator::BuiltInTypeArgPlan
           request = WebKit::AuthenticationRequest.new(lib_request, GICrystal::Transfer::None)
-          ::Box(Proc(WebKit::WebView, WebKit::AuthenticationRequest, Bool)).unbox(_lib_box).call(_sender, request)
+          _retval = ::Box(Proc(WebKit::WebView, WebKit::AuthenticationRequest, Bool)).unbox(_lib_box).call(_sender, request)
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,
@@ -1966,7 +2029,8 @@ module WebKit
           context_menu = WebKit::ContextMenu.new(lib_context_menu, GICrystal::Transfer::None)
           # Generator::BuiltInTypeArgPlan
           hit_test_result = WebKit::HitTestResult.new(lib_hit_test_result, GICrystal::Transfer::None)
-          ::Box(Proc(WebKit::ContextMenu, WebKit::HitTestResult, Bool)).unbox(_lib_box).call(context_menu, hit_test_result)
+          _retval = ::Box(Proc(WebKit::ContextMenu, WebKit::HitTestResult, Bool)).unbox(_lib_box).call(context_menu, hit_test_result)
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,
@@ -1982,7 +2046,8 @@ module WebKit
           context_menu = WebKit::ContextMenu.new(lib_context_menu, GICrystal::Transfer::None)
           # Generator::BuiltInTypeArgPlan
           hit_test_result = WebKit::HitTestResult.new(lib_hit_test_result, GICrystal::Transfer::None)
-          ::Box(Proc(WebKit::WebView, WebKit::ContextMenu, WebKit::HitTestResult, Bool)).unbox(_lib_box).call(_sender, context_menu, hit_test_result)
+          _retval = ::Box(Proc(WebKit::WebView, WebKit::ContextMenu, WebKit::HitTestResult, Bool)).unbox(_lib_box).call(_sender, context_menu, hit_test_result)
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,
@@ -2054,7 +2119,9 @@ module WebKit
         handler = ->(_lib_sender : Pointer(Void), lib_navigation_action : Pointer(Void), _lib_box : Pointer(Void)) {
           # Generator::BuiltInTypeArgPlan
           navigation_action = WebKit::NavigationAction.new(lib_navigation_action, GICrystal::Transfer::None)
-          ::Box(Proc(WebKit::NavigationAction, Gtk::Widget)).unbox(_lib_box).call(navigation_action)
+          _retval = ::Box(Proc(WebKit::NavigationAction, Gtk::Widget)).unbox(_lib_box).call(navigation_action)
+          LibGObject.g_object_ref(_retval) if _retval
+          _retval.to_unsafe
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,
@@ -2068,7 +2135,9 @@ module WebKit
           _sender = WebKit::WebView.new(_lib_sender, GICrystal::Transfer::None)
           # Generator::BuiltInTypeArgPlan
           navigation_action = WebKit::NavigationAction.new(lib_navigation_action, GICrystal::Transfer::None)
-          ::Box(Proc(WebKit::WebView, WebKit::NavigationAction, Gtk::Widget)).unbox(_lib_box).call(_sender, navigation_action)
+          _retval = ::Box(Proc(WebKit::WebView, WebKit::NavigationAction, Gtk::Widget)).unbox(_lib_box).call(_sender, navigation_action)
+          LibGObject.g_object_ref(_retval) if _retval
+          _retval.to_unsafe
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,
@@ -2101,7 +2170,8 @@ module WebKit
           decision = WebKit::PolicyDecision.new(lib_decision, GICrystal::Transfer::None)
           # Generator::BuiltInTypeArgPlan
           decision_type = WebKit::PolicyDecisionType.new(lib_decision_type)
-          ::Box(Proc(WebKit::PolicyDecision, WebKit::PolicyDecisionType, Bool)).unbox(_lib_box).call(decision, decision_type)
+          _retval = ::Box(Proc(WebKit::PolicyDecision, WebKit::PolicyDecisionType, Bool)).unbox(_lib_box).call(decision, decision_type)
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,
@@ -2117,7 +2187,8 @@ module WebKit
           decision = WebKit::PolicyDecision.new(lib_decision, GICrystal::Transfer::None)
           # Generator::BuiltInTypeArgPlan
           decision_type = WebKit::PolicyDecisionType.new(lib_decision_type)
-          ::Box(Proc(WebKit::WebView, WebKit::PolicyDecision, WebKit::PolicyDecisionType, Bool)).unbox(_lib_box).call(_sender, decision, decision_type)
+          _retval = ::Box(Proc(WebKit::WebView, WebKit::PolicyDecision, WebKit::PolicyDecisionType, Bool)).unbox(_lib_box).call(_sender, decision, decision_type)
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,
@@ -2146,7 +2217,8 @@ module WebKit
       def connect(handler : Proc(Bool), *, after : Bool = false) : GObject::SignalConnection
         _box = ::Box.box(handler)
         handler = ->(_lib_sender : Pointer(Void), _lib_box : Pointer(Void)) {
-          ::Box(Proc(Bool)).unbox(_lib_box).call
+          _retval = ::Box(Proc(Bool)).unbox(_lib_box).call
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,
@@ -2158,7 +2230,8 @@ module WebKit
         _box = ::Box.box(handler)
         handler = ->(_lib_sender : Pointer(Void), _lib_box : Pointer(Void)) {
           _sender = WebKit::WebView.new(_lib_sender, GICrystal::Transfer::None)
-          ::Box(Proc(WebKit::WebView, Bool)).unbox(_lib_box).call(_sender)
+          _retval = ::Box(Proc(WebKit::WebView, Bool)).unbox(_lib_box).call(_sender)
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,
@@ -2232,7 +2305,8 @@ module WebKit
       def connect(handler : Proc(Bool), *, after : Bool = false) : GObject::SignalConnection
         _box = ::Box.box(handler)
         handler = ->(_lib_sender : Pointer(Void), _lib_box : Pointer(Void)) {
-          ::Box(Proc(Bool)).unbox(_lib_box).call
+          _retval = ::Box(Proc(Bool)).unbox(_lib_box).call
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,
@@ -2244,7 +2318,8 @@ module WebKit
         _box = ::Box.box(handler)
         handler = ->(_lib_sender : Pointer(Void), _lib_box : Pointer(Void)) {
           _sender = WebKit::WebView.new(_lib_sender, GICrystal::Transfer::None)
-          ::Box(Proc(WebKit::WebView, Bool)).unbox(_lib_box).call(_sender)
+          _retval = ::Box(Proc(WebKit::WebView, Bool)).unbox(_lib_box).call(_sender)
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,
@@ -2324,7 +2399,8 @@ module WebKit
           failing_uri = ::String.new(lib_failing_uri)
           # Generator::GErrorArgPlan
           error = WebKit.gerror_to_crystal(lib_error.as(Pointer(LibGLib::Error)), GICrystal::Transfer::None)
-          ::Box(Proc(WebKit::LoadEvent, ::String, GLib::Error, Bool)).unbox(_lib_box).call(load_event, failing_uri, error)
+          _retval = ::Box(Proc(WebKit::LoadEvent, ::String, GLib::Error, Bool)).unbox(_lib_box).call(load_event, failing_uri, error)
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,
@@ -2342,7 +2418,8 @@ module WebKit
           failing_uri = ::String.new(lib_failing_uri)
           # Generator::GErrorArgPlan
           error = WebKit.gerror_to_crystal(lib_error.as(Pointer(LibGLib::Error)), GICrystal::Transfer::None)
-          ::Box(Proc(WebKit::WebView, WebKit::LoadEvent, ::String, GLib::Error, Bool)).unbox(_lib_box).call(_sender, load_event, failing_uri, error)
+          _retval = ::Box(Proc(WebKit::WebView, WebKit::LoadEvent, ::String, GLib::Error, Bool)).unbox(_lib_box).call(_sender, load_event, failing_uri, error)
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,
@@ -2377,7 +2454,8 @@ module WebKit
           certificate = Gio::TlsCertificate.new(lib_certificate, GICrystal::Transfer::None)
           # Generator::BuiltInTypeArgPlan
           errors = Gio::TlsCertificateFlags.new(lib_errors)
-          ::Box(Proc(::String, Gio::TlsCertificate, Gio::TlsCertificateFlags, Bool)).unbox(_lib_box).call(failing_uri, certificate, errors)
+          _retval = ::Box(Proc(::String, Gio::TlsCertificate, Gio::TlsCertificateFlags, Bool)).unbox(_lib_box).call(failing_uri, certificate, errors)
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,
@@ -2395,7 +2473,8 @@ module WebKit
           certificate = Gio::TlsCertificate.new(lib_certificate, GICrystal::Transfer::None)
           # Generator::BuiltInTypeArgPlan
           errors = Gio::TlsCertificateFlags.new(lib_errors)
-          ::Box(Proc(WebKit::WebView, ::String, Gio::TlsCertificate, Gio::TlsCertificateFlags, Bool)).unbox(_lib_box).call(_sender, failing_uri, certificate, errors)
+          _retval = ::Box(Proc(WebKit::WebView, ::String, Gio::TlsCertificate, Gio::TlsCertificateFlags, Bool)).unbox(_lib_box).call(_sender, failing_uri, certificate, errors)
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,
@@ -2475,7 +2554,8 @@ module WebKit
         handler = ->(_lib_sender : Pointer(Void), lib_request : Pointer(Void), _lib_box : Pointer(Void)) {
           # Generator::BuiltInTypeArgPlan
           request = WebKit::AbstractPermissionRequest.new(lib_request, GICrystal::Transfer::None)
-          ::Box(Proc(WebKit::PermissionRequest, Bool)).unbox(_lib_box).call(request)
+          _retval = ::Box(Proc(WebKit::PermissionRequest, Bool)).unbox(_lib_box).call(request)
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,
@@ -2489,7 +2569,8 @@ module WebKit
           _sender = WebKit::WebView.new(_lib_sender, GICrystal::Transfer::None)
           # Generator::BuiltInTypeArgPlan
           request = WebKit::AbstractPermissionRequest.new(lib_request, GICrystal::Transfer::None)
-          ::Box(Proc(WebKit::WebView, WebKit::PermissionRequest, Bool)).unbox(_lib_box).call(_sender, request)
+          _retval = ::Box(Proc(WebKit::WebView, WebKit::PermissionRequest, Bool)).unbox(_lib_box).call(_sender, request)
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,
@@ -2520,7 +2601,8 @@ module WebKit
         handler = ->(_lib_sender : Pointer(Void), lib_print_operation : Pointer(Void), _lib_box : Pointer(Void)) {
           # Generator::BuiltInTypeArgPlan
           print_operation = WebKit::PrintOperation.new(lib_print_operation, GICrystal::Transfer::None)
-          ::Box(Proc(WebKit::PrintOperation, Bool)).unbox(_lib_box).call(print_operation)
+          _retval = ::Box(Proc(WebKit::PrintOperation, Bool)).unbox(_lib_box).call(print_operation)
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,
@@ -2534,7 +2616,8 @@ module WebKit
           _sender = WebKit::WebView.new(_lib_sender, GICrystal::Transfer::None)
           # Generator::BuiltInTypeArgPlan
           print_operation = WebKit::PrintOperation.new(lib_print_operation, GICrystal::Transfer::None)
-          ::Box(Proc(WebKit::WebView, WebKit::PrintOperation, Bool)).unbox(_lib_box).call(_sender, print_operation)
+          _retval = ::Box(Proc(WebKit::WebView, WebKit::PrintOperation, Bool)).unbox(_lib_box).call(_sender, print_operation)
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,
@@ -2565,7 +2648,8 @@ module WebKit
         handler = ->(_lib_sender : Pointer(Void), lib_query : Pointer(Void), _lib_box : Pointer(Void)) {
           # Generator::BuiltInTypeArgPlan
           query = WebKit::PermissionStateQuery.new(lib_query, GICrystal::Transfer::None)
-          ::Box(Proc(WebKit::PermissionStateQuery, Bool)).unbox(_lib_box).call(query)
+          _retval = ::Box(Proc(WebKit::PermissionStateQuery, Bool)).unbox(_lib_box).call(query)
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,
@@ -2579,7 +2663,8 @@ module WebKit
           _sender = WebKit::WebView.new(_lib_sender, GICrystal::Transfer::None)
           # Generator::BuiltInTypeArgPlan
           query = WebKit::PermissionStateQuery.new(lib_query, GICrystal::Transfer::None)
-          ::Box(Proc(WebKit::WebView, WebKit::PermissionStateQuery, Bool)).unbox(_lib_box).call(_sender, query)
+          _retval = ::Box(Proc(WebKit::WebView, WebKit::PermissionStateQuery, Bool)).unbox(_lib_box).call(_sender, query)
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,
@@ -2741,7 +2826,8 @@ module WebKit
         handler = ->(_lib_sender : Pointer(Void), lib_request : Pointer(Void), _lib_box : Pointer(Void)) {
           # Generator::BuiltInTypeArgPlan
           request = WebKit::ColorChooserRequest.new(lib_request, GICrystal::Transfer::None)
-          ::Box(Proc(WebKit::ColorChooserRequest, Bool)).unbox(_lib_box).call(request)
+          _retval = ::Box(Proc(WebKit::ColorChooserRequest, Bool)).unbox(_lib_box).call(request)
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,
@@ -2755,7 +2841,8 @@ module WebKit
           _sender = WebKit::WebView.new(_lib_sender, GICrystal::Transfer::None)
           # Generator::BuiltInTypeArgPlan
           request = WebKit::ColorChooserRequest.new(lib_request, GICrystal::Transfer::None)
-          ::Box(Proc(WebKit::WebView, WebKit::ColorChooserRequest, Bool)).unbox(_lib_box).call(_sender, request)
+          _retval = ::Box(Proc(WebKit::WebView, WebKit::ColorChooserRequest, Bool)).unbox(_lib_box).call(_sender, request)
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,
@@ -2786,7 +2873,8 @@ module WebKit
         handler = ->(_lib_sender : Pointer(Void), lib_request : Pointer(Void), _lib_box : Pointer(Void)) {
           # Generator::BuiltInTypeArgPlan
           request = WebKit::FileChooserRequest.new(lib_request, GICrystal::Transfer::None)
-          ::Box(Proc(WebKit::FileChooserRequest, Bool)).unbox(_lib_box).call(request)
+          _retval = ::Box(Proc(WebKit::FileChooserRequest, Bool)).unbox(_lib_box).call(request)
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,
@@ -2800,7 +2888,8 @@ module WebKit
           _sender = WebKit::WebView.new(_lib_sender, GICrystal::Transfer::None)
           # Generator::BuiltInTypeArgPlan
           request = WebKit::FileChooserRequest.new(lib_request, GICrystal::Transfer::None)
-          ::Box(Proc(WebKit::WebView, WebKit::FileChooserRequest, Bool)).unbox(_lib_box).call(_sender, request)
+          _retval = ::Box(Proc(WebKit::WebView, WebKit::FileChooserRequest, Bool)).unbox(_lib_box).call(_sender, request)
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,
@@ -2831,7 +2920,8 @@ module WebKit
         handler = ->(_lib_sender : Pointer(Void), lib_dialog : Pointer(Void), _lib_box : Pointer(Void)) {
           # Generator::BuiltInTypeArgPlan
           dialog = WebKit::ScriptDialog.new(lib_dialog, GICrystal::Transfer::None)
-          ::Box(Proc(WebKit::ScriptDialog, Bool)).unbox(_lib_box).call(dialog)
+          _retval = ::Box(Proc(WebKit::ScriptDialog, Bool)).unbox(_lib_box).call(dialog)
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,
@@ -2845,7 +2935,8 @@ module WebKit
           _sender = WebKit::WebView.new(_lib_sender, GICrystal::Transfer::None)
           # Generator::BuiltInTypeArgPlan
           dialog = WebKit::ScriptDialog.new(lib_dialog, GICrystal::Transfer::None)
-          ::Box(Proc(WebKit::WebView, WebKit::ScriptDialog, Bool)).unbox(_lib_box).call(_sender, dialog)
+          _retval = ::Box(Proc(WebKit::WebView, WebKit::ScriptDialog, Bool)).unbox(_lib_box).call(_sender, dialog)
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,
@@ -2876,7 +2967,8 @@ module WebKit
         handler = ->(_lib_sender : Pointer(Void), lib_notification : Pointer(Void), _lib_box : Pointer(Void)) {
           # Generator::BuiltInTypeArgPlan
           notification = WebKit::Notification.new(lib_notification, GICrystal::Transfer::None)
-          ::Box(Proc(WebKit::Notification, Bool)).unbox(_lib_box).call(notification)
+          _retval = ::Box(Proc(WebKit::Notification, Bool)).unbox(_lib_box).call(notification)
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,
@@ -2890,7 +2982,8 @@ module WebKit
           _sender = WebKit::WebView.new(_lib_sender, GICrystal::Transfer::None)
           # Generator::BuiltInTypeArgPlan
           notification = WebKit::Notification.new(lib_notification, GICrystal::Transfer::None)
-          ::Box(Proc(WebKit::WebView, WebKit::Notification, Bool)).unbox(_lib_box).call(_sender, notification)
+          _retval = ::Box(Proc(WebKit::WebView, WebKit::Notification, Bool)).unbox(_lib_box).call(_sender, notification)
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,
@@ -2923,7 +3016,8 @@ module WebKit
           menu = WebKit::OptionMenu.new(lib_menu, GICrystal::Transfer::None)
           # Generator::BuiltInTypeArgPlan
           rectangle = Gdk::Rectangle.new(lib_rectangle, GICrystal::Transfer::None)
-          ::Box(Proc(WebKit::OptionMenu, Gdk::Rectangle, Bool)).unbox(_lib_box).call(menu, rectangle)
+          _retval = ::Box(Proc(WebKit::OptionMenu, Gdk::Rectangle, Bool)).unbox(_lib_box).call(menu, rectangle)
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,
@@ -2939,7 +3033,8 @@ module WebKit
           menu = WebKit::OptionMenu.new(lib_menu, GICrystal::Transfer::None)
           # Generator::BuiltInTypeArgPlan
           rectangle = Gdk::Rectangle.new(lib_rectangle, GICrystal::Transfer::None)
-          ::Box(Proc(WebKit::WebView, WebKit::OptionMenu, Gdk::Rectangle, Bool)).unbox(_lib_box).call(_sender, menu, rectangle)
+          _retval = ::Box(Proc(WebKit::WebView, WebKit::OptionMenu, Gdk::Rectangle, Bool)).unbox(_lib_box).call(_sender, menu, rectangle)
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,
@@ -3015,7 +3110,8 @@ module WebKit
         handler = ->(_lib_sender : Pointer(Void), lib_message : Pointer(Void), _lib_box : Pointer(Void)) {
           # Generator::BuiltInTypeArgPlan
           message = WebKit::UserMessage.new(lib_message, GICrystal::Transfer::None)
-          ::Box(Proc(WebKit::UserMessage, Bool)).unbox(_lib_box).call(message)
+          _retval = ::Box(Proc(WebKit::UserMessage, Bool)).unbox(_lib_box).call(message)
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,
@@ -3029,7 +3125,8 @@ module WebKit
           _sender = WebKit::WebView.new(_lib_sender, GICrystal::Transfer::None)
           # Generator::BuiltInTypeArgPlan
           message = WebKit::UserMessage.new(lib_message, GICrystal::Transfer::None)
-          ::Box(Proc(WebKit::WebView, WebKit::UserMessage, Bool)).unbox(_lib_box).call(_sender, message)
+          _retval = ::Box(Proc(WebKit::WebView, WebKit::UserMessage, Bool)).unbox(_lib_box).call(_sender, message)
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,

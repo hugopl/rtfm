@@ -208,6 +208,17 @@ module Pango
       Pango::Color.new(_retval, GICrystal::Transfer::None) unless _retval.null?
     end
 
+    def components : Pango::RenderComponent
+      # pango_renderer_get_components: (Method)
+      # Returns: (transfer none)
+
+      # C call
+      _retval = LibPango.pango_renderer_get_components(to_unsafe)
+
+      # Return value handling
+      Pango::RenderComponent.new(_retval)
+    end
+
     def layout : Pango::Layout?
       # pango_renderer_get_layout: (Method)
       # Returns: (transfer none) (nullable)
@@ -279,6 +290,17 @@ module Pango
 
       # C call
       LibPango.pango_renderer_set_color(to_unsafe, part, color)
+
+      # Return value handling
+    end
+
+    def components=(components : Pango::RenderComponent) : Nil
+      # pango_renderer_set_components: (Method)
+      # @components:
+      # Returns: (transfer none)
+
+      # C call
+      LibPango.pango_renderer_set_components(to_unsafe, components)
 
       # Return value handling
     end

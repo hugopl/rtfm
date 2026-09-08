@@ -2581,6 +2581,18 @@ module Gdk
     end
   end
 
+  enum ColorChannel : UInt32
+    Red   = 0
+    Green = 1
+    Blue  = 2
+    Alpha = 3
+
+    # Returns the type id (GType) registered in GLib type system.
+    def self.g_type : UInt64
+      LibGdk.gdk_color_channel_get_type
+    end
+  end
+
   enum CrossingMode : UInt32
     Normal       = 0
     Grab         = 1
@@ -2666,7 +2678,8 @@ module Gdk
     PadStrip         = 26
     PadGroupMode     = 27
     TouchpadHold     = 28
-    EventLast        = 29
+    PadDial          = 29
+    EventLast        = 30
 
     # Returns the type id (GType) registered in GLib type system.
     def self.g_type : UInt64
@@ -2762,7 +2775,39 @@ module Gdk
     X8r8g8b8                       = 30
     R8g8b8x8                       = 31
     X8b8g8r8                       = 32
-    NFormats                       = 33
+    G8B8r8420                      = 33
+    G8R8b8420                      = 34
+    G8B8r8422                      = 35
+    G8R8b8422                      = 36
+    G8B8r8444                      = 37
+    G8R8b8444                      = 38
+    G10x6B10x6r10x6420             = 39
+    G12x4B12x4r12x4420             = 40
+    G16B16r16420                   = 41
+    G8B8R8410                      = 42
+    G8R8B8410                      = 43
+    G8B8R8411                      = 44
+    G8R8B8411                      = 45
+    G8B8R8420                      = 46
+    G8R8B8420                      = 47
+    G8B8R8422                      = 48
+    G8R8B8422                      = 49
+    G8B8R8444                      = 50
+    G8R8B8444                      = 51
+    G8b8g8r8422                    = 52
+    G8r8g8b8422                    = 53
+    R8g8b8g8422                    = 54
+    B8g8r8g8422                    = 55
+    X6g10X6b10X6r10420             = 56
+    X6g10X6b10X6r10422             = 57
+    X6g10X6b10X6r10444             = 58
+    X4g12X4b12X4r12420             = 59
+    X4g12X4b12X4r12422             = 60
+    X4g12X4b12X4r12444             = 61
+    G16B16R16420                   = 62
+    G16B16R16422                   = 63
+    G16B16R16444                   = 64
+    NFormats                       = 65
 
     # Returns the type id (GType) registered in GLib type system.
     def self.g_type : UInt64
@@ -2794,6 +2839,17 @@ module Gdk
     # Returns the type id (GType) registered in GLib type system.
     def self.g_type : UInt64
       LibGdk.gdk_scroll_direction_get_type
+    end
+  end
+
+  enum ScrollRelativeDirection : UInt32
+    Identical = 0
+    Inverted  = 1
+    Unknown   = 2
+
+    # Returns the type id (GType) registered in GLib type system.
+    def self.g_type : UInt64
+      LibGdk.gdk_scroll_relative_direction_get_type
     end
   end
 
@@ -2964,8 +3020,8 @@ module Gdk
 
   @[Flags]
   enum PaintableFlags : UInt32
-    Size     = 1
-    Contents = 2
+    StaticSize     = 1
+    StaticContents = 2
 
     # Returns the type id (GType) registered in GLib type system.
     def self.g_type : UInt64
@@ -2985,6 +3041,23 @@ module Gdk
     # Returns the type id (GType) registered in GLib type system.
     def self.g_type : UInt64
       LibGdk.gdk_seat_capabilities_get_type
+    end
+  end
+
+  @[Flags]
+  enum ToplevelCapabilities : UInt32
+    EdgeConstraints  =   1
+    InhibitShortcuts =   2
+    TitlebarGestures =   4
+    WindowMenu       =   8
+    Maximize         =  16
+    Fullscreen       =  32
+    Minimize         =  64
+    Lower            = 128
+
+    # Returns the type id (GType) registered in GLib type system.
+    def self.g_type : UInt64
+      LibGdk.gdk_toplevel_capabilities_get_type
     end
   end
 
@@ -3070,6 +3143,7 @@ module Gdk
     Cairo::Region.new(_retval, GICrystal::Transfer::Full)
   end
 
+  @[Deprecated]
   def self.cairo_set_source_pixbuf(cr : Cairo::Context, pixbuf : GdkPixbuf::Pixbuf, pixbuf_x : Float64, pixbuf_y : Float64) : Nil
     # gdk_cairo_set_source_pixbuf: (None)
     # @cr:

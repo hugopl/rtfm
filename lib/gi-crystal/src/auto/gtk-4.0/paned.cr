@@ -676,7 +676,8 @@ module Gtk
       def connect(handler : Proc(Bool), *, after : Bool = false) : GObject::SignalConnection
         _box = ::Box.box(handler)
         handler = ->(_lib_sender : Pointer(Void), _lib_box : Pointer(Void)) {
-          ::Box(Proc(Bool)).unbox(_lib_box).call
+          _retval = ::Box(Proc(Bool)).unbox(_lib_box).call
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,
@@ -688,7 +689,8 @@ module Gtk
         _box = ::Box.box(handler)
         handler = ->(_lib_sender : Pointer(Void), _lib_box : Pointer(Void)) {
           _sender = Gtk::Paned.new(_lib_sender, GICrystal::Transfer::None)
-          ::Box(Proc(Gtk::Paned, Bool)).unbox(_lib_box).call(_sender)
+          _retval = ::Box(Proc(Gtk::Paned, Bool)).unbox(_lib_box).call(_sender)
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,
@@ -717,7 +719,8 @@ module Gtk
       def connect(handler : Proc(Bool), *, after : Bool = false) : GObject::SignalConnection
         _box = ::Box.box(handler)
         handler = ->(_lib_sender : Pointer(Void), _lib_box : Pointer(Void)) {
-          ::Box(Proc(Bool)).unbox(_lib_box).call
+          _retval = ::Box(Proc(Bool)).unbox(_lib_box).call
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,
@@ -729,7 +732,8 @@ module Gtk
         _box = ::Box.box(handler)
         handler = ->(_lib_sender : Pointer(Void), _lib_box : Pointer(Void)) {
           _sender = Gtk::Paned.new(_lib_sender, GICrystal::Transfer::None)
-          ::Box(Proc(Gtk::Paned, Bool)).unbox(_lib_box).call(_sender)
+          _retval = ::Box(Proc(Gtk::Paned, Bool)).unbox(_lib_box).call(_sender)
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,
@@ -760,7 +764,8 @@ module Gtk
         handler = ->(_lib_sender : Pointer(Void), lib_reversed : LibC::Int, _lib_box : Pointer(Void)) {
           # Generator::BuiltInTypeArgPlan
           reversed = GICrystal.to_bool(lib_reversed)
-          ::Box(Proc(Bool, Bool)).unbox(_lib_box).call(reversed)
+          _retval = ::Box(Proc(Bool, Bool)).unbox(_lib_box).call(reversed)
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,
@@ -774,7 +779,8 @@ module Gtk
           _sender = Gtk::Paned.new(_lib_sender, GICrystal::Transfer::None)
           # Generator::BuiltInTypeArgPlan
           reversed = GICrystal.to_bool(lib_reversed)
-          ::Box(Proc(Gtk::Paned, Bool, Bool)).unbox(_lib_box).call(_sender, reversed)
+          _retval = ::Box(Proc(Gtk::Paned, Bool, Bool)).unbox(_lib_box).call(_sender, reversed)
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,
@@ -805,7 +811,8 @@ module Gtk
         handler = ->(_lib_sender : Pointer(Void), lib_reversed : LibC::Int, _lib_box : Pointer(Void)) {
           # Generator::BuiltInTypeArgPlan
           reversed = GICrystal.to_bool(lib_reversed)
-          ::Box(Proc(Bool, Bool)).unbox(_lib_box).call(reversed)
+          _retval = ::Box(Proc(Bool, Bool)).unbox(_lib_box).call(reversed)
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,
@@ -819,7 +826,8 @@ module Gtk
           _sender = Gtk::Paned.new(_lib_sender, GICrystal::Transfer::None)
           # Generator::BuiltInTypeArgPlan
           reversed = GICrystal.to_bool(lib_reversed)
-          ::Box(Proc(Gtk::Paned, Bool, Bool)).unbox(_lib_box).call(_sender, reversed)
+          _retval = ::Box(Proc(Gtk::Paned, Bool, Bool)).unbox(_lib_box).call(_sender, reversed)
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,
@@ -850,7 +858,8 @@ module Gtk
         handler = ->(_lib_sender : Pointer(Void), lib_scroll_type : UInt32, _lib_box : Pointer(Void)) {
           # Generator::BuiltInTypeArgPlan
           scroll_type = Gtk::ScrollType.new(lib_scroll_type)
-          ::Box(Proc(Gtk::ScrollType, Bool)).unbox(_lib_box).call(scroll_type)
+          _retval = ::Box(Proc(Gtk::ScrollType, Bool)).unbox(_lib_box).call(scroll_type)
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,
@@ -864,7 +873,8 @@ module Gtk
           _sender = Gtk::Paned.new(_lib_sender, GICrystal::Transfer::None)
           # Generator::BuiltInTypeArgPlan
           scroll_type = Gtk::ScrollType.new(lib_scroll_type)
-          ::Box(Proc(Gtk::Paned, Gtk::ScrollType, Bool)).unbox(_lib_box).call(_sender, scroll_type)
+          _retval = ::Box(Proc(Gtk::Paned, Gtk::ScrollType, Bool)).unbox(_lib_box).call(_sender, scroll_type)
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,
@@ -893,7 +903,8 @@ module Gtk
       def connect(handler : Proc(Bool), *, after : Bool = false) : GObject::SignalConnection
         _box = ::Box.box(handler)
         handler = ->(_lib_sender : Pointer(Void), _lib_box : Pointer(Void)) {
-          ::Box(Proc(Bool)).unbox(_lib_box).call
+          _retval = ::Box(Proc(Bool)).unbox(_lib_box).call
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,
@@ -905,7 +916,8 @@ module Gtk
         _box = ::Box.box(handler)
         handler = ->(_lib_sender : Pointer(Void), _lib_box : Pointer(Void)) {
           _sender = Gtk::Paned.new(_lib_sender, GICrystal::Transfer::None)
-          ::Box(Proc(Gtk::Paned, Bool)).unbox(_lib_box).call(_sender)
+          _retval = ::Box(Proc(Gtk::Paned, Bool)).unbox(_lib_box).call(_sender)
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,

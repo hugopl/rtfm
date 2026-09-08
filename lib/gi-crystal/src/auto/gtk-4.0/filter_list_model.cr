@@ -38,9 +38,9 @@ module Gtk
       ptr
     end
 
-    def initialize(*, filter : Gtk::Filter? = nil, incremental : Bool? = nil, item_type : UInt64? = nil, model : Gio::ListModel? = nil, n_items : UInt32? = nil, pending : UInt32? = nil)
-      _names = uninitialized Pointer(LibC::Char)[6]
-      _values = StaticArray(LibGObject::Value, 6).new(LibGObject::Value.new)
+    def initialize(*, filter : Gtk::Filter? = nil, incremental : Bool? = nil, item_type : UInt64? = nil, model : Gio::ListModel? = nil, n_items : UInt32? = nil, pending : UInt32? = nil, watch_items : Bool? = nil)
+      _names = uninitialized Pointer(LibC::Char)[7]
+      _values = StaticArray(LibGObject::Value, 7).new(LibGObject::Value.new)
       _n = 0
 
       if !filter.nil?
@@ -71,6 +71,11 @@ module Gtk
       if !pending.nil?
         (_names.to_unsafe + _n).value = "pending".to_unsafe
         GObject::Value.init_g_value(_values.to_unsafe + _n, pending)
+        _n += 1
+      end
+      if !watch_items.nil?
+        (_names.to_unsafe + _n).value = "watch-items".to_unsafe
+        GObject::Value.init_g_value(_values.to_unsafe + _n, watch_items)
         _n += 1
       end
 
@@ -164,6 +169,21 @@ module Gtk
       value
     end
 
+    def watch_items=(value : Bool) : Bool
+      unsafe_value = value
+
+      LibGObject.g_object_set(self, "watch-items", unsafe_value, Pointer(Void).null)
+      value
+    end
+
+    def watch_items? : Bool
+      # Returns: None
+
+      value = uninitialized LibC::Int
+      LibGObject.g_object_get(self, "watch-items", pointerof(value), Pointer(Void).null)
+      GICrystal.to_bool(value)
+    end
+
     def self.new(model : Gio::ListModel?, filter : Gtk::Filter?) : self
       # gtk_filter_list_model_new: (Constructor)
       # @model: (transfer full) (nullable)
@@ -238,6 +258,17 @@ module Gtk
       _retval
     end
 
+    def watch_items : Bool
+      # gtk_filter_list_model_get_watch_items: (Method | Getter)
+      # Returns: (transfer none)
+
+      # C call
+      _retval = LibGtk.gtk_filter_list_model_get_watch_items(to_unsafe)
+
+      # Return value handling
+      GICrystal.to_bool(_retval)
+    end
+
     def filter=(filter : Gtk::Filter?) : Nil
       # gtk_filter_list_model_set_filter: (Method | Setter)
       # @filter: (nullable)
@@ -281,6 +312,17 @@ module Gtk
 
       # C call
       LibGtk.gtk_filter_list_model_set_model(to_unsafe, model)
+
+      # Return value handling
+    end
+
+    def watch_items=(watch_items : Bool) : Nil
+      # gtk_filter_list_model_set_watch_items: (Method | Setter)
+      # @watch_items:
+      # Returns: (transfer none)
+
+      # C call
+      LibGtk.gtk_filter_list_model_set_watch_items(to_unsafe, watch_items)
 
       # Return value handling
     end

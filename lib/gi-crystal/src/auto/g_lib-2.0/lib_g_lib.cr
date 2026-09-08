@@ -60,7 +60,6 @@ lib LibGLib
   type UnicodeBreakType = UInt32
   type UnicodeScript = Int32
   type UnicodeType = UInt32
-  type UnixPipeEnd = UInt32
   type UriError = UInt32
   type UserDirectory = UInt32
   type VariantClass = UInt32
@@ -126,7 +125,6 @@ lib LibGLib
   alias TranslateFunc = Pointer(LibC::Char), Pointer(Void) -> Pointer(LibC::Char)
   alias TraverseFunc = Pointer(Void), Pointer(Void), Pointer(Void) -> LibC::Int
   alias TraverseNodeFunc = Pointer(LibGLib::TreeNode), Pointer(Void) -> LibC::Int
-  alias UnixFDSourceFunc = Int32, UInt32, Pointer(Void) -> LibC::Int
   alias VoidFunc = -> Void
 
   # Interface types
@@ -544,10 +542,6 @@ lib LibGLib
     len : UInt32
   end
 
-  struct UnixPipe # 8 bytes long
-    fds : Int32[2]
-  end
-
   type Uri = Void # Struct with zero bytes
 
   struct UriParamsIter # 280 bytes long
@@ -657,18 +651,18 @@ lib LibGLib
   fun g_async_queue_unref(this : Void*) : Void
   fun g_async_queue_unref_and_unlock(this : Void*) : Void
   fun g_atexit(func : Void*) : Void
-  fun g_atomic_int_add(atomic : Pointer(Int32), val : Int32) : Int32
-  fun g_atomic_int_and(atomic : Pointer(UInt32), val : UInt32) : UInt32
-  fun g_atomic_int_compare_and_exchange(atomic : Pointer(Int32), oldval : Int32, newval : Int32) : LibC::Int
-  fun g_atomic_int_compare_and_exchange_full(atomic : Pointer(Int32), oldval : Int32, newval : Int32, preval : Pointer(Int32)) : LibC::Int
-  fun g_atomic_int_dec_and_test(atomic : Pointer(Int32)) : LibC::Int
-  fun g_atomic_int_exchange(atomic : Pointer(Int32), newval : Int32) : Int32
-  fun g_atomic_int_exchange_and_add(atomic : Pointer(Int32), val : Int32) : Int32
-  fun g_atomic_int_get(atomic : Pointer(Int32)) : Int32
-  fun g_atomic_int_inc(atomic : Pointer(Int32)) : Void
-  fun g_atomic_int_or(atomic : Pointer(UInt32), val : UInt32) : UInt32
-  fun g_atomic_int_set(atomic : Pointer(Int32), newval : Int32) : Void
-  fun g_atomic_int_xor(atomic : Pointer(UInt32), val : UInt32) : UInt32
+  fun g_atomic_int_add(atomic : Pointer(Void), val : Int32) : Int32
+  fun g_atomic_int_and(atomic : Pointer(Void), val : UInt32) : UInt32
+  fun g_atomic_int_compare_and_exchange(atomic : Pointer(Void), oldval : Int32, newval : Int32) : LibC::Int
+  fun g_atomic_int_compare_and_exchange_full(atomic : Pointer(Void), oldval : Int32, newval : Int32, preval : Pointer(Int32)) : LibC::Int
+  fun g_atomic_int_dec_and_test(atomic : Pointer(Void)) : LibC::Int
+  fun g_atomic_int_exchange(atomic : Pointer(Void), newval : Int32) : Int32
+  fun g_atomic_int_exchange_and_add(atomic : Pointer(Void), val : Int32) : Int32
+  fun g_atomic_int_get(atomic : Pointer(Void)) : Int32
+  fun g_atomic_int_inc(atomic : Pointer(Void)) : Void
+  fun g_atomic_int_or(atomic : Pointer(Void), val : UInt32) : UInt32
+  fun g_atomic_int_set(atomic : Pointer(Void), newval : Int32) : Void
+  fun g_atomic_int_xor(atomic : Pointer(Void), val : UInt32) : UInt32
   fun g_atomic_pointer_add(atomic : Pointer(Void), val : Int64) : Int64
   fun g_atomic_pointer_and(atomic : Pointer(Void), val : UInt64) : UInt64
   fun g_atomic_pointer_compare_and_exchange(atomic : Pointer(Void), oldval : Pointer(Void), newval : Pointer(Void)) : LibC::Int
@@ -695,12 +689,14 @@ lib LibGLib
   fun g_base64_encode_close(break_lines : LibC::Int, _out : Pointer(Pointer(UInt8)), state : Pointer(Int32), save : Pointer(Int32)) : UInt64
   fun g_base64_encode_step(_in : Pointer(UInt8), len : UInt64, break_lines : LibC::Int, _out : Pointer(Pointer(UInt8)), state : Pointer(Int32), save : Pointer(Int32)) : UInt64
   fun g_basename(file_name : Pointer(LibC::Char)) : Pointer(LibC::Char)
-  fun g_bit_lock(address : Pointer(Int32), lock_bit : Int32) : Void
+  fun g_bit_lock(address : Pointer(Void), lock_bit : Int32) : Void
+  fun g_bit_lock_and_get(address : Pointer(Void), lock_bit : UInt32, out_val : Pointer(Int32)) : Void
   fun g_bit_nth_lsf(mask : UInt64, nth_bit : Int32) : Int32
   fun g_bit_nth_msf(mask : UInt64, nth_bit : Int32) : Int32
   fun g_bit_storage(number : UInt64) : UInt32
-  fun g_bit_trylock(address : Pointer(Int32), lock_bit : Int32) : LibC::Int
-  fun g_bit_unlock(address : Pointer(Int32), lock_bit : Int32) : Void
+  fun g_bit_trylock(address : Pointer(Void), lock_bit : Int32) : LibC::Int
+  fun g_bit_unlock(address : Pointer(Void), lock_bit : Int32) : Void
+  fun g_bit_unlock_and_set(address : Pointer(Void), lock_bit : UInt32, new_val : Int32, preserve_mask : Int32) : Void
   fun g_blow_chunks : Void
   fun g_bookmark_file_add_application(this : Void*, uri : Pointer(LibC::Char), name : Pointer(LibC::Char), exec : Pointer(LibC::Char)) : Void
   fun g_bookmark_file_add_group(this : Void*, uri : Pointer(LibC::Char), group : Pointer(LibC::Char)) : Void
@@ -796,7 +792,7 @@ lib LibGLib
   fun g_bytes_get_type : UInt64
   fun g_bytes_hash(this : Void*) : UInt32
   fun g_bytes_new(data : Pointer(UInt8), size : UInt64) : Pointer(Void)
-  fun g_bytes_new_from_bytes(this : Void*, offset : UInt64, length : UInt64) : Pointer(Void)
+  fun g_bytes_new_from_bytes(bytes : Pointer(Void), offset : UInt64, length : UInt64) : Pointer(Void)
   fun g_bytes_new_take(data : Pointer(UInt8), size : UInt64) : Pointer(Void)
   fun g_bytes_ref(this : Void*) : Pointer(Void)
   fun g_bytes_unref(this : Void*) : Void
@@ -823,7 +819,6 @@ lib LibGLib
   fun g_chmod(filename : Pointer(LibC::Char), mode : Int32) : Int32
   fun g_clear_error(error : LibGLib::Error**) : Void
   fun g_close(fd : Int32, error : LibGLib::Error**) : LibC::Int
-  fun g_closefrom(lowfd : Int32) : Int32
   fun g_completion_clear_items(this : Void*) : Void
   fun g_completion_complete_utf8(this : Void*, prefix : Pointer(LibC::Char), new_prefix : Pointer(LibC::Char)) : Pointer(LibGLib::List)
   fun g_completion_free(this : Void*) : Void
@@ -876,7 +871,10 @@ lib LibGLib
   fun g_date_get_sunday_weeks_in_year(year : UInt16) : UInt8
   fun g_date_get_sunday_weeks_in_year(year : UInt16) : UInt8
   fun g_date_get_type : UInt64
+  fun g_date_get_week_of_year(this : Void*, first_day_of_week : UInt32) : UInt32
   fun g_date_get_weekday(this : Void*) : UInt32
+  fun g_date_get_weeks_in_year(year : UInt16, first_day_of_week : UInt32) : UInt8
+  fun g_date_get_weeks_in_year(year : UInt16, first_day_of_week : UInt32) : UInt8
   fun g_date_get_year(this : Void*) : UInt16
   fun g_date_is_first_of_month(this : Void*) : LibC::Int
   fun g_date_is_last_of_month(this : Void*) : LibC::Int
@@ -998,7 +996,6 @@ lib LibGLib
   fun g_error_get_type : UInt64
   fun g_error_matches(this : Void*, domain : UInt32, code : Int32) : LibC::Int
   fun g_error_new_literal(domain : UInt32, code : Int32, message : Pointer(LibC::Char)) : Pointer(LibGLib::Error)
-  fun g_fdwalk_set_cloexec(lowfd : Int32) : Int32
   fun g_file_error_from_errno(err_no : Int32) : UInt32
   fun g_file_error_quark : UInt32
   fun g_file_get_contents(filename : Pointer(LibC::Char), contents : Pointer(Pointer(UInt8)), length : Pointer(UInt64), error : LibGLib::Error**) : LibC::Int
@@ -1036,6 +1033,7 @@ lib LibGLib
   fun g_get_language_names_with_category(category_name : Pointer(LibC::Char)) : Pointer(Pointer(LibC::Char))
   fun g_get_locale_variants(locale : Pointer(LibC::Char)) : Pointer(Pointer(LibC::Char))
   fun g_get_monotonic_time : Int64
+  fun g_get_monotonic_time_ns : UInt64
   fun g_get_num_processors : UInt32
   fun g_get_os_info(key_name : Pointer(LibC::Char)) : Pointer(LibC::Char)
   fun g_get_prgname : Pointer(LibC::Char)
@@ -1241,6 +1239,7 @@ lib LibGLib
   fun g_locale_from_utf8(utf8string : Pointer(LibC::Char), len : Int64, bytes_read : Pointer(UInt64), bytes_written : Pointer(UInt64), error : LibGLib::Error**) : Pointer(UInt8)
   fun g_locale_to_utf8(opsysstring : Pointer(UInt8), len : Int64, bytes_read : Pointer(UInt64), bytes_written : Pointer(UInt64), error : LibGLib::Error**) : Pointer(LibC::Char)
   fun g_log_default_handler(log_domain : Pointer(LibC::Char), log_level : Int32, message : Pointer(LibC::Char), unused_data : Pointer(Void)) : Void
+  fun g_log_get_always_fatal : Int32
   fun g_log_get_debug_enabled : LibC::Int
   fun g_log_remove_handler(log_domain : Pointer(LibC::Char), handler_id : UInt32) : Void
   fun g_log_set_always_fatal(fatal_mask : Int32) : Int32
@@ -1323,7 +1322,9 @@ lib LibGLib
   fun g_markup_parse_context_free(this : Void*) : Void
   fun g_markup_parse_context_get_element(this : Void*) : Pointer(LibC::Char)
   fun g_markup_parse_context_get_element_stack(this : Void*) : Pointer(LibGLib::SList)
+  fun g_markup_parse_context_get_offset(this : Void*) : UInt64
   fun g_markup_parse_context_get_position(this : Void*, line_number : Pointer(Int32), char_number : Pointer(Int32)) : Void
+  fun g_markup_parse_context_get_tag_start(this : Void*, line_number : Pointer(UInt64), char_number : Pointer(UInt64), offset : Pointer(UInt64)) : Void
   fun g_markup_parse_context_get_type : UInt64
   fun g_markup_parse_context_get_user_data(this : Void*) : Pointer(Void)
   fun g_markup_parse_context_new(parser : Pointer(Void), flags : UInt32, user_data : Pointer(Void), user_data_dnotify : Void*) : Pointer(Void)
@@ -1667,6 +1668,7 @@ lib LibGLib
   fun g_source_add_unix_fd(this : Void*, fd : Int32, events : UInt32) : Pointer(Void)
   fun g_source_attach(this : Void*, context : Pointer(Void)) : UInt32
   fun g_source_destroy(this : Void*) : Void
+  fun g_source_dup_context(this : Void*) : Pointer(Void)
   fun g_source_get_can_recurse(this : Void*) : LibC::Int
   fun g_source_get_context(this : Void*) : Pointer(Void)
   fun g_source_get_current_time(this : Void*, timeval : Pointer(Void)) : Void
@@ -1750,6 +1752,7 @@ lib LibGLib
   fun g_string_chunk_insert(this : Void*, string : Pointer(LibC::Char)) : Pointer(LibC::Char)
   fun g_string_chunk_insert_const(this : Void*, string : Pointer(LibC::Char)) : Pointer(LibC::Char)
   fun g_string_chunk_insert_len(this : Void*, string : Pointer(LibC::Char), len : Int64) : Pointer(LibC::Char)
+  fun g_string_copy(this : Void*) : Pointer(Void)
   fun g_string_down(this : Void*) : Pointer(Void)
   fun g_string_equal(this : Void*, v2 : Pointer(Void)) : LibC::Int
   fun g_string_erase(this : Void*, pos : Int64, len : Int64) : Pointer(Void)
@@ -1787,7 +1790,7 @@ lib LibGLib
   fun g_strrstr_len(haystack : Pointer(LibC::Char), haystack_len : Int64, needle : Pointer(LibC::Char)) : Pointer(LibC::Char)
   fun g_strsignal(signum : Int32) : Pointer(LibC::Char)
   fun g_strsplit(string : Pointer(LibC::Char), delimiter : Pointer(LibC::Char), max_tokens : Int32) : Pointer(Pointer(LibC::Char))
-  fun g_strsplit_set(string : Pointer(LibC::Char), delimiters : Pointer(LibC::Char), max_tokens : Int32) : Pointer(Pointer(LibC::Char))
+  fun g_strsplit_set(string : Pointer(LibC::Char), delimiters : Pointer(UInt8), max_tokens : Int32) : Pointer(Pointer(LibC::Char))
   fun g_strstr_len(haystack : Pointer(LibC::Char), haystack_len : Int64, needle : Pointer(LibC::Char)) : Pointer(LibC::Char)
   fun g_strtod(nptr : Pointer(LibC::Char), endptr : Pointer(Pointer(LibC::Char))) : Float64
   fun g_strup(string : Pointer(LibC::Char)) : Pointer(LibC::Char)
@@ -1843,6 +1846,7 @@ lib LibGLib
   fun g_test_trap_assertions(domain : Pointer(LibC::Char), file : Pointer(LibC::Char), line : Int32, func : Pointer(LibC::Char), assertion_flags : UInt64, pattern : Pointer(LibC::Char)) : Void
   fun g_test_trap_fork(usec_timeout : UInt64, test_trap_flags : UInt32) : LibC::Int
   fun g_test_trap_has_passed : LibC::Int
+  fun g_test_trap_has_skipped : LibC::Int
   fun g_test_trap_reached_timeout : LibC::Int
   fun g_test_trap_subprocess(test_path : Pointer(LibC::Char), usec_timeout : UInt64, test_flags : UInt32) : Void
   fun g_test_trap_subprocess_with_envp(test_path : Pointer(LibC::Char), envp : Pointer(Pointer(LibC::Char)), usec_timeout : UInt64, test_flags : UInt32) : Void
@@ -1996,14 +2000,6 @@ lib LibGLib
   fun g_unicode_script_get_type : UInt64
   fun g_unicode_script_to_iso15924(script : Int32) : UInt32
   fun g_unicode_type_get_type : UInt64
-  fun g_unix_error_quark : UInt32
-  fun g_unix_fd_add_full(priority : Int32, fd : Int32, condition : UInt32, function : Void*, user_data : Pointer(Void), notify : Void*) : UInt32
-  fun g_unix_fd_source_new(fd : Int32, condition : UInt32) : Pointer(Void)
-  fun g_unix_get_passwd_entry(user_name : Pointer(LibC::Char), error : LibGLib::Error**) : Pointer(Void)
-  fun g_unix_open_pipe(fds : Pointer(Int32), flags : Int32, error : LibGLib::Error**) : LibC::Int
-  fun g_unix_set_fd_nonblocking(fd : Int32, nonblock : LibC::Int, error : LibGLib::Error**) : LibC::Int
-  fun g_unix_signal_add_full(priority : Int32, signum : Int32, handler : Void*, user_data : Pointer(Void), notify : Void*) : UInt32
-  fun g_unix_signal_source_new(signum : Int32) : Pointer(Void)
   fun g_unlink(filename : Pointer(LibC::Char)) : Int32
   fun g_unsetenv(variable : Pointer(LibC::Char)) : Void
   fun g_uri_build(flags : UInt32, scheme : Pointer(LibC::Char), userinfo : Pointer(LibC::Char), host : Pointer(LibC::Char), port : Int32, path : Pointer(LibC::Char), query : Pointer(LibC::Char), fragment : Pointer(LibC::Char)) : Pointer(Void)
@@ -2091,8 +2087,8 @@ lib LibGLib
   fun g_utf8_to_ucs4_fast(str : Pointer(LibC::Char), len : Int64, items_written : Pointer(Int64)) : Pointer(UInt32)
   fun g_utf8_to_utf16(str : Pointer(LibC::Char), len : Int64, items_read : Pointer(Int64), items_written : Pointer(Int64), error : LibGLib::Error**) : Pointer(UInt16)
   fun g_utf8_truncate_middle(string : Pointer(LibC::Char), truncate_length : UInt64) : Pointer(LibC::Char)
-  fun g_utf8_validate(str : Pointer(UInt8), max_len : Int64, _end : Pointer(Pointer(LibC::Char))) : LibC::Int
-  fun g_utf8_validate_len(str : Pointer(UInt8), max_len : UInt64, _end : Pointer(Pointer(LibC::Char))) : LibC::Int
+  fun g_utf8_validate(str : Pointer(UInt8), max_len : Int64, _end : Pointer(Pointer(UInt8))) : LibC::Int
+  fun g_utf8_validate_len(str : Pointer(UInt8), max_len : UInt64, _end : Pointer(Pointer(UInt8))) : LibC::Int
   fun g_utime(filename : Pointer(LibC::Char), utb : Pointer(Void)) : Int32
   fun g_uuid_string_is_valid(str : Pointer(LibC::Char)) : LibC::Int
   fun g_uuid_string_random : Pointer(LibC::Char)

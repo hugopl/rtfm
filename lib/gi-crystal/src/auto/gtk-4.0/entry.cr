@@ -47,9 +47,9 @@ module Gtk
       ptr
     end
 
-    def initialize(*, accessible_role : Gtk::AccessibleRole? = nil, activates_default : Bool? = nil, attributes : Pango::AttrList? = nil, buffer : Gtk::EntryBuffer? = nil, can_focus : Bool? = nil, can_target : Bool? = nil, completion : Gtk::EntryCompletion? = nil, css_classes : Enumerable(::String)? = nil, css_name : ::String? = nil, cursor : Gdk::Cursor? = nil, cursor_position : Int32? = nil, editable : Bool? = nil, editing_canceled : Bool? = nil, enable_emoji_completion : Bool? = nil, enable_undo : Bool? = nil, extra_menu : Gio::MenuModel? = nil, focus_on_click : Bool? = nil, focusable : Bool? = nil, halign : Gtk::Align? = nil, has_default : Bool? = nil, has_focus : Bool? = nil, has_frame : Bool? = nil, has_tooltip : Bool? = nil, height_request : Int32? = nil, hexpand : Bool? = nil, hexpand_set : Bool? = nil, im_module : ::String? = nil, input_hints : Gtk::InputHints? = nil, input_purpose : Gtk::InputPurpose? = nil, invisible_char : UInt32? = nil, invisible_char_set : Bool? = nil, layout_manager : Gtk::LayoutManager? = nil, limit_events : Bool? = nil, margin_bottom : Int32? = nil, margin_end : Int32? = nil, margin_start : Int32? = nil, margin_top : Int32? = nil, max_length : Int32? = nil, max_width_chars : Int32? = nil, name : ::String? = nil, opacity : Float64? = nil, overflow : Gtk::Overflow? = nil, overwrite_mode : Bool? = nil, parent : Gtk::Widget? = nil, placeholder_text : ::String? = nil, primary_icon_activatable : Bool? = nil, primary_icon_gicon : Gio::Icon? = nil, primary_icon_name : ::String? = nil, primary_icon_paintable : Gdk::Paintable? = nil, primary_icon_sensitive : Bool? = nil, primary_icon_storage_type : Gtk::ImageType? = nil, primary_icon_tooltip_markup : ::String? = nil, primary_icon_tooltip_text : ::String? = nil, progress_fraction : Float64? = nil, progress_pulse_step : Float64? = nil, receives_default : Bool? = nil, root : Gtk::Root? = nil, scale_factor : Int32? = nil, scroll_offset : Int32? = nil, secondary_icon_activatable : Bool? = nil, secondary_icon_gicon : Gio::Icon? = nil, secondary_icon_name : ::String? = nil, secondary_icon_paintable : Gdk::Paintable? = nil, secondary_icon_sensitive : Bool? = nil, secondary_icon_storage_type : Gtk::ImageType? = nil, secondary_icon_tooltip_markup : ::String? = nil, secondary_icon_tooltip_text : ::String? = nil, selection_bound : Int32? = nil, sensitive : Bool? = nil, show_emoji_icon : Bool? = nil, tabs : Pango::TabArray? = nil, text : ::String? = nil, text_length : UInt32? = nil, tooltip_markup : ::String? = nil, tooltip_text : ::String? = nil, truncate_multiline : Bool? = nil, valign : Gtk::Align? = nil, vexpand : Bool? = nil, vexpand_set : Bool? = nil, visibility : Bool? = nil, visible : Bool? = nil, width_chars : Int32? = nil, width_request : Int32? = nil, xalign : Float32? = nil)
-      _names = uninitialized Pointer(LibC::Char)[84]
-      _values = StaticArray(LibGObject::Value, 84).new(LibGObject::Value.new)
+    def initialize(*, accessible_role : Gtk::AccessibleRole? = nil, activates_default : Bool? = nil, attributes : Pango::AttrList? = nil, buffer : Gtk::EntryBuffer? = nil, can_focus : Bool? = nil, can_target : Bool? = nil, completion : Gtk::EntryCompletion? = nil, css_classes : Enumerable(::String)? = nil, css_name : ::String? = nil, cursor : Gdk::Cursor? = nil, cursor_position : Int32? = nil, editable : Bool? = nil, editing_canceled : Bool? = nil, enable_emoji_completion : Bool? = nil, enable_undo : Bool? = nil, extra_menu : Gio::MenuModel? = nil, focus_on_click : Bool? = nil, focusable : Bool? = nil, halign : Gtk::Align? = nil, has_default : Bool? = nil, has_focus : Bool? = nil, has_frame : Bool? = nil, has_tooltip : Bool? = nil, height_request : Int32? = nil, hexpand : Bool? = nil, hexpand_set : Bool? = nil, im_module : ::String? = nil, input_hints : Gtk::InputHints? = nil, input_purpose : Gtk::InputPurpose? = nil, invisible_char : UInt32? = nil, invisible_char_set : Bool? = nil, layout_manager : Gtk::LayoutManager? = nil, limit_events : Bool? = nil, margin_bottom : Int32? = nil, margin_end : Int32? = nil, margin_start : Int32? = nil, margin_top : Int32? = nil, max_length : Int32? = nil, max_width_chars : Int32? = nil, menu_entry_icon_primary_text : ::String? = nil, menu_entry_icon_secondary_text : ::String? = nil, name : ::String? = nil, opacity : Float64? = nil, overflow : Gtk::Overflow? = nil, overwrite_mode : Bool? = nil, parent : Gtk::Widget? = nil, placeholder_text : ::String? = nil, primary_icon_activatable : Bool? = nil, primary_icon_gicon : Gio::Icon? = nil, primary_icon_name : ::String? = nil, primary_icon_paintable : Gdk::Paintable? = nil, primary_icon_sensitive : Bool? = nil, primary_icon_storage_type : Gtk::ImageType? = nil, primary_icon_tooltip_markup : ::String? = nil, primary_icon_tooltip_text : ::String? = nil, progress_fraction : Float64? = nil, progress_pulse_step : Float64? = nil, receives_default : Bool? = nil, root : Gtk::Root? = nil, scale_factor : Int32? = nil, scroll_offset : Int32? = nil, secondary_icon_activatable : Bool? = nil, secondary_icon_gicon : Gio::Icon? = nil, secondary_icon_name : ::String? = nil, secondary_icon_paintable : Gdk::Paintable? = nil, secondary_icon_sensitive : Bool? = nil, secondary_icon_storage_type : Gtk::ImageType? = nil, secondary_icon_tooltip_markup : ::String? = nil, secondary_icon_tooltip_text : ::String? = nil, selection_bound : Int32? = nil, sensitive : Bool? = nil, show_emoji_icon : Bool? = nil, tabs : Pango::TabArray? = nil, text : ::String? = nil, text_length : UInt32? = nil, tooltip_markup : ::String? = nil, tooltip_text : ::String? = nil, truncate_multiline : Bool? = nil, valign : Gtk::Align? = nil, vexpand : Bool? = nil, vexpand_set : Bool? = nil, visibility : Bool? = nil, visible : Bool? = nil, width_chars : Int32? = nil, width_request : Int32? = nil, xalign : Float32? = nil)
+      _names = uninitialized Pointer(LibC::Char)[86]
+      _values = StaticArray(LibGObject::Value, 86).new(LibGObject::Value.new)
       _n = 0
 
       if !accessible_role.nil?
@@ -245,6 +245,16 @@ module Gtk
       if !max_width_chars.nil?
         (_names.to_unsafe + _n).value = "max-width-chars".to_unsafe
         GObject::Value.init_g_value(_values.to_unsafe + _n, max_width_chars)
+        _n += 1
+      end
+      if !menu_entry_icon_primary_text.nil?
+        (_names.to_unsafe + _n).value = "menu-entry-icon-primary-text".to_unsafe
+        GObject::Value.init_g_value(_values.to_unsafe + _n, menu_entry_icon_primary_text)
+        _n += 1
+      end
+      if !menu_entry_icon_secondary_text.nil?
+        (_names.to_unsafe + _n).value = "menu-entry-icon-secondary-text".to_unsafe
+        GObject::Value.init_g_value(_values.to_unsafe + _n, menu_entry_icon_secondary_text)
         _n += 1
       end
       if !name.nil?
@@ -699,6 +709,60 @@ module Gtk
       value = uninitialized Int32
       LibGObject.g_object_get(self, "max-length", pointerof(value), Pointer(Void).null)
       value
+    end
+
+    def menu_entry_icon_primary_text=(value : ::String) : ::String
+      unsafe_value = value
+
+      LibGObject.g_object_set(self, "menu-entry-icon-primary-text", unsafe_value, Pointer(Void).null)
+      value
+    end
+
+    def menu_entry_icon_primary_text : ::String
+      # Returns: None
+
+      value = uninitialized Pointer(LibC::Char)
+      LibGObject.g_object_get(self, "menu-entry-icon-primary-text", pointerof(value), Pointer(Void).null)
+      ::String.new(value)
+    end
+
+    # Set `#menu_entry_icon_primary_text` property to nil.
+    def menu_entry_icon_primary_text=(value : Nil) : Nil
+      LibGObject.g_object_set(self, "menu-entry-icon-primary-text", Pointer(Void).null, Pointer(Void).null)
+    end
+
+    # Same as `#menu_entry_icon_primary_text`, but can return nil.
+    def menu_entry_icon_primary_text? : ::String?
+      value = uninitialized Pointer(LibC::Char)
+      LibGObject.g_object_get(self, "menu-entry-icon-primary-text", pointerof(value), Pointer(Void).null)
+      ::String.new(value) if value
+    end
+
+    def menu_entry_icon_secondary_text=(value : ::String) : ::String
+      unsafe_value = value
+
+      LibGObject.g_object_set(self, "menu-entry-icon-secondary-text", unsafe_value, Pointer(Void).null)
+      value
+    end
+
+    def menu_entry_icon_secondary_text : ::String
+      # Returns: None
+
+      value = uninitialized Pointer(LibC::Char)
+      LibGObject.g_object_get(self, "menu-entry-icon-secondary-text", pointerof(value), Pointer(Void).null)
+      ::String.new(value)
+    end
+
+    # Set `#menu_entry_icon_secondary_text` property to nil.
+    def menu_entry_icon_secondary_text=(value : Nil) : Nil
+      LibGObject.g_object_set(self, "menu-entry-icon-secondary-text", Pointer(Void).null, Pointer(Void).null)
+    end
+
+    # Same as `#menu_entry_icon_secondary_text`, but can return nil.
+    def menu_entry_icon_secondary_text? : ::String?
+      value = uninitialized Pointer(LibC::Char)
+      LibGObject.g_object_get(self, "menu-entry-icon-secondary-text", pointerof(value), Pointer(Void).null)
+      ::String.new(value) if value
     end
 
     def overwrite_mode=(value : Bool) : Bool
@@ -1427,6 +1491,18 @@ module Gtk
       _retval
     end
 
+    def menu_entry_icon_text(icon_pos : Gtk::EntryIconPosition) : ::String?
+      # gtk_entry_get_menu_entry_icon_text: (Method)
+      # @icon_pos:
+      # Returns: (transfer none) (nullable)
+
+      # C call
+      _retval = LibGtk.gtk_entry_get_menu_entry_icon_text(to_unsafe, icon_pos)
+
+      # Return value handling
+      ::String.new(_retval) unless _retval.null?
+    end
+
     def overwrite_mode : Bool
       # gtk_entry_get_overwrite_mode: (Method | Getter)
       # Returns: (transfer none)
@@ -1802,6 +1878,18 @@ module Gtk
 
       # C call
       LibGtk.gtk_entry_set_max_length(to_unsafe, max)
+
+      # Return value handling
+    end
+
+    def set_menu_entry_icon_text(icon_pos : Gtk::EntryIconPosition, text : ::String) : Nil
+      # gtk_entry_set_menu_entry_icon_text: (Method)
+      # @icon_pos:
+      # @text:
+      # Returns: (transfer none)
+
+      # C call
+      LibGtk.gtk_entry_set_menu_entry_icon_text(to_unsafe, icon_pos, text)
 
       # Return value handling
     end

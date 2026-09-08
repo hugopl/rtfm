@@ -69,6 +69,28 @@ module Gdk
       GLib::Bytes.new(_retval, GICrystal::Transfer::Full)
     end
 
+    def download_bytes_with_planes(out_offsets : Enumerable(UInt64), out_strides : Enumerable(UInt64)) : GLib::Bytes
+      # gdk_texture_downloader_download_bytes_with_planes: (Method)
+      # @out_offsets: (out) (caller-allocates) (array fixed-size=4 element-type UInt64)
+      # @out_strides: (out) (caller-allocates) (array fixed-size=4 element-type UInt64)
+      # Returns: (transfer full)
+
+      # Generator::ArrayArgPlan
+      raise ArgumentError.new("Enumerable of size < 4") if out_offsets.size < 4
+
+      out_offsets = out_offsets.to_a.to_unsafe.as(Pointer(UInt64))
+      # Generator::ArrayArgPlan
+      raise ArgumentError.new("Enumerable of size < 4") if out_strides.size < 4
+
+      out_strides = out_strides.to_a.to_unsafe.as(Pointer(UInt64))
+
+      # C call
+      _retval = LibGdk.gdk_texture_downloader_download_bytes_with_planes(to_unsafe, out_offsets, out_strides)
+
+      # Return value handling
+      GLib::Bytes.new(_retval, GICrystal::Transfer::Full)
+    end
+
     def download_into(data : ::Bytes, stride : UInt64) : Nil
       # gdk_texture_downloader_download_into: (Method)
       # @data: (array element-type UInt8)

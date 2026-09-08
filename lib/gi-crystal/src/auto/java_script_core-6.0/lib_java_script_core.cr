@@ -137,7 +137,7 @@ lib LibJavaScriptCore
   fun jsc_options_set_size(option : Pointer(LibC::Char), value : UInt64) : LibC::Int
   fun jsc_options_set_string(option : Pointer(LibC::Char), value : Pointer(LibC::Char)) : LibC::Int
   fun jsc_options_set_uint(option : Pointer(LibC::Char), value : UInt32) : LibC::Int
-  fun jsc_value_array_buffer_get_data(this : Void*, size : Pointer(UInt64)) : Pointer(Void)
+  fun jsc_value_array_buffer_get_data(this : Void*, size : Pointer(UInt64)) : Pointer(UInt8)
   fun jsc_value_array_buffer_get_size(this : Void*) : UInt64
   fun jsc_value_constructor_callv(this : Void*, n_parameters : UInt32, parameters : Pointer(LibJavaScriptCore::Value)) : Pointer(Void)
   fun jsc_value_function_callv(this : Void*, n_parameters : UInt32, parameters : Pointer(LibJavaScriptCore::Value)) : Pointer(Void)

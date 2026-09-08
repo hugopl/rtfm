@@ -34,6 +34,20 @@ module GLib
       LibGLib.g_bytes_get_type
     end
 
+    def self.new_from_bytes(bytes : GLib::Bytes, offset : UInt64, length : UInt64) : self
+      # g_bytes_new_from_bytes: (Constructor)
+      # @bytes:
+      # @offset:
+      # @length:
+      # Returns: (transfer full)
+
+      # C call
+      _retval = LibGLib.g_bytes_new_from_bytes(bytes, offset, length)
+
+      # Return value handling
+      GLib::Bytes.new(_retval, GICrystal::Transfer::Full)
+    end
+
     def compare(bytes2 : GLib::Bytes) : Int32
       # g_bytes_compare: (Method)
       # @bytes2:
@@ -106,19 +120,6 @@ module GLib
 
       # Return value handling
       _retval
-    end
-
-    def new_from_bytes(offset : UInt64, length : UInt64) : GLib::Bytes
-      # g_bytes_new_from_bytes: (Method)
-      # @offset:
-      # @length:
-      # Returns: (transfer full)
-
-      # C call
-      _retval = LibGLib.g_bytes_new_from_bytes(to_unsafe, offset, length)
-
-      # Return value handling
-      GLib::Bytes.new(_retval, GICrystal::Transfer::Full)
     end
 
     def to_unsafe

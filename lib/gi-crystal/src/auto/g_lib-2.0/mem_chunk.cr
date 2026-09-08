@@ -18,6 +18,7 @@ module GLib
       ptr
     end
 
+    @[Deprecated]
     def alloc : Pointer(Void)?
       # g_mem_chunk_alloc: (Method)
       # Returns: (transfer none) (nullable)
@@ -29,6 +30,7 @@ module GLib
       _retval unless _retval.null?
     end
 
+    @[Deprecated]
     def alloc0 : Pointer(Void)?
       # g_mem_chunk_alloc0: (Method)
       # Returns: (transfer none) (nullable)
@@ -40,6 +42,7 @@ module GLib
       _retval unless _retval.null?
     end
 
+    @[Deprecated]
     def clean : Nil
       # g_mem_chunk_clean: (Method)
       # Returns: (transfer none)
@@ -50,6 +53,7 @@ module GLib
       # Return value handling
     end
 
+    @[Deprecated]
     def destroy : Nil
       # g_mem_chunk_destroy: (Method)
       # Returns: (transfer none)
@@ -60,6 +64,7 @@ module GLib
       # Return value handling
     end
 
+    @[Deprecated]
     def free(mem : Pointer(Void)?) : Nil
       # g_mem_chunk_free: (Method)
       # @mem: (nullable)
@@ -78,6 +83,7 @@ module GLib
       # Return value handling
     end
 
+    @[Deprecated]
     def print : Nil
       # g_mem_chunk_print: (Method)
       # Returns: (transfer none)
@@ -88,6 +94,7 @@ module GLib
       # Return value handling
     end
 
+    @[Deprecated]
     def reset : Nil
       # g_mem_chunk_reset: (Method)
       # Returns: (transfer none)
@@ -98,6 +105,7 @@ module GLib
       # Return value handling
     end
 
+    @[Deprecated]
     def self.info : Nil
       # g_mem_chunk_info: (None)
       # Returns: (transfer none)

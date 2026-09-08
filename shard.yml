@@ -19,5 +19,5 @@ dependencies:
     github: crystal-lang/crystal-sqlite3
     version: ~>0.20.0
 
-crystal: 1.8.2
+crystal: ">= 1.21.0"
 license: MIT

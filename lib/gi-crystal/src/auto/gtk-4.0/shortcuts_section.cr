@@ -418,7 +418,8 @@ module Gtk
         handler = ->(_lib_sender : Pointer(Void), lib_offset : Int32, _lib_box : Pointer(Void)) {
           # NoStrategy
           offset = lib_offset
-          ::Box(Proc(Int32, Bool)).unbox(_lib_box).call(offset)
+          _retval = ::Box(Proc(Int32, Bool)).unbox(_lib_box).call(offset)
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,
@@ -432,7 +433,8 @@ module Gtk
           _sender = Gtk::ShortcutsSection.new(_lib_sender, GICrystal::Transfer::None)
           # NoStrategy
           offset = lib_offset
-          ::Box(Proc(Gtk::ShortcutsSection, Int32, Bool)).unbox(_lib_box).call(_sender, offset)
+          _retval = ::Box(Proc(Gtk::ShortcutsSection, Int32, Bool)).unbox(_lib_box).call(_sender, offset)
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,

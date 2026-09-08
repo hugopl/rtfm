@@ -455,7 +455,9 @@ module Gtk
         create_widget_func = ->(lib_item : Pointer(Void), lib_user_data : Pointer(Void)) {
           # Generator::BuiltInTypeArgPlan
           item = GObject::Object.new(lib_item, GICrystal::Transfer::None)
-          ::Box(Proc(GObject::Object, Gtk::Widget)).unbox(lib_user_data).call(item)
+          _retval = ::Box(Proc(GObject::Object, Gtk::Widget)).unbox(lib_user_data).call(item)
+          LibGObject.g_object_ref(_retval) if _retval
+          _retval.to_unsafe
         }.pointer
         user_data = GICrystal::ClosureDataManager.register(_box)
         user_data_free_func = ->GICrystal::ClosureDataManager.deregister(Pointer(Void)).pointer
@@ -721,7 +723,8 @@ module Gtk
         filter_func = ->(lib_child : Pointer(Void), lib_user_data : Pointer(Void)) {
           # Generator::BuiltInTypeArgPlan
           child = Gtk::FlowBoxChild.new(lib_child, GICrystal::Transfer::None)
-          ::Box(Proc(Gtk::FlowBoxChild, Bool)).unbox(lib_user_data).call(child)
+          _retval = ::Box(Proc(Gtk::FlowBoxChild, Bool)).unbox(lib_user_data).call(child)
+          GICrystal.to_c_bool(_retval)
         }.pointer
         user_data = GICrystal::ClosureDataManager.register(_box)
         destroy = ->GICrystal::ClosureDataManager.deregister(Pointer(Void)).pointer
@@ -816,7 +819,8 @@ module Gtk
           child1 = Gtk::FlowBoxChild.new(lib_child1, GICrystal::Transfer::None)
           # Generator::BuiltInTypeArgPlan
           child2 = Gtk::FlowBoxChild.new(lib_child2, GICrystal::Transfer::None)
-          ::Box(Proc(Gtk::FlowBoxChild, Gtk::FlowBoxChild, Int32)).unbox(lib_user_data).call(child1, child2)
+          _retval = ::Box(Proc(Gtk::FlowBoxChild, Gtk::FlowBoxChild, Int32)).unbox(lib_user_data).call(child1, child2)
+          _retval
         }.pointer
         user_data = GICrystal::ClosureDataManager.register(_box)
         destroy = ->GICrystal::ClosureDataManager.deregister(Pointer(Void)).pointer
@@ -968,7 +972,8 @@ module Gtk
           _extend = GICrystal.to_bool(lib__extend)
           # Generator::BuiltInTypeArgPlan
           modify = GICrystal.to_bool(lib_modify)
-          ::Box(Proc(Gtk::MovementStep, Int32, Bool, Bool, Bool)).unbox(_lib_box).call(step, count, _extend, modify)
+          _retval = ::Box(Proc(Gtk::MovementStep, Int32, Bool, Bool, Bool)).unbox(_lib_box).call(step, count, _extend, modify)
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,
@@ -988,7 +993,8 @@ module Gtk
           _extend = GICrystal.to_bool(lib__extend)
           # Generator::BuiltInTypeArgPlan
           modify = GICrystal.to_bool(lib_modify)
-          ::Box(Proc(Gtk::FlowBox, Gtk::MovementStep, Int32, Bool, Bool, Bool)).unbox(_lib_box).call(_sender, step, count, _extend, modify)
+          _retval = ::Box(Proc(Gtk::FlowBox, Gtk::MovementStep, Int32, Bool, Bool, Bool)).unbox(_lib_box).call(_sender, step, count, _extend, modify)
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,

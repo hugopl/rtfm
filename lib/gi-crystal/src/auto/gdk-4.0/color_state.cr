@@ -57,6 +57,18 @@ module Gdk
       GICrystal.to_bool(_retval)
     end
 
+    def equivalent(other : Gdk::ColorState) : Bool
+      # gdk_color_state_equivalent: (Method)
+      # @other:
+      # Returns: (transfer none)
+
+      # C call
+      _retval = LibGdk.gdk_color_state_equivalent(to_unsafe, other)
+
+      # Return value handling
+      GICrystal.to_bool(_retval)
+    end
+
     def ref : Gdk::ColorState
       # gdk_color_state_ref: (Method)
       # Returns: (transfer full)

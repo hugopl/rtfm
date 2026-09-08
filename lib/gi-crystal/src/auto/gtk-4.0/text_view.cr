@@ -900,15 +900,15 @@ module Gtk
       GICrystal.to_bool(_retval)
     end
 
-    def extra_menu : Gio::MenuModel
+    def extra_menu : Gio::MenuModel?
       # gtk_text_view_get_extra_menu: (Method | Getter)
-      # Returns: (transfer none)
+      # Returns: (transfer none) (nullable)
 
       # C call
       _retval = LibGtk.gtk_text_view_get_extra_menu(to_unsafe)
 
       # Return value handling
-      Gio::MenuModel.new(_retval, GICrystal::Transfer::None)
+      Gio::MenuModel.new(_retval, GICrystal::Transfer::None) unless _retval.null?
     end
 
     def gutter(win : Gtk::TextWindowType) : Gtk::Widget?
@@ -1825,7 +1825,8 @@ module Gtk
           start = Gtk::TextIter.new(lib_start, GICrystal::Transfer::None)
           # Generator::BuiltInTypeArgPlan
           _end = Gtk::TextIter.new(lib__end, GICrystal::Transfer::None)
-          ::Box(Proc(Gtk::TextExtendSelection, Gtk::TextIter, Gtk::TextIter, Gtk::TextIter, Bool)).unbox(_lib_box).call(granularity, location, start, _end)
+          _retval = ::Box(Proc(Gtk::TextExtendSelection, Gtk::TextIter, Gtk::TextIter, Gtk::TextIter, Bool)).unbox(_lib_box).call(granularity, location, start, _end)
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,
@@ -1845,7 +1846,8 @@ module Gtk
           start = Gtk::TextIter.new(lib_start, GICrystal::Transfer::None)
           # Generator::BuiltInTypeArgPlan
           _end = Gtk::TextIter.new(lib__end, GICrystal::Transfer::None)
-          ::Box(Proc(Gtk::TextView, Gtk::TextExtendSelection, Gtk::TextIter, Gtk::TextIter, Gtk::TextIter, Bool)).unbox(_lib_box).call(_sender, granularity, location, start, _end)
+          _retval = ::Box(Proc(Gtk::TextView, Gtk::TextExtendSelection, Gtk::TextIter, Gtk::TextIter, Gtk::TextIter, Bool)).unbox(_lib_box).call(_sender, granularity, location, start, _end)
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,

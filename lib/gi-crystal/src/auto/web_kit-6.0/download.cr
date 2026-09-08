@@ -301,7 +301,8 @@ module WebKit
         handler = ->(_lib_sender : Pointer(Void), lib_suggested_filename : Pointer(LibC::Char), _lib_box : Pointer(Void)) {
           # Generator::BuiltInTypeArgPlan
           suggested_filename = ::String.new(lib_suggested_filename)
-          ::Box(Proc(::String, Bool)).unbox(_lib_box).call(suggested_filename)
+          _retval = ::Box(Proc(::String, Bool)).unbox(_lib_box).call(suggested_filename)
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,
@@ -315,7 +316,8 @@ module WebKit
           _sender = WebKit::Download.new(_lib_sender, GICrystal::Transfer::None)
           # Generator::BuiltInTypeArgPlan
           suggested_filename = ::String.new(lib_suggested_filename)
-          ::Box(Proc(WebKit::Download, ::String, Bool)).unbox(_lib_box).call(_sender, suggested_filename)
+          _retval = ::Box(Proc(WebKit::Download, ::String, Bool)).unbox(_lib_box).call(_sender, suggested_filename)
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,

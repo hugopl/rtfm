@@ -236,6 +236,17 @@ module GLib
       # Return value handling
     end
 
+    def dup_context : GLib::MainContext?
+      # g_source_dup_context: (Method)
+      # Returns: (transfer full) (nullable)
+
+      # C call
+      _retval = LibGLib.g_source_dup_context(to_unsafe)
+
+      # Return value handling
+      GLib::MainContext.new(_retval, GICrystal::Transfer::Full) unless _retval.null?
+    end
+
     def can_recurse : Bool
       # g_source_get_can_recurse: (Method)
       # Returns: (transfer none)
@@ -404,7 +415,8 @@ module GLib
       if func
         _box = ::Box.box(func)
         func = ->(lib_user_data : Pointer(Void)) {
-          ::Box(Proc(Bool)).unbox(lib_user_data).call
+          _retval = ::Box(Proc(Bool)).unbox(lib_user_data).call
+          GICrystal.to_c_bool(_retval)
         }.pointer
         data = GICrystal::ClosureDataManager.register(_box)
         notify = ->GICrystal::ClosureDataManager.deregister(Pointer(Void)).pointer

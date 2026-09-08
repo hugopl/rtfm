@@ -516,6 +516,108 @@ raise NotImplementedError.new
       @@_gi_parent_vfunc_get_selection : Proc(Pointer(Void), UInt64, Pointer(LibGtk::AccessibleTextRange), LibC::Int)? = nil
     end
 
+    # set_caret_position: (None)
+    # @offset:
+    # Returns: (transfer none)
+    private macro _register_set_caret_position_vfunc(impl_method_name)
+      private def self._vfunc_set_caret_position(%this : Pointer(Void), lib_offset :  UInt32, ) : LibC::Int
+        # @offset: 
+
+offset=lib_offset
+
+
+        %instance = LibGObject.g_object_get_qdata(%this, GICrystal::INSTANCE_QDATA_KEY)
+        raise GICrystal::ObjectCollectedError.new if %instance.null?
+
+        %retval = %instance.as(self).{{ impl_method_name.id }}(offset)
+        
+        GICrystal.to_c_bool(%retval)
+      end
+
+      def self._install_iface_Gtk__AccessibleText(type_struct : Pointer(LibGObject::TypeInterface)) : Nil
+        vfunc_ptr = (type_struct.as(Pointer(Void)) + 80).as(Pointer(Pointer(Void)))
+        vfunc_ptr.value = (->_vfunc_set_caret_position(Pointer(Void), UInt32)).pointer
+        previous_def
+      end
+    end
+
+    # set_caret_position: (None)
+    # @offset:
+    # Returns: (transfer none)
+    private macro _register_unsafe_set_caret_position_vfunc(impl_method_name)
+      private def self._vfunc_unsafe_set_caret_position(%this : Pointer(Void), lib_offset :  UInt32, ) : LibC::Int
+# @offset: 
+
+        %instance = LibGObject.g_object_get_qdata(%this, GICrystal::INSTANCE_QDATA_KEY)
+        raise GICrystal::ObjectCollectedError.new if %instance.null?
+
+        %instance.as(self).{{ impl_method_name.id }}(lib_offset)
+      end
+
+      def self._install_iface_Gtk__AccessibleText(type_struct : Pointer(LibGObject::TypeInterface)) : Nil
+        vfunc_ptr = (type_struct.as(Pointer(Void)) + 80).as(Pointer(Pointer(Void)))
+        @@_gi_parent_vfunc_set_caret_position = Proc(Pointer(Void), UInt32, LibC::Int).new(vfunc_ptr.value, Pointer(Void).null) unless vfunc_ptr.value.null?
+        vfunc_ptr.value = (->_vfunc_unsafe_set_caret_position(Pointer(Void), UInt32)).pointer
+        previous_def
+      end
+
+      @@_gi_parent_vfunc_set_caret_position : Proc(Pointer(Void), UInt32, LibC::Int)? = nil
+    end
+
+    # set_selection: (None)
+    # @i:
+    # @range:
+    # Returns: (transfer none)
+    private macro _register_set_selection_vfunc(impl_method_name)
+      private def self._vfunc_set_selection(%this : Pointer(Void), lib_i :  UInt64, lib_range :  Pointer(Void), ) : LibC::Int
+        # @i: 
+# @range: 
+
+i=lib_i
+# Generator::BuiltInTypeArgPlan
+range=Gtk::AccessibleTextRange.new(lib_range, GICrystal::Transfer::None)
+
+
+        %instance = LibGObject.g_object_get_qdata(%this, GICrystal::INSTANCE_QDATA_KEY)
+        raise GICrystal::ObjectCollectedError.new if %instance.null?
+
+        %retval = %instance.as(self).{{ impl_method_name.id }}(i, range)
+        
+        GICrystal.to_c_bool(%retval)
+      end
+
+      def self._install_iface_Gtk__AccessibleText(type_struct : Pointer(LibGObject::TypeInterface)) : Nil
+        vfunc_ptr = (type_struct.as(Pointer(Void)) + 88).as(Pointer(Pointer(Void)))
+        vfunc_ptr.value = (->_vfunc_set_selection(Pointer(Void), UInt64, Pointer(Void))).pointer
+        previous_def
+      end
+    end
+
+    # set_selection: (None)
+    # @i:
+    # @range:
+    # Returns: (transfer none)
+    private macro _register_unsafe_set_selection_vfunc(impl_method_name)
+      private def self._vfunc_unsafe_set_selection(%this : Pointer(Void), lib_i :  UInt64, lib_range :  Pointer(Void), ) : LibC::Int
+# @i: 
+# @range: 
+
+        %instance = LibGObject.g_object_get_qdata(%this, GICrystal::INSTANCE_QDATA_KEY)
+        raise GICrystal::ObjectCollectedError.new if %instance.null?
+
+        %instance.as(self).{{ impl_method_name.id }}(lib_i, lib_range)
+      end
+
+      def self._install_iface_Gtk__AccessibleText(type_struct : Pointer(LibGObject::TypeInterface)) : Nil
+        vfunc_ptr = (type_struct.as(Pointer(Void)) + 88).as(Pointer(Pointer(Void)))
+        @@_gi_parent_vfunc_set_selection = Proc(Pointer(Void), UInt64, Pointer(Void), LibC::Int).new(vfunc_ptr.value, Pointer(Void).null) unless vfunc_ptr.value.null?
+        vfunc_ptr.value = (->_vfunc_unsafe_set_selection(Pointer(Void), UInt64, Pointer(Void))).pointer
+        previous_def
+      end
+
+      @@_gi_parent_vfunc_set_selection : Proc(Pointer(Void), UInt64, Pointer(Void), LibC::Int)? = nil
+    end
+
     # Cast a `GObject::Object` to `self`, throws a `TypeCastError` if the cast can't be made.
     def self.cast(obj : GObject::Object) : self
       cast?(obj) || raise TypeCastError.new("can't cast #{typeof(obj).name} to #{self}")

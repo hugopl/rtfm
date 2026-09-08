@@ -867,7 +867,8 @@ module Adw
         handler = ->(_lib_sender : Pointer(Void), lib_page : Pointer(Void), _lib_box : Pointer(Void)) {
           # Generator::BuiltInTypeArgPlan
           page = Adw::TabPage.new(lib_page, GICrystal::Transfer::None)
-          ::Box(Proc(Adw::TabPage, Bool)).unbox(_lib_box).call(page)
+          _retval = ::Box(Proc(Adw::TabPage, Bool)).unbox(_lib_box).call(page)
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,
@@ -881,7 +882,8 @@ module Adw
           _sender = Adw::TabView.new(_lib_sender, GICrystal::Transfer::None)
           # Generator::BuiltInTypeArgPlan
           page = Adw::TabPage.new(lib_page, GICrystal::Transfer::None)
-          ::Box(Proc(Adw::TabView, Adw::TabPage, Bool)).unbox(_lib_box).call(_sender, page)
+          _retval = ::Box(Proc(Adw::TabView, Adw::TabPage, Bool)).unbox(_lib_box).call(_sender, page)
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,
@@ -910,7 +912,8 @@ module Adw
       def connect(handler : Proc(Adw::TabView), *, after : Bool = false) : GObject::SignalConnection
         _box = ::Box.box(handler)
         handler = ->(_lib_sender : Pointer(Void), _lib_box : Pointer(Void)) {
-          ::Box(Proc(Adw::TabView)).unbox(_lib_box).call
+          _retval = ::Box(Proc(Adw::TabView)).unbox(_lib_box).call
+          _retval.nil? ? Pointer(Void).null : _retval.to_unsafe
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,
@@ -922,7 +925,8 @@ module Adw
         _box = ::Box.box(handler)
         handler = ->(_lib_sender : Pointer(Void), _lib_box : Pointer(Void)) {
           _sender = Adw::TabView.new(_lib_sender, GICrystal::Transfer::None)
-          ::Box(Proc(Adw::TabView, Adw::TabView)).unbox(_lib_box).call(_sender)
+          _retval = ::Box(Proc(Adw::TabView, Adw::TabView)).unbox(_lib_box).call(_sender)
+          _retval.nil? ? Pointer(Void).null : _retval.to_unsafe
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,

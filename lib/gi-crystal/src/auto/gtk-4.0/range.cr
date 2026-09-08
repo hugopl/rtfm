@@ -691,7 +691,8 @@ module Gtk
           scroll = Gtk::ScrollType.new(lib_scroll)
           # NoStrategy
           value = lib_value
-          ::Box(Proc(Gtk::ScrollType, Float64, Bool)).unbox(_lib_box).call(scroll, value)
+          _retval = ::Box(Proc(Gtk::ScrollType, Float64, Bool)).unbox(_lib_box).call(scroll, value)
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,
@@ -707,7 +708,8 @@ module Gtk
           scroll = Gtk::ScrollType.new(lib_scroll)
           # NoStrategy
           value = lib_value
-          ::Box(Proc(Gtk::Range, Gtk::ScrollType, Float64, Bool)).unbox(_lib_box).call(_sender, scroll, value)
+          _retval = ::Box(Proc(Gtk::Range, Gtk::ScrollType, Float64, Bool)).unbox(_lib_box).call(_sender, scroll, value)
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,

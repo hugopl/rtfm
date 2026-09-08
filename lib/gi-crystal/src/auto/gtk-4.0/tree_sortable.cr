@@ -62,7 +62,8 @@ module Gtk
           a = Gtk::TreeIter.new(lib_a, GICrystal::Transfer::None)
           # Generator::BuiltInTypeArgPlan
           b = Gtk::TreeIter.new(lib_b, GICrystal::Transfer::None)
-          ::Box(Proc(Gtk::TreeModel, Gtk::TreeIter, Gtk::TreeIter, Int32)).unbox(lib_user_data).call(model, a, b)
+          _retval = ::Box(Proc(Gtk::TreeModel, Gtk::TreeIter, Gtk::TreeIter, Int32)).unbox(lib_user_data).call(model, a, b)
+          _retval
         }.pointer
         user_data = GICrystal::ClosureDataManager.register(_box)
         destroy = ->GICrystal::ClosureDataManager.deregister(Pointer(Void)).pointer
@@ -108,7 +109,8 @@ module Gtk
           a = Gtk::TreeIter.new(lib_a, GICrystal::Transfer::None)
           # Generator::BuiltInTypeArgPlan
           b = Gtk::TreeIter.new(lib_b, GICrystal::Transfer::None)
-          ::Box(Proc(Gtk::TreeModel, Gtk::TreeIter, Gtk::TreeIter, Int32)).unbox(lib_user_data).call(model, a, b)
+          _retval = ::Box(Proc(Gtk::TreeModel, Gtk::TreeIter, Gtk::TreeIter, Int32)).unbox(lib_user_data).call(model, a, b)
+          _retval
         }.pointer
         user_data = GICrystal::ClosureDataManager.register(_box)
         destroy = ->GICrystal::ClosureDataManager.deregister(Pointer(Void)).pointer

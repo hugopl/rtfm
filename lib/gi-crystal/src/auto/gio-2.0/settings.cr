@@ -897,7 +897,8 @@ module Gio
           # Generator::ArrayLengthArgPlan
           # Generator::NullableArrayPlan
           keys = (lib_keys.null? ? nil : GICrystal.transfer_array(lib_keys, n_keys, GICrystal::Transfer::None))
-          ::Box(Proc(Enumerable(UInt32)?, Bool)).unbox(_lib_box).call(keys)
+          _retval = ::Box(Proc(Enumerable(UInt32)?, Bool)).unbox(_lib_box).call(keys)
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,
@@ -912,7 +913,8 @@ module Gio
           # Generator::ArrayLengthArgPlan
           # Generator::NullableArrayPlan
           keys = (lib_keys.null? ? nil : GICrystal.transfer_array(lib_keys, n_keys, GICrystal::Transfer::None))
-          ::Box(Proc(Gio::Settings, Enumerable(UInt32)?, Bool)).unbox(_lib_box).call(_sender, keys)
+          _retval = ::Box(Proc(Gio::Settings, Enumerable(UInt32)?, Bool)).unbox(_lib_box).call(_sender, keys)
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,
@@ -997,7 +999,8 @@ module Gio
         handler = ->(_lib_sender : Pointer(Void), lib_key : UInt32, _lib_box : Pointer(Void)) {
           # NoStrategy
           key = lib_key
-          ::Box(Proc(UInt32, Bool)).unbox(_lib_box).call(key)
+          _retval = ::Box(Proc(UInt32, Bool)).unbox(_lib_box).call(key)
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,
@@ -1011,7 +1014,8 @@ module Gio
           _sender = Gio::Settings.new(_lib_sender, GICrystal::Transfer::None)
           # NoStrategy
           key = lib_key
-          ::Box(Proc(Gio::Settings, UInt32, Bool)).unbox(_lib_box).call(_sender, key)
+          _retval = ::Box(Proc(Gio::Settings, UInt32, Bool)).unbox(_lib_box).call(_sender, key)
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,

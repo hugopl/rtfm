@@ -18,6 +18,14 @@ module Gdk
       Gdk::AbstractToplevel.g_type
     end
 
+    def capabilities : Gdk::ToplevelCapabilities
+      # Returns: None
+
+      value = uninitialized UInt32
+      LibGObject.g_object_get(self, "capabilities", pointerof(value), Pointer(Void).null)
+      Gdk::ToplevelCapabilities.new(value)
+    end
+
     def decorated=(value : Bool) : Bool
       unsafe_value = value
 
@@ -61,6 +69,21 @@ module Gdk
       value = uninitialized UInt32
       LibGObject.g_object_get(self, "fullscreen-mode", pointerof(value), Pointer(Void).null)
       Gdk::FullscreenMode.new(value)
+    end
+
+    def gravity=(value : Gdk::Gravity) : Gdk::Gravity
+      unsafe_value = value
+
+      LibGObject.g_object_set(self, "gravity", unsafe_value, Pointer(Void).null)
+      value
+    end
+
+    def gravity : Gdk::Gravity
+      # Returns: None
+
+      value = uninitialized UInt32
+      LibGObject.g_object_get(self, "gravity", pointerof(value), Pointer(Void).null)
+      Gdk::Gravity.new(value)
     end
 
     def icon_list=(value : Pointer(Void)) : Pointer(Void)
@@ -227,6 +250,28 @@ module Gdk
       # Return value handling
     end
 
+    def capabilities : Gdk::ToplevelCapabilities
+      # gdk_toplevel_get_capabilities: (Method | Getter)
+      # Returns: (transfer none)
+
+      # C call
+      _retval = LibGdk.gdk_toplevel_get_capabilities(to_unsafe)
+
+      # Return value handling
+      Gdk::ToplevelCapabilities.new(_retval)
+    end
+
+    def gravity : Gdk::Gravity
+      # gdk_toplevel_get_gravity: (Method | Getter)
+      # Returns: (transfer none)
+
+      # C call
+      _retval = LibGdk.gdk_toplevel_get_gravity(to_unsafe)
+
+      # Return value handling
+      Gdk::Gravity.new(_retval)
+    end
+
     def state : Gdk::ToplevelState
       # gdk_toplevel_get_state: (Method | Getter)
       # Returns: (transfer none)
@@ -317,6 +362,17 @@ module Gdk
 
       # C call
       LibGdk.gdk_toplevel_set_deletable(to_unsafe, deletable)
+
+      # Return value handling
+    end
+
+    def gravity=(gravity : Gdk::Gravity) : Nil
+      # gdk_toplevel_set_gravity: (Method | Setter)
+      # @gravity:
+      # Returns: (transfer none)
+
+      # C call
+      LibGdk.gdk_toplevel_set_gravity(to_unsafe, gravity)
 
       # Return value handling
     end

@@ -38,11 +38,18 @@ module Gsk
       end
     end
 
-    def self.new(child : Gsk::RenderNode, transform : Gsk::Transform) : self
+    def self.new(child : Gsk::RenderNode, transform : Gsk::Transform?) : self
       # gsk_transform_node_new: (Constructor)
       # @child:
-      # @transform:
+      # @transform: (nullable)
       # Returns: (transfer full)
+
+      # Generator::NullableArrayPlan
+      transform = if transform.nil?
+                    Pointer(Void).null
+                  else
+                    transform.to_unsafe
+                  end
 
       # C call
       _retval = LibGsk.gsk_transform_node_new(child, transform)

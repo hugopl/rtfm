@@ -15,8 +15,8 @@ require "./weak_value.cr"
 
 module JavaScriptCore
   MAJOR_VERSION     =  2
-  MICRO_VERSION     =  0
-  MINOR_VERSION     = 48
+  MICRO_VERSION     =  5
+  MINOR_VERSION     = 52
   OPTIONS_USE_DFG   = "useDFGJIT"
   OPTIONS_USE_FTL   = "useFTLJIT"
   OPTIONS_USE_JIT   = "useJIT"

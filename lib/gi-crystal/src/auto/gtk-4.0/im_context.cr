@@ -361,7 +361,8 @@ module Gtk
           offset = lib_offset
           # NoStrategy
           n_chars = lib_n_chars
-          ::Box(Proc(Int32, Int32, Bool)).unbox(_lib_box).call(offset, n_chars)
+          _retval = ::Box(Proc(Int32, Int32, Bool)).unbox(_lib_box).call(offset, n_chars)
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,
@@ -377,7 +378,8 @@ module Gtk
           offset = lib_offset
           # NoStrategy
           n_chars = lib_n_chars
-          ::Box(Proc(Gtk::IMContext, Int32, Int32, Bool)).unbox(_lib_box).call(_sender, offset, n_chars)
+          _retval = ::Box(Proc(Gtk::IMContext, Int32, Int32, Bool)).unbox(_lib_box).call(_sender, offset, n_chars)
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,
@@ -392,6 +394,53 @@ module Gtk
 
     def delete_surrounding_signal
       DeleteSurroundingSignal.new(self)
+    end
+
+    struct InvalidCompositionSignal < GObject::Signal
+      def name : String
+        @detail ? "invalid-composition::#{@detail}" : "invalid-composition"
+      end
+
+      def connect(*, after : Bool = false, &block : Proc(::String, Bool)) : GObject::SignalConnection
+        connect(block, after: after)
+      end
+
+      def connect(handler : Proc(::String, Bool), *, after : Bool = false) : GObject::SignalConnection
+        _box = ::Box.box(handler)
+        handler = ->(_lib_sender : Pointer(Void), lib_str : Pointer(LibC::Char), _lib_box : Pointer(Void)) {
+          # Generator::BuiltInTypeArgPlan
+          str = ::String.new(lib_str)
+          _retval = ::Box(Proc(::String, Bool)).unbox(_lib_box).call(str)
+          GICrystal.to_c_bool(_retval)
+        }.pointer
+
+        handler_id = LibGObject.g_signal_connect_data(@source, name, handler,
+          GICrystal::ClosureDataManager.register(_box), ->GICrystal::ClosureDataManager.deregister, after.to_unsafe)
+        GObject::SignalConnection.new(@source, handler_id)
+      end
+
+      def connect(handler : Proc(Gtk::IMContext, ::String, Bool), *, after : Bool = false) : GObject::SignalConnection
+        _box = ::Box.box(handler)
+        handler = ->(_lib_sender : Pointer(Void), lib_str : Pointer(LibC::Char), _lib_box : Pointer(Void)) {
+          _sender = Gtk::IMContext.new(_lib_sender, GICrystal::Transfer::None)
+          # Generator::BuiltInTypeArgPlan
+          str = ::String.new(lib_str)
+          _retval = ::Box(Proc(Gtk::IMContext, ::String, Bool)).unbox(_lib_box).call(_sender, str)
+          GICrystal.to_c_bool(_retval)
+        }.pointer
+
+        handler_id = LibGObject.g_signal_connect_data(@source, name, handler,
+          GICrystal::ClosureDataManager.register(_box), ->GICrystal::ClosureDataManager.deregister, after.to_unsafe)
+        GObject::SignalConnection.new(@source, handler_id)
+      end
+
+      def emit(str : ::String) : Nil
+        LibGObject.g_signal_emit_by_name(@source, "invalid-composition", str)
+      end
+    end
+
+    def invalid_composition_signal
+      InvalidCompositionSignal.new(self)
     end
 
     struct PreeditChangedSignal < GObject::Signal
@@ -529,7 +578,8 @@ module Gtk
       def connect(handler : Proc(Bool), *, after : Bool = false) : GObject::SignalConnection
         _box = ::Box.box(handler)
         handler = ->(_lib_sender : Pointer(Void), _lib_box : Pointer(Void)) {
-          ::Box(Proc(Bool)).unbox(_lib_box).call
+          _retval = ::Box(Proc(Bool)).unbox(_lib_box).call
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,
@@ -541,7 +591,8 @@ module Gtk
         _box = ::Box.box(handler)
         handler = ->(_lib_sender : Pointer(Void), _lib_box : Pointer(Void)) {
           _sender = Gtk::IMContext.new(_lib_sender, GICrystal::Transfer::None)
-          ::Box(Proc(Gtk::IMContext, Bool)).unbox(_lib_box).call(_sender)
+          _retval = ::Box(Proc(Gtk::IMContext, Bool)).unbox(_lib_box).call(_sender)
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,
@@ -1055,6 +1106,55 @@ anchor_index=lib_anchor_index
       end
 
       @@_gi_parent_vfunc_get_surrounding_with_selection : Proc(Pointer(Void), Pointer(LibC::Char), Int32, Int32, LibC::Int)? = nil
+    end
+
+    # invalid_composition: (None)
+    # @str:
+    # Returns: (transfer none)
+    private macro _register_invalid_composition_vfunc(impl_method_name)
+      private def self._vfunc_invalid_composition(%this : Pointer(Void), lib_str :  Pointer(LibC::Char), ) : LibC::Int
+        # @str: 
+
+# Generator::BuiltInTypeArgPlan
+str=::String.new(lib_str)
+
+
+        %instance = LibGObject.g_object_get_qdata(%this, GICrystal::INSTANCE_QDATA_KEY)
+        raise GICrystal::ObjectCollectedError.new if %instance.null?
+
+        %retval = %instance.as(self).{{ impl_method_name.id }}(str)
+        
+        GICrystal.to_c_bool(%retval)
+      end
+
+      def self._class_init(type_struct : Pointer(LibGObject::TypeClass), user_data : Pointer(Void)) : Nil
+        vfunc_ptr = (type_struct.as(Pointer(Void)) + 296).as(Pointer(Pointer(Void)))
+        vfunc_ptr.value = (->_vfunc_invalid_composition(Pointer(Void), Pointer(LibC::Char))).pointer
+        previous_def
+      end
+    end
+
+    # invalid_composition: (None)
+    # @str:
+    # Returns: (transfer none)
+    private macro _register_unsafe_invalid_composition_vfunc(impl_method_name)
+      private def self._vfunc_unsafe_invalid_composition(%this : Pointer(Void), lib_str :  Pointer(LibC::Char), ) : LibC::Int
+# @str: 
+
+        %instance = LibGObject.g_object_get_qdata(%this, GICrystal::INSTANCE_QDATA_KEY)
+        raise GICrystal::ObjectCollectedError.new if %instance.null?
+
+        %instance.as(self).{{ impl_method_name.id }}(lib_str)
+      end
+
+      def self._class_init(type_struct : Pointer(LibGObject::TypeClass), user_data : Pointer(Void)) : Nil
+        vfunc_ptr = (type_struct.as(Pointer(Void)) + 296).as(Pointer(Pointer(Void)))
+        @@_gi_parent_vfunc_invalid_composition = Proc(Pointer(Void), Pointer(LibC::Char), LibC::Int).new(vfunc_ptr.value, Pointer(Void).null) unless vfunc_ptr.value.null?
+        vfunc_ptr.value = (->_vfunc_unsafe_invalid_composition(Pointer(Void), Pointer(LibC::Char))).pointer
+        previous_def
+      end
+
+      @@_gi_parent_vfunc_invalid_composition : Proc(Pointer(Void), Pointer(LibC::Char), LibC::Int)? = nil
     end
 
     # preedit_changed: (None)

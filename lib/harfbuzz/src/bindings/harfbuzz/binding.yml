@@ -13,4 +13,4 @@ lib_ignore:
   - hb_ft_font_create_referenced
   - hb_ot_layout_get_font_extents
   - hb_ot_layout_get_font_extents2
-
+  - hb_ot_layout_lookup_collect_glyphs

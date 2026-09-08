@@ -159,7 +159,9 @@ module Gtk
         create_func = ->(lib_item : Pointer(Void), lib_user_data : Pointer(Void)) {
           # Generator::BuiltInTypeArgPlan
           item = GObject::Object.new(lib_item, GICrystal::Transfer::None)
-          ::Box(Proc(GObject::Object, Gio::ListModel)).unbox(lib_user_data).call(item)
+          _retval = ::Box(Proc(GObject::Object, Gio::ListModel)).unbox(lib_user_data).call(item)
+          LibGObject.g_object_ref(_retval) if _retval
+          _retval.nil? ? Pointer(Void).null : _retval.to_unsafe
         }.pointer
         user_data = GICrystal::ClosureDataManager.register(_box)
         user_destroy = ->GICrystal::ClosureDataManager.deregister(Pointer(Void)).pointer

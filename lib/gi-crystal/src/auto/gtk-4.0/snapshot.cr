@@ -208,6 +208,18 @@ module Gtk
       # Return value handling
     end
 
+    def append_paste(bounds : Graphene::Rect, nth : UInt64) : Nil
+      # gtk_snapshot_append_paste: (Method)
+      # @bounds:
+      # @nth:
+      # Returns: (transfer none)
+
+      # C call
+      LibGtk.gtk_snapshot_append_paste(to_unsafe, bounds, nth)
+
+      # Return value handling
+    end
+
     def append_radial_gradient(bounds : Graphene::Rect, center : Graphene::Point, hradius : Float32, vradius : Float32, start : Float32, end _end : Float32, stops : Enumerable(Gsk::ColorStop)) : Nil
       # gtk_snapshot_append_radial_gradient: (Method)
       # @bounds:
@@ -389,6 +401,41 @@ module Gtk
       # Return value handling
     end
 
+    def push_component_transfer(red : Gsk::ComponentTransfer, green : Gsk::ComponentTransfer, blue : Gsk::ComponentTransfer, alpha : Gsk::ComponentTransfer) : Nil
+      # gtk_snapshot_push_component_transfer: (Method)
+      # @red:
+      # @green:
+      # @blue:
+      # @alpha:
+      # Returns: (transfer none)
+
+      # C call
+      LibGtk.gtk_snapshot_push_component_transfer(to_unsafe, red, green, blue, alpha)
+
+      # Return value handling
+    end
+
+    def push_composite(op : Gsk::PorterDuff) : Nil
+      # gtk_snapshot_push_composite: (Method)
+      # @op:
+      # Returns: (transfer none)
+
+      # C call
+      LibGtk.gtk_snapshot_push_composite(to_unsafe, op)
+
+      # Return value handling
+    end
+
+    def push_copy : Nil
+      # gtk_snapshot_push_copy: (Method)
+      # Returns: (transfer none)
+
+      # C call
+      LibGtk.gtk_snapshot_push_copy(to_unsafe)
+
+      # Return value handling
+    end
+
     def push_cross_fade(progress : Float64) : Nil
       # gtk_snapshot_push_cross_fade: (Method)
       # @progress:
@@ -422,6 +469,17 @@ module Gtk
 
       # C call
       LibGtk.gtk_snapshot_push_gl_shader(to_unsafe, shader, bounds, take_args)
+
+      # Return value handling
+    end
+
+    def push_isolation(features : Gsk::Isolation) : Nil
+      # gtk_snapshot_push_isolation: (Method)
+      # @features:
+      # Returns: (transfer none)
+
+      # C call
+      LibGtk.gtk_snapshot_push_isolation(to_unsafe, features)
 
       # Return value handling
     end

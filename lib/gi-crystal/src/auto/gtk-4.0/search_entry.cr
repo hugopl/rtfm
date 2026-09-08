@@ -41,9 +41,9 @@ module Gtk
       ptr
     end
 
-    def initialize(*, accessible_role : Gtk::AccessibleRole? = nil, activates_default : Bool? = nil, can_focus : Bool? = nil, can_target : Bool? = nil, css_classes : Enumerable(::String)? = nil, css_name : ::String? = nil, cursor : Gdk::Cursor? = nil, cursor_position : Int32? = nil, editable : Bool? = nil, enable_undo : Bool? = nil, focus_on_click : Bool? = nil, focusable : Bool? = nil, halign : Gtk::Align? = nil, has_default : Bool? = nil, has_focus : Bool? = nil, has_tooltip : Bool? = nil, height_request : Int32? = nil, hexpand : Bool? = nil, hexpand_set : Bool? = nil, input_hints : Gtk::InputHints? = nil, input_purpose : Gtk::InputPurpose? = nil, layout_manager : Gtk::LayoutManager? = nil, limit_events : Bool? = nil, margin_bottom : Int32? = nil, margin_end : Int32? = nil, margin_start : Int32? = nil, margin_top : Int32? = nil, max_width_chars : Int32? = nil, name : ::String? = nil, opacity : Float64? = nil, overflow : Gtk::Overflow? = nil, parent : Gtk::Widget? = nil, placeholder_text : ::String? = nil, receives_default : Bool? = nil, root : Gtk::Root? = nil, scale_factor : Int32? = nil, search_delay : UInt32? = nil, selection_bound : Int32? = nil, sensitive : Bool? = nil, text : ::String? = nil, tooltip_markup : ::String? = nil, tooltip_text : ::String? = nil, valign : Gtk::Align? = nil, vexpand : Bool? = nil, vexpand_set : Bool? = nil, visible : Bool? = nil, width_chars : Int32? = nil, width_request : Int32? = nil, xalign : Float32? = nil)
-      _names = uninitialized Pointer(LibC::Char)[49]
-      _values = StaticArray(LibGObject::Value, 49).new(LibGObject::Value.new)
+    def initialize(*, accessible_role : Gtk::AccessibleRole? = nil, activates_default : Bool? = nil, can_focus : Bool? = nil, can_target : Bool? = nil, css_classes : Enumerable(::String)? = nil, css_name : ::String? = nil, cursor : Gdk::Cursor? = nil, cursor_position : Int32? = nil, editable : Bool? = nil, enable_undo : Bool? = nil, focus_on_click : Bool? = nil, focusable : Bool? = nil, halign : Gtk::Align? = nil, has_default : Bool? = nil, has_focus : Bool? = nil, has_tooltip : Bool? = nil, height_request : Int32? = nil, hexpand : Bool? = nil, hexpand_set : Bool? = nil, input_hints : Gtk::InputHints? = nil, input_purpose : Gtk::InputPurpose? = nil, key_capture_widget : Gtk::Widget? = nil, layout_manager : Gtk::LayoutManager? = nil, limit_events : Bool? = nil, margin_bottom : Int32? = nil, margin_end : Int32? = nil, margin_start : Int32? = nil, margin_top : Int32? = nil, max_width_chars : Int32? = nil, name : ::String? = nil, opacity : Float64? = nil, overflow : Gtk::Overflow? = nil, parent : Gtk::Widget? = nil, placeholder_text : ::String? = nil, receives_default : Bool? = nil, root : Gtk::Root? = nil, scale_factor : Int32? = nil, search_delay : UInt32? = nil, selection_bound : Int32? = nil, sensitive : Bool? = nil, text : ::String? = nil, tooltip_markup : ::String? = nil, tooltip_text : ::String? = nil, valign : Gtk::Align? = nil, vexpand : Bool? = nil, vexpand_set : Bool? = nil, visible : Bool? = nil, width_chars : Int32? = nil, width_request : Int32? = nil, xalign : Float32? = nil)
+      _names = uninitialized Pointer(LibC::Char)[50]
+      _values = StaticArray(LibGObject::Value, 50).new(LibGObject::Value.new)
       _n = 0
 
       if !accessible_role.nil?
@@ -149,6 +149,11 @@ module Gtk
       if !input_purpose.nil?
         (_names.to_unsafe + _n).value = "input-purpose".to_unsafe
         GObject::Value.init_g_value(_values.to_unsafe + _n, input_purpose)
+        _n += 1
+      end
+      if !key_capture_widget.nil?
+        (_names.to_unsafe + _n).value = "key-capture-widget".to_unsafe
+        GObject::Value.init_g_value(_values.to_unsafe + _n, key_capture_widget)
         _n += 1
       end
       if !layout_manager.nil?
@@ -358,6 +363,21 @@ module Gtk
       Gtk::InputPurpose.new(value)
     end
 
+    def key_capture_widget=(value : Gtk::Widget?) : Gtk::Widget?
+      unsafe_value = value.nil? ? Pointer(Void).null : value.to_unsafe
+
+      LibGObject.g_object_set(self, "key-capture-widget", unsafe_value, Pointer(Void).null)
+      value
+    end
+
+    def key_capture_widget : Gtk::Widget?
+      # Returns: None
+
+      value = uninitialized Pointer(Void)
+      LibGObject.g_object_get(self, "key-capture-widget", pointerof(value), Pointer(Void).null)
+      Gtk::Widget.new(value, GICrystal::Transfer::None) unless value.null?
+    end
+
     def placeholder_text=(value : ::String) : ::String
       unsafe_value = value
 
@@ -434,7 +454,7 @@ module Gtk
     end
 
     def key_capture_widget : Gtk::Widget?
-      # gtk_search_entry_get_key_capture_widget: (Method)
+      # gtk_search_entry_get_key_capture_widget: (Method | Getter)
       # Returns: (transfer none) (nullable)
 
       # C call
@@ -489,7 +509,7 @@ module Gtk
     end
 
     def key_capture_widget=(widget : Gtk::Widget?) : Nil
-      # gtk_search_entry_set_key_capture_widget: (Method)
+      # gtk_search_entry_set_key_capture_widget: (Method | Setter)
       # @widget: (nullable)
       # Returns: (transfer none)
 

@@ -8,6 +8,8 @@ require "./lib_gtk.cr"
 # Wrappers
 require "./about_dialog.cr"
 require "./accessible.cr"
+require "./accessible_hyperlink.cr"
+require "./accessible_hypertext.cr"
 require "./accessible_list.cr"
 require "./accessible_range.cr"
 require "./accessible_text.cr"
@@ -218,6 +220,7 @@ require "./password_entry.cr"
 require "./password_entry_buffer.cr"
 require "./picture.cr"
 require "./popover.cr"
+require "./popover_bin.cr"
 require "./popover_menu.cr"
 require "./popover_menu_bar.cr"
 require "./print_backend.cr"
@@ -284,6 +287,8 @@ require "./string_object.cr"
 require "./string_sorter.cr"
 require "./style_context.cr"
 require "./style_provider.cr"
+require "./svg.cr"
+require "./svg_location.cr"
 require "./switch.cr"
 require "./symbolic_paintable.cr"
 require "./text.cr"
@@ -313,6 +318,7 @@ require "./tree_sortable.cr"
 require "./tree_store.cr"
 require "./tree_view.cr"
 require "./tree_view_column.cr"
+require "./try_expression.cr"
 require "./uri_launcher.cr"
 require "./video.cr"
 require "./viewport.cr"
@@ -361,10 +367,10 @@ module Gtk
   ACCESSIBLE_ATTRIBUTE_VARIANT_UNICASE         = "unicase"
   ACCESSIBLE_ATTRIBUTE_WEIGHT                  = "weight"
   ACCESSIBLE_VALUE_UNDEFINED                   =   -1
-  BINARY_AGE                                   = 1803
+  BINARY_AGE                                   = 2204
   IM_MODULE_EXTENSION_POINT_NAME               = "gtk-im-module"
   INPUT_ERROR                                  =             -1
-  INTERFACE_AGE                                =              3
+  INTERFACE_AGE                                =              4
   INVALID_LIST_POSITION                        = 4294967295_u32
   LEVEL_BAR_OFFSET_FULL                        = "full"
   LEVEL_BAR_OFFSET_HIGH                        = "high"
@@ -372,8 +378,8 @@ module Gtk
   MAJOR_VERSION                                = 4
   MAX_COMPOSE_LEN                              = 7
   MEDIA_FILE_EXTENSION_POINT_NAME              = "gtk-media-file"
-  MICRO_VERSION                                =  3
-  MINOR_VERSION                                = 18
+  MICRO_VERSION                                =  4
+  MINOR_VERSION                                = 22
   PAPER_NAME_A3                                = "iso_a3"
   PAPER_NAME_A4                                = "iso_a4"
   PAPER_NAME_A5                                = "iso_a5"
@@ -419,6 +425,7 @@ module Gtk
   STYLE_PROVIDER_PRIORITY_SETTINGS             = 400
   STYLE_PROVIDER_PRIORITY_THEME                = 200
   STYLE_PROVIDER_PRIORITY_USER                 = 800
+  SVG_DEFAULT_FEATURES                         =  15
   TEXT_VIEW_PRIORITY_VALIDATE                  = 125
   TREE_SORTABLE_DEFAULT_SORT_COLUMN_ID         =  -1
   TREE_SORTABLE_UNSORTED_SORT_COLUMN_ID        =  -2
@@ -1057,9 +1064,12 @@ module Gtk
   end
 
   enum FilterChange : UInt32
-    Different  = 0
-    LessStrict = 1
-    MoreStrict = 2
+    Different         = 0
+    LessStrict        = 1
+    MoreStrict        = 2
+    DifferentRewatch  = 3
+    LessStrictRewatch = 4
+    MoreStrictRewatch = 5
 
     # Returns the type id (GType) registered in GLib type system.
     def self.g_type : UInt64
@@ -1175,6 +1185,30 @@ module Gtk
     # Returns the type id (GType) registered in GLib type system.
     def self.g_type : UInt64
       LibGtk.gtk_inscription_overflow_get_type
+    end
+  end
+
+  enum InterfaceColorScheme : UInt32
+    Unsupported = 0
+    Default     = 1
+    Dark        = 2
+    Light       = 3
+
+    # Returns the type id (GType) registered in GLib type system.
+    def self.g_type : UInt64
+      LibGtk.gtk_interface_color_scheme_get_type
+    end
+  end
+
+  enum InterfaceContrast : UInt32
+    Unsupported  = 0
+    NoPreference = 1
+    More         = 2
+    Less         = 3
+
+    # Returns the type id (GType) registered in GLib type system.
+    def self.g_type : UInt64
+      LibGtk.gtk_interface_contrast_get_type
     end
   end
 
@@ -1351,6 +1385,7 @@ module Gtk
     Button = 0
     Ring   = 1
     Strip  = 2
+    Dial   = 3
 
     # Returns the type id (GType) registered in GLib type system.
     def self.g_type : UInt64
@@ -1515,6 +1550,16 @@ module Gtk
     end
   end
 
+  enum ReducedMotion : UInt32
+    NoPreference = 0
+    Reduce       = 1
+
+    # Returns the type id (GType) registered in GLib type system.
+    def self.g_type : UInt64
+      LibGtk.gtk_reduced_motion_get_type
+    end
+  end
+
   enum ResponseType : Int32
     None        =  -1
     Reject      =  -2
@@ -1535,16 +1580,20 @@ module Gtk
   end
 
   enum RevealerTransitionType : UInt32
-    None       = 0
-    Crossfade  = 1
-    SlideRight = 2
-    SlideLeft  = 3
-    SlideUp    = 4
-    SlideDown  = 5
-    SwingRight = 6
-    SwingLeft  = 7
-    SwingUp    = 8
-    SwingDown  = 9
+    None           =  0
+    Crossfade      =  1
+    SlideRight     =  2
+    SlideLeft      =  3
+    SlideUp        =  4
+    SlideDown      =  5
+    SwingRight     =  6
+    SwingLeft      =  7
+    SwingUp        =  8
+    SwingDown      =  9
+    FadeSlideRight = 10
+    FadeSlideLeft  = 11
+    FadeSlideUp    = 12
+    FadeSlideDown  = 13
 
     # Returns the type id (GType) registered in GLib type system.
     def self.g_type : UInt64
@@ -1780,6 +1829,7 @@ module Gtk
     Error      = 1
     Warning    = 2
     Success    = 3
+    Accent     = 4
 
     # Returns the type id (GType) registered in GLib type system.
     def self.g_type : UInt64
@@ -1892,6 +1942,29 @@ module Gtk
     end
   end
 
+  enum WindowGravity : UInt32
+    TopLeft     =  0
+    Top         =  1
+    TopRight    =  2
+    Left        =  3
+    Center      =  4
+    Right       =  5
+    BottomLeft  =  6
+    Bottom      =  7
+    BottomRight =  8
+    TopStart    =  9
+    TopEnd      = 10
+    Start       = 11
+    End         = 12
+    BottomStart = 13
+    BottomEnd   = 14
+
+    # Returns the type id (GType) registered in GLib type system.
+    def self.g_type : UInt64
+      LibGtk.gtk_window_gravity_get_type
+    end
+  end
+
   enum WrapMode : UInt32
     None     = 0
     Char     = 1
@@ -1958,6 +2031,7 @@ module Gtk
     SizeRequest    =     256
     NoCssCache     =     512
     Interactive    =    1024
+    Touchscreen    =    2048
     Actions        =    4096
     Layout         =    8192
     Snapshot       =   16384
@@ -1968,6 +2042,7 @@ module Gtk
     InvertTextDir  =  524288
     Css            = 1048576
     Builder        = 2097152
+    Session        = 4194304
 
     # Returns the type id (GType) registered in GLib type system.
     def self.g_type : UInt64
@@ -1989,11 +2064,12 @@ module Gtk
 
   @[Flags]
   enum EventControllerScrollFlags : UInt32
-    Vertical   = 1
-    Horizontal = 2
-    Discrete   = 4
-    Kinetic    = 8
-    BothAxes   = 3
+    Vertical          =  1
+    Horizontal        =  2
+    Discrete          =  4
+    Kinetic           =  8
+    PhysicalDirection = 16
+    BothAxes          =  3
 
     # Returns the type id (GType) registered in GLib type system.
     def self.g_type : UInt64
@@ -2149,6 +2225,20 @@ module Gtk
   end
 
   @[Flags]
+  enum SvgFeatures : UInt32
+    Animations          =  1
+    SystemResources     =  2
+    ExternalResources   =  4
+    Extensions          =  8
+    TraditionalSymbolic = 16
+
+    # Returns the type id (GType) registered in GLib type system.
+    def self.g_type : UInt64
+      LibGtk.gtk_svg_features_get_type
+    end
+  end
+
+  @[Flags]
   enum TextBufferNotifyFlags : UInt32
     BeforeInsert = 1
     AfterInsert  = 2
@@ -2182,6 +2272,19 @@ module Gtk
     def self.g_type : UInt64
       LibGtk.gtk_tree_model_flags_get_type
     end
+  end
+
+  def self.accelerator_get_accessible_label(accelerator_key : UInt32, accelerator_mods : Gdk::ModifierType) : ::String
+    # gtk_accelerator_get_accessible_label: (None)
+    # @accelerator_key:
+    # @accelerator_mods:
+    # Returns: (transfer full)
+
+    # C call
+    _retval = LibGtk.gtk_accelerator_get_accessible_label(accelerator_key, accelerator_mods)
+
+    # Return value handling
+    GICrystal.transfer_full(_retval)
   end
 
   def self.accelerator_get_default_mod_mask : Gdk::ModifierType
@@ -2499,6 +2602,24 @@ module Gtk
 
     # Return value handling
     _retval
+  end
+
+  def self.disable_portal_interfaces(portal_interfaces : Enumerable(::String)) : Nil
+    # gtk_disable_portal_interfaces: (None)
+    # @portal_interfaces: (array zero-terminated=1 element-type Utf8)
+    # Returns: (transfer none)
+
+    # Generator::ArrayArgPlan
+    portal_interfaces = portal_interfaces.to_a.map(&.to_unsafe).to_unsafe.as(Pointer(Pointer(LibC::Char)))
+
+    # C call
+    LibGtk.gtk_disable_portal_interfaces(portal_interfaces)
+
+    # Return value handling
+  end
+
+  def self.disable_portal_interfaces(*portal_interfaces : ::String)
+    self.disable_portal_interfaces(portal_interfaces)
   end
 
   def self.disable_portals : Nil
@@ -3219,6 +3340,65 @@ module Gtk
     GICrystal.to_bool(_retval)
   end
 
+  def self.svg_error_get_attribute(error : GLib::Error) : ::String?
+    # gtk_svg_error_get_attribute: (None)
+    # @error:
+    # Returns: (transfer none) (nullable)
+
+    # C call
+    _retval = LibGtk.gtk_svg_error_get_attribute(error)
+
+    # Return value handling
+    ::String.new(_retval) unless _retval.null?
+  end
+
+  def self.svg_error_get_element(error : GLib::Error) : ::String?
+    # gtk_svg_error_get_element: (None)
+    # @error:
+    # Returns: (transfer none) (nullable)
+
+    # C call
+    _retval = LibGtk.gtk_svg_error_get_element(error)
+
+    # Return value handling
+    ::String.new(_retval) unless _retval.null?
+  end
+
+  def self.svg_error_get_end(error : GLib::Error) : Gtk::SvgLocation?
+    # gtk_svg_error_get_end: (None)
+    # @error:
+    # Returns: (transfer none) (nullable)
+
+    # C call
+    _retval = LibGtk.gtk_svg_error_get_end(error)
+
+    # Return value handling
+    Gtk::SvgLocation.new(_retval, GICrystal::Transfer::None) unless _retval.null?
+  end
+
+  def self.svg_error_get_start(error : GLib::Error) : Gtk::SvgLocation?
+    # gtk_svg_error_get_start: (None)
+    # @error:
+    # Returns: (transfer none) (nullable)
+
+    # C call
+    _retval = LibGtk.gtk_svg_error_get_start(error)
+
+    # Return value handling
+    Gtk::SvgLocation.new(_retval, GICrystal::Transfer::None) unless _retval.null?
+  end
+
+  def self.svg_error_quark : UInt32
+    # gtk_svg_error_quark: (None)
+    # Returns: (transfer none)
+
+    # C call
+    _retval = LibGtk.gtk_svg_error_quark
+
+    # Return value handling
+    _retval
+  end
+
   def self.test_accessible_assertion_message_role(domain : ::String, file : ::String, line : Int32, func : ::String, expr : ::String, accessible : Gtk::Accessible, expected_role : Gtk::AccessibleRole, actual_role : Gtk::AccessibleRole) : Nil
     # gtk_test_accessible_assertion_message_role: (None)
     # @domain:
@@ -3642,7 +3822,7 @@ module Gtk
   end
 
   class ConstraintVflParserError < GtkError
-    class Symbol < ConstraintVflParserError
+    class InvalidSymbol < ConstraintVflParserError
       def initialize(message : String = "")
         domain_quark = LibGLib.g_quark_from_static_string("gtk-constraint-vfl-parser-error-quark")
         @pointer = LibGLib.g_error_new_literal(domain_quark, 0, message)
@@ -3653,7 +3833,7 @@ module Gtk
       end
     end
 
-    class Attribute < ConstraintVflParserError
+    class InvalidAttribute < ConstraintVflParserError
       def initialize(message : String = "")
         domain_quark = LibGLib.g_quark_from_static_string("gtk-constraint-vfl-parser-error-quark")
         @pointer = LibGLib.g_error_new_literal(domain_quark, 1, message)
@@ -3664,7 +3844,7 @@ module Gtk
       end
     end
 
-    class View < ConstraintVflParserError
+    class InvalidView < ConstraintVflParserError
       def initialize(message : String = "")
         domain_quark = LibGLib.g_quark_from_static_string("gtk-constraint-vfl-parser-error-quark")
         @pointer = LibGLib.g_error_new_literal(domain_quark, 2, message)
@@ -3675,7 +3855,7 @@ module Gtk
       end
     end
 
-    class Metric < ConstraintVflParserError
+    class InvalidMetric < ConstraintVflParserError
       def initialize(message : String = "")
         domain_quark = LibGLib.g_quark_from_static_string("gtk-constraint-vfl-parser-error-quark")
         @pointer = LibGLib.g_error_new_literal(domain_quark, 3, message)
@@ -3686,7 +3866,7 @@ module Gtk
       end
     end
 
-    class Priority < ConstraintVflParserError
+    class InvalidPriority < ConstraintVflParserError
       def initialize(message : String = "")
         domain_quark = LibGLib.g_quark_from_static_string("gtk-constraint-vfl-parser-error-quark")
         @pointer = LibGLib.g_error_new_literal(domain_quark, 4, message)
@@ -3697,7 +3877,7 @@ module Gtk
       end
     end
 
-    class Relation < ConstraintVflParserError
+    class InvalidRelation < ConstraintVflParserError
       def initialize(message : String = "")
         domain_quark = LibGLib.g_quark_from_static_string("gtk-constraint-vfl-parser-error-quark")
         @pointer = LibGLib.g_error_new_literal(domain_quark, 5, message)
@@ -3996,6 +4176,118 @@ module Gtk
     end
   end
 
+  class SvgError < GtkError
+    class InvalidSyntax < SvgError
+      def initialize(message : String = "")
+        domain_quark = LibGLib.g_quark_from_static_string("GtkSvgError")
+        @pointer = LibGLib.g_error_new_literal(domain_quark, 0, message)
+      end
+
+      def initialize(pointer : Pointer(LibGLib::Error), transfer : GICrystal::Transfer)
+        super
+      end
+    end
+
+    class InvalidElement < SvgError
+      def initialize(message : String = "")
+        domain_quark = LibGLib.g_quark_from_static_string("GtkSvgError")
+        @pointer = LibGLib.g_error_new_literal(domain_quark, 1, message)
+      end
+
+      def initialize(pointer : Pointer(LibGLib::Error), transfer : GICrystal::Transfer)
+        super
+      end
+    end
+
+    class InvalidAttribute < SvgError
+      def initialize(message : String = "")
+        domain_quark = LibGLib.g_quark_from_static_string("GtkSvgError")
+        @pointer = LibGLib.g_error_new_literal(domain_quark, 2, message)
+      end
+
+      def initialize(pointer : Pointer(LibGLib::Error), transfer : GICrystal::Transfer)
+        super
+      end
+    end
+
+    class MissingAttribute < SvgError
+      def initialize(message : String = "")
+        domain_quark = LibGLib.g_quark_from_static_string("GtkSvgError")
+        @pointer = LibGLib.g_error_new_literal(domain_quark, 3, message)
+      end
+
+      def initialize(pointer : Pointer(LibGLib::Error), transfer : GICrystal::Transfer)
+        super
+      end
+    end
+
+    class InvalidReference < SvgError
+      def initialize(message : String = "")
+        domain_quark = LibGLib.g_quark_from_static_string("GtkSvgError")
+        @pointer = LibGLib.g_error_new_literal(domain_quark, 4, message)
+      end
+
+      def initialize(pointer : Pointer(LibGLib::Error), transfer : GICrystal::Transfer)
+        super
+      end
+    end
+
+    class FailedUpdate < SvgError
+      def initialize(message : String = "")
+        domain_quark = LibGLib.g_quark_from_static_string("GtkSvgError")
+        @pointer = LibGLib.g_error_new_literal(domain_quark, 5, message)
+      end
+
+      def initialize(pointer : Pointer(LibGLib::Error), transfer : GICrystal::Transfer)
+        super
+      end
+    end
+
+    class FailedRendering < SvgError
+      def initialize(message : String = "")
+        domain_quark = LibGLib.g_quark_from_static_string("GtkSvgError")
+        @pointer = LibGLib.g_error_new_literal(domain_quark, 6, message)
+      end
+
+      def initialize(pointer : Pointer(LibGLib::Error), transfer : GICrystal::Transfer)
+        super
+      end
+    end
+
+    class IgnoredElement < SvgError
+      def initialize(message : String = "")
+        domain_quark = LibGLib.g_quark_from_static_string("GtkSvgError")
+        @pointer = LibGLib.g_error_new_literal(domain_quark, 7, message)
+      end
+
+      def initialize(pointer : Pointer(LibGLib::Error), transfer : GICrystal::Transfer)
+        super
+      end
+    end
+
+    class LimitsExceeded < SvgError
+      def initialize(message : String = "")
+        domain_quark = LibGLib.g_quark_from_static_string("GtkSvgError")
+        @pointer = LibGLib.g_error_new_literal(domain_quark, 8, message)
+      end
+
+      def initialize(pointer : Pointer(LibGLib::Error), transfer : GICrystal::Transfer)
+        super
+      end
+    end
+
+    class NotImplemented < SvgError
+      def initialize(message : String = "")
+        domain_quark = LibGLib.g_quark_from_static_string("GtkSvgError")
+        @pointer = LibGLib.g_error_new_literal(domain_quark, 9, message)
+      end
+
+      def initialize(pointer : Pointer(LibGLib::Error), transfer : GICrystal::Transfer)
+        super
+      end
+    end
+  end
+
   # :nodoc:
   def gerror_to_crystal(error : Pointer(LibGLib::Error), transfer : GICrystal::Transfer) : GLib::Error
     gerror_to_crystal?(error, transfer) || GLib::Error.new(error, transfer)
@@ -4025,12 +4317,12 @@ module Gtk
     end
 
     if error_domain == LibGLib.g_quark_try_string("gtk-constraint-vfl-parser-error-quark")
-      return ConstraintVflParserError::Symbol.new(error, transfer) if error_code == 0
-      return ConstraintVflParserError::Attribute.new(error, transfer) if error_code == 1
-      return ConstraintVflParserError::View.new(error, transfer) if error_code == 2
-      return ConstraintVflParserError::Metric.new(error, transfer) if error_code == 3
-      return ConstraintVflParserError::Priority.new(error, transfer) if error_code == 4
-      return ConstraintVflParserError::Relation.new(error, transfer) if error_code == 5
+      return ConstraintVflParserError::InvalidSymbol.new(error, transfer) if error_code == 0
+      return ConstraintVflParserError::InvalidAttribute.new(error, transfer) if error_code == 1
+      return ConstraintVflParserError::InvalidView.new(error, transfer) if error_code == 2
+      return ConstraintVflParserError::InvalidMetric.new(error, transfer) if error_code == 3
+      return ConstraintVflParserError::InvalidPriority.new(error, transfer) if error_code == 4
+      return ConstraintVflParserError::InvalidRelation.new(error, transfer) if error_code == 5
     end
 
     if error_domain == LibGLib.g_quark_try_string("gtk-css-parser-error-quark")
@@ -4074,6 +4366,19 @@ module Gtk
       return RecentManagerError::Read.new(error, transfer) if error_code == 4
       return RecentManagerError::Write.new(error, transfer) if error_code == 5
       return RecentManagerError::Unknown.new(error, transfer) if error_code == 6
+    end
+
+    if error_domain == LibGLib.g_quark_try_string("GtkSvgError")
+      return SvgError::InvalidSyntax.new(error, transfer) if error_code == 0
+      return SvgError::InvalidElement.new(error, transfer) if error_code == 1
+      return SvgError::InvalidAttribute.new(error, transfer) if error_code == 2
+      return SvgError::MissingAttribute.new(error, transfer) if error_code == 3
+      return SvgError::InvalidReference.new(error, transfer) if error_code == 4
+      return SvgError::FailedUpdate.new(error, transfer) if error_code == 5
+      return SvgError::FailedRendering.new(error, transfer) if error_code == 6
+      return SvgError::IgnoredElement.new(error, transfer) if error_code == 7
+      return SvgError::LimitsExceeded.new(error, transfer) if error_code == 8
+      return SvgError::NotImplemented.new(error, transfer) if error_code == 9
     end
 
     Gsk.gerror_to_crystal?(error, transfer)

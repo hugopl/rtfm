@@ -722,6 +722,16 @@ module Adw
       # Return value handling
     end
 
+    def remove_all : Nil
+      # adw_wrap_box_remove_all: (Method)
+      # Returns: (transfer none)
+
+      # C call
+      LibAdw.adw_wrap_box_remove_all(to_unsafe)
+
+      # Return value handling
+    end
+
     def reorder_child_after(child : Gtk::Widget, sibling : Gtk::Widget?) : Nil
       # adw_wrap_box_reorder_child_after: (Method)
       # @child:

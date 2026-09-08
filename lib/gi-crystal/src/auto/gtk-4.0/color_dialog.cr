@@ -187,10 +187,10 @@ module Gtk
       # Return value handling
     end
 
-    def choose_rgba_finish(result : Gio::AsyncResult) : Gdk::RGBA?
+    def choose_rgba_finish(result : Gio::AsyncResult) : Gdk::RGBA
       # gtk_color_dialog_choose_rgba_finish: (Method | Throws)
       # @result:
-      # Returns: (transfer full) (nullable)
+      # Returns: (transfer full)
 
       _error = Pointer(LibGLib::Error).null
 
@@ -201,7 +201,7 @@ module Gtk
       Gtk.raise_gerror(_error) unless _error.null?
 
       # Return value handling
-      Gdk::RGBA.new(_retval, GICrystal::Transfer::Full) unless _retval.null?
+      Gdk::RGBA.new(_retval, GICrystal::Transfer::Full)
     end
 
     def modal : Bool

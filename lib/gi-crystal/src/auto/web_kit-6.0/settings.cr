@@ -29,9 +29,9 @@ module WebKit
       ptr
     end
 
-    def initialize(*, allow_file_access_from_file_urls : Bool? = nil, allow_modal_dialogs : Bool? = nil, allow_top_navigation_to_data_urls : Bool? = nil, allow_universal_access_from_file_urls : Bool? = nil, auto_load_images : Bool? = nil, cursive_font_family : ::String? = nil, default_charset : ::String? = nil, default_font_family : ::String? = nil, default_font_size : UInt32? = nil, default_monospace_font_size : UInt32? = nil, disable_web_security : Bool? = nil, draw_compositing_indicators : Bool? = nil, enable_2d_canvas_acceleration : Bool? = nil, enable_back_forward_navigation_gestures : Bool? = nil, enable_caret_browsing : Bool? = nil, enable_developer_extras : Bool? = nil, enable_dns_prefetching : Bool? = nil, enable_encrypted_media : Bool? = nil, enable_fullscreen : Bool? = nil, enable_html5_database : Bool? = nil, enable_html5_local_storage : Bool? = nil, enable_hyperlink_auditing : Bool? = nil, enable_javascript : Bool? = nil, enable_javascript_markup : Bool? = nil, enable_media : Bool? = nil, enable_media_capabilities : Bool? = nil, enable_media_stream : Bool? = nil, enable_mediasource : Bool? = nil, enable_mock_capture_devices : Bool? = nil, enable_offline_web_application_cache : Bool? = nil, enable_page_cache : Bool? = nil, enable_resizable_text_areas : Bool? = nil, enable_site_specific_quirks : Bool? = nil, enable_smooth_scrolling : Bool? = nil, enable_spatial_navigation : Bool? = nil, enable_tabs_to_links : Bool? = nil, enable_webaudio : Bool? = nil, enable_webgl : Bool? = nil, enable_webrtc : Bool? = nil, enable_write_console_messages_to_stdout : Bool? = nil, fantasy_font_family : ::String? = nil, hardware_acceleration_policy : WebKit::HardwareAccelerationPolicy? = nil, javascript_can_access_clipboard : Bool? = nil, javascript_can_open_windows_automatically : Bool? = nil, load_icons_ignoring_image_load_setting : Bool? = nil, media_content_types_requiring_hardware_support : ::String? = nil, media_playback_allows_inline : Bool? = nil, media_playback_requires_user_gesture : Bool? = nil, minimum_font_size : UInt32? = nil, monospace_font_family : ::String? = nil, pictograph_font_family : ::String? = nil, print_backgrounds : Bool? = nil, sans_serif_font_family : ::String? = nil, serif_font_family : ::String? = nil, user_agent : ::String? = nil, webrtc_udp_ports_range : ::String? = nil, zoom_text_only : Bool? = nil)
-      _names = uninitialized Pointer(LibC::Char)[57]
-      _values = StaticArray(LibGObject::Value, 57).new(LibGObject::Value.new)
+    def initialize(*, allow_file_access_from_file_urls : Bool? = nil, allow_modal_dialogs : Bool? = nil, allow_top_navigation_to_data_urls : Bool? = nil, allow_universal_access_from_file_urls : Bool? = nil, auto_load_images : Bool? = nil, cursive_font_family : ::String? = nil, default_charset : ::String? = nil, default_font_family : ::String? = nil, default_font_size : UInt32? = nil, default_monospace_font_size : UInt32? = nil, disable_web_security : Bool? = nil, draw_compositing_indicators : Bool? = nil, enable_2d_canvas_acceleration : Bool? = nil, enable_back_forward_navigation_gestures : Bool? = nil, enable_caret_browsing : Bool? = nil, enable_developer_extras : Bool? = nil, enable_dns_prefetching : Bool? = nil, enable_encrypted_media : Bool? = nil, enable_fullscreen : Bool? = nil, enable_html5_database : Bool? = nil, enable_html5_local_storage : Bool? = nil, enable_hyperlink_auditing : Bool? = nil, enable_javascript : Bool? = nil, enable_javascript_markup : Bool? = nil, enable_media : Bool? = nil, enable_media_capabilities : Bool? = nil, enable_media_stream : Bool? = nil, enable_mediasource : Bool? = nil, enable_mock_capture_devices : Bool? = nil, enable_offline_web_application_cache : Bool? = nil, enable_page_cache : Bool? = nil, enable_resizable_text_areas : Bool? = nil, enable_site_specific_quirks : Bool? = nil, enable_smooth_scrolling : Bool? = nil, enable_spatial_navigation : Bool? = nil, enable_tabs_to_links : Bool? = nil, enable_webaudio : Bool? = nil, enable_webgl : Bool? = nil, enable_webrtc : Bool? = nil, enable_write_console_messages_to_stdout : Bool? = nil, fantasy_font_family : ::String? = nil, hardware_acceleration_policy : WebKit::HardwareAccelerationPolicy? = nil, javascript_can_access_clipboard : Bool? = nil, javascript_can_open_windows_automatically : Bool? = nil, load_icons_ignoring_image_load_setting : Bool? = nil, math_font_family : ::String? = nil, media_content_types_requiring_hardware_support : ::String? = nil, media_playback_allows_inline : Bool? = nil, media_playback_requires_user_gesture : Bool? = nil, minimum_font_size : UInt32? = nil, monospace_font_family : ::String? = nil, pictograph_font_family : ::String? = nil, print_backgrounds : Bool? = nil, sans_serif_font_family : ::String? = nil, serif_font_family : ::String? = nil, user_agent : ::String? = nil, webrtc_udp_ports_range : ::String? = nil, zoom_text_only : Bool? = nil)
+      _names = uninitialized Pointer(LibC::Char)[58]
+      _values = StaticArray(LibGObject::Value, 58).new(LibGObject::Value.new)
       _n = 0
 
       if !allow_file_access_from_file_urls.nil?
@@ -257,6 +257,11 @@ module WebKit
       if !load_icons_ignoring_image_load_setting.nil?
         (_names.to_unsafe + _n).value = "load-icons-ignoring-image-load-setting".to_unsafe
         GObject::Value.init_g_value(_values.to_unsafe + _n, load_icons_ignoring_image_load_setting)
+        _n += 1
+      end
+      if !math_font_family.nil?
+        (_names.to_unsafe + _n).value = "math-font-family".to_unsafe
+        GObject::Value.init_g_value(_values.to_unsafe + _n, math_font_family)
         _n += 1
       end
       if !media_content_types_requiring_hardware_support.nil?
@@ -1064,6 +1069,33 @@ module WebKit
       GICrystal.to_bool(value)
     end
 
+    def math_font_family=(value : ::String) : ::String
+      unsafe_value = value
+
+      LibGObject.g_object_set(self, "math-font-family", unsafe_value, Pointer(Void).null)
+      value
+    end
+
+    def math_font_family : ::String
+      # Returns: None
+
+      value = uninitialized Pointer(LibC::Char)
+      LibGObject.g_object_get(self, "math-font-family", pointerof(value), Pointer(Void).null)
+      ::String.new(value)
+    end
+
+    # Set `#math_font_family` property to nil.
+    def math_font_family=(value : Nil) : Nil
+      LibGObject.g_object_set(self, "math-font-family", Pointer(Void).null, Pointer(Void).null)
+    end
+
+    # Same as `#math_font_family`, but can return nil.
+    def math_font_family? : ::String?
+      value = uninitialized Pointer(LibC::Char)
+      LibGObject.g_object_get(self, "math-font-family", pointerof(value), Pointer(Void).null)
+      ::String.new(value) if value
+    end
+
     def media_content_types_requiring_hardware_support=(value : ::String) : ::String
       unsafe_value = value
 
@@ -1646,6 +1678,7 @@ module WebKit
       GICrystal.to_bool(_retval)
     end
 
+    @[Deprecated]
     def enable_hyperlink_auditing : Bool
       # webkit_settings_get_enable_hyperlink_auditing: (Method | Getter)
       # Returns: (transfer none)
@@ -1922,6 +1955,17 @@ module WebKit
 
       # Return value handling
       GICrystal.to_bool(_retval)
+    end
+
+    def math_font_family : ::String?
+      # webkit_settings_get_math_font_family: (Method | Getter)
+      # Returns: (transfer none) (nullable)
+
+      # C call
+      _retval = LibWebKit.webkit_settings_get_math_font_family(to_unsafe)
+
+      # Return value handling
+      ::String.new(_retval) unless _retval.null?
     end
 
     def media_content_types_requiring_hardware_support : ::String
@@ -2288,6 +2332,7 @@ module WebKit
       # Return value handling
     end
 
+    @[Deprecated]
     def enable_hyperlink_auditing=(enabled : Bool) : Nil
       # webkit_settings_set_enable_hyperlink_auditing: (Method | Setter)
       # @enabled:
@@ -2562,6 +2607,24 @@ module WebKit
 
       # C call
       LibWebKit.webkit_settings_set_load_icons_ignoring_image_load_setting(to_unsafe, enabled)
+
+      # Return value handling
+    end
+
+    def math_font_family=(math_font_family : ::String?) : Nil
+      # webkit_settings_set_math_font_family: (Method | Setter)
+      # @math_font_family: (nullable)
+      # Returns: (transfer none)
+
+      # Generator::NullableArrayPlan
+      math_font_family = if math_font_family.nil?
+                           Pointer(LibC::Char).null
+                         else
+                           math_font_family.to_unsafe
+                         end
+
+      # C call
+      LibWebKit.webkit_settings_set_math_font_family(to_unsafe, math_font_family)
 
       # Return value handling
     end

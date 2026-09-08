@@ -18,6 +18,7 @@ module GLib
       ptr
     end
 
+    @[Deprecated]
     def free : Nil
       # g_allocator_free: (Method)
       # Returns: (transfer none)

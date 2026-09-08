@@ -38,9 +38,9 @@ module Gtk
       ptr
     end
 
-    def initialize(*, accessible_role : Gtk::AccessibleRole? = nil, can_focus : Bool? = nil, can_target : Bool? = nil, css_classes : Enumerable(::String)? = nil, css_name : ::String? = nil, cursor : Gdk::Cursor? = nil, day : Int32? = nil, focus_on_click : Bool? = nil, focusable : Bool? = nil, halign : Gtk::Align? = nil, has_default : Bool? = nil, has_focus : Bool? = nil, has_tooltip : Bool? = nil, height_request : Int32? = nil, hexpand : Bool? = nil, hexpand_set : Bool? = nil, layout_manager : Gtk::LayoutManager? = nil, limit_events : Bool? = nil, margin_bottom : Int32? = nil, margin_end : Int32? = nil, margin_start : Int32? = nil, margin_top : Int32? = nil, month : Int32? = nil, name : ::String? = nil, opacity : Float64? = nil, overflow : Gtk::Overflow? = nil, parent : Gtk::Widget? = nil, receives_default : Bool? = nil, root : Gtk::Root? = nil, scale_factor : Int32? = nil, sensitive : Bool? = nil, show_day_names : Bool? = nil, show_heading : Bool? = nil, show_week_numbers : Bool? = nil, tooltip_markup : ::String? = nil, tooltip_text : ::String? = nil, valign : Gtk::Align? = nil, vexpand : Bool? = nil, vexpand_set : Bool? = nil, visible : Bool? = nil, width_request : Int32? = nil, year : Int32? = nil)
-      _names = uninitialized Pointer(LibC::Char)[42]
-      _values = StaticArray(LibGObject::Value, 42).new(LibGObject::Value.new)
+    def initialize(*, accessible_role : Gtk::AccessibleRole? = nil, can_focus : Bool? = nil, can_target : Bool? = nil, css_classes : Enumerable(::String)? = nil, css_name : ::String? = nil, cursor : Gdk::Cursor? = nil, date : GLib::DateTime? = nil, day : Int32? = nil, focus_on_click : Bool? = nil, focusable : Bool? = nil, halign : Gtk::Align? = nil, has_default : Bool? = nil, has_focus : Bool? = nil, has_tooltip : Bool? = nil, height_request : Int32? = nil, hexpand : Bool? = nil, hexpand_set : Bool? = nil, layout_manager : Gtk::LayoutManager? = nil, limit_events : Bool? = nil, margin_bottom : Int32? = nil, margin_end : Int32? = nil, margin_start : Int32? = nil, margin_top : Int32? = nil, month : Int32? = nil, name : ::String? = nil, opacity : Float64? = nil, overflow : Gtk::Overflow? = nil, parent : Gtk::Widget? = nil, receives_default : Bool? = nil, root : Gtk::Root? = nil, scale_factor : Int32? = nil, sensitive : Bool? = nil, show_day_names : Bool? = nil, show_heading : Bool? = nil, show_week_numbers : Bool? = nil, tooltip_markup : ::String? = nil, tooltip_text : ::String? = nil, valign : Gtk::Align? = nil, vexpand : Bool? = nil, vexpand_set : Bool? = nil, visible : Bool? = nil, width_request : Int32? = nil, year : Int32? = nil)
+      _names = uninitialized Pointer(LibC::Char)[43]
+      _values = StaticArray(LibGObject::Value, 43).new(LibGObject::Value.new)
       _n = 0
 
       if !accessible_role.nil?
@@ -71,6 +71,11 @@ module Gtk
       if !cursor.nil?
         (_names.to_unsafe + _n).value = "cursor".to_unsafe
         GObject::Value.init_g_value(_values.to_unsafe + _n, cursor)
+        _n += 1
+      end
+      if !date.nil?
+        (_names.to_unsafe + _n).value = "date".to_unsafe
+        GObject::Value.init_g_value(_values.to_unsafe + _n, date)
         _n += 1
       end
       if !day.nil?
@@ -275,6 +280,21 @@ module Gtk
       end
     end
 
+    def date=(value : GLib::DateTime?) : GLib::DateTime?
+      unsafe_value = value.nil? ? Pointer(Void).null : value.to_unsafe
+
+      LibGObject.g_object_set(self, "date", unsafe_value, Pointer(Void).null)
+      value
+    end
+
+    def date : GLib::DateTime?
+      # Returns: None
+
+      value = uninitialized Pointer(Void)
+      LibGObject.g_object_get(self, "date", pointerof(value), Pointer(Void).null)
+      GLib::DateTime.new(value, GICrystal::Transfer::None) unless value.null?
+    end
+
     def day=(value : Int32) : Int32
       unsafe_value = value
 
@@ -387,7 +407,7 @@ module Gtk
     end
 
     def date : GLib::DateTime
-      # gtk_calendar_get_date: (Method)
+      # gtk_calendar_get_date: (Method | Getter)
       # Returns: (transfer full)
 
       # C call
@@ -486,6 +506,7 @@ module Gtk
       # Return value handling
     end
 
+    @[Deprecated]
     def select_day(date : GLib::DateTime) : Nil
       # gtk_calendar_select_day: (Method)
       # @date:
@@ -493,6 +514,17 @@ module Gtk
 
       # C call
       LibGtk.gtk_calendar_select_day(to_unsafe, date)
+
+      # Return value handling
+    end
+
+    def date=(date : GLib::DateTime) : Nil
+      # gtk_calendar_set_date: (Method | Setter)
+      # @date:
+      # Returns: (transfer none)
+
+      # C call
+      LibGtk.gtk_calendar_set_date(to_unsafe, date)
 
       # Return value handling
     end

@@ -209,7 +209,8 @@ module Gtk
           dx = lib_dx
           # NoStrategy
           dy = lib_dy
-          ::Box(Proc(Float64, Float64, Bool)).unbox(_lib_box).call(dx, dy)
+          _retval = ::Box(Proc(Float64, Float64, Bool)).unbox(_lib_box).call(dx, dy)
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,
@@ -225,7 +226,8 @@ module Gtk
           dx = lib_dx
           # NoStrategy
           dy = lib_dy
-          ::Box(Proc(Gtk::EventControllerScroll, Float64, Float64, Bool)).unbox(_lib_box).call(_sender, dx, dy)
+          _retval = ::Box(Proc(Gtk::EventControllerScroll, Float64, Float64, Bool)).unbox(_lib_box).call(_sender, dx, dy)
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,

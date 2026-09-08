@@ -227,10 +227,10 @@ module Gtk
       # Return value handling
     end
 
-    def choose_face_finish(result : Gio::AsyncResult) : Pango::FontFace?
+    def choose_face_finish(result : Gio::AsyncResult) : Pango::FontFace
       # gtk_font_dialog_choose_face_finish: (Method | Throws)
       # @result:
-      # Returns: (transfer full) (nullable)
+      # Returns: (transfer full)
 
       _error = Pointer(LibGLib::Error).null
 
@@ -241,7 +241,7 @@ module Gtk
       Gtk.raise_gerror(_error) unless _error.null?
 
       # Return value handling
-      Pango::FontFace.new(_retval, GICrystal::Transfer::Full) unless _retval.null?
+      Pango::FontFace.new(_retval, GICrystal::Transfer::Full)
     end
 
     def choose_family(parent : Gtk::Window?, initial_value : Pango::FontFamily?, cancellable : Gio::Cancellable?, &callback : Gio::AsyncReadyCallback) : Nil
@@ -289,10 +289,10 @@ module Gtk
       # Return value handling
     end
 
-    def choose_family_finish(result : Gio::AsyncResult) : Pango::FontFamily?
+    def choose_family_finish(result : Gio::AsyncResult) : Pango::FontFamily
       # gtk_font_dialog_choose_family_finish: (Method | Throws)
       # @result:
-      # Returns: (transfer full) (nullable)
+      # Returns: (transfer full)
 
       _error = Pointer(LibGLib::Error).null
 
@@ -303,7 +303,7 @@ module Gtk
       Gtk.raise_gerror(_error) unless _error.null?
 
       # Return value handling
-      Pango::FontFamily.new(_retval, GICrystal::Transfer::Full) unless _retval.null?
+      Pango::FontFamily.new(_retval, GICrystal::Transfer::Full)
     end
 
     def choose_font(parent : Gtk::Window?, initial_value : Pango::FontDescription?, cancellable : Gio::Cancellable?, &callback : Gio::AsyncReadyCallback) : Nil
@@ -416,10 +416,10 @@ module Gtk
       GICrystal.to_bool(_retval)
     end
 
-    def choose_font_finish(result : Gio::AsyncResult) : Pango::FontDescription?
+    def choose_font_finish(result : Gio::AsyncResult) : Pango::FontDescription
       # gtk_font_dialog_choose_font_finish: (Method | Throws)
       # @result:
-      # Returns: (transfer full) (nullable)
+      # Returns: (transfer full)
 
       _error = Pointer(LibGLib::Error).null
 
@@ -430,7 +430,7 @@ module Gtk
       Gtk.raise_gerror(_error) unless _error.null?
 
       # Return value handling
-      Pango::FontDescription.new(_retval, GICrystal::Transfer::Full) unless _retval.null?
+      Pango::FontDescription.new(_retval, GICrystal::Transfer::Full)
     end
 
     def filter : Gtk::Filter?

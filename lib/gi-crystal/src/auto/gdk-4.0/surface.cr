@@ -479,10 +479,17 @@ module Gdk
       # Return value handling
     end
 
-    def input_region=(region : Cairo::Region) : Nil
+    def input_region=(region : Cairo::Region?) : Nil
       # gdk_surface_set_input_region: (Method)
-      # @region:
+      # @region: (nullable)
       # Returns: (transfer none)
+
+      # Generator::NullableArrayPlan
+      region = if region.nil?
+                 Pointer(Void).null
+               else
+                 region.to_unsafe
+               end
 
       # C call
       LibGdk.gdk_surface_set_input_region(to_unsafe, region)
@@ -582,7 +589,8 @@ module Gdk
         handler = ->(_lib_sender : Pointer(Void), lib_event : Pointer(Void), _lib_box : Pointer(Void)) {
           # Generator::BuiltInTypeArgPlan
           event = Gdk::Event.new(lib_event, GICrystal::Transfer::None)
-          ::Box(Proc(Gdk::Event, Bool)).unbox(_lib_box).call(event)
+          _retval = ::Box(Proc(Gdk::Event, Bool)).unbox(_lib_box).call(event)
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,
@@ -596,7 +604,8 @@ module Gdk
           _sender = Gdk::Surface.new(_lib_sender, GICrystal::Transfer::None)
           # Generator::BuiltInTypeArgPlan
           event = Gdk::Event.new(lib_event, GICrystal::Transfer::None)
-          ::Box(Proc(Gdk::Surface, Gdk::Event, Bool)).unbox(_lib_box).call(_sender, event)
+          _retval = ::Box(Proc(Gdk::Surface, Gdk::Event, Bool)).unbox(_lib_box).call(_sender, event)
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,
@@ -721,7 +730,8 @@ module Gdk
         handler = ->(_lib_sender : Pointer(Void), lib_region : Pointer(Void), _lib_box : Pointer(Void)) {
           # Generator::BuiltInTypeArgPlan
           region = Cairo::Region.new(lib_region, GICrystal::Transfer::None)
-          ::Box(Proc(Cairo::Region, Bool)).unbox(_lib_box).call(region)
+          _retval = ::Box(Proc(Cairo::Region, Bool)).unbox(_lib_box).call(region)
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,
@@ -735,7 +745,8 @@ module Gdk
           _sender = Gdk::Surface.new(_lib_sender, GICrystal::Transfer::None)
           # Generator::BuiltInTypeArgPlan
           region = Cairo::Region.new(lib_region, GICrystal::Transfer::None)
-          ::Box(Proc(Gdk::Surface, Cairo::Region, Bool)).unbox(_lib_box).call(_sender, region)
+          _retval = ::Box(Proc(Gdk::Surface, Cairo::Region, Bool)).unbox(_lib_box).call(_sender, region)
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,

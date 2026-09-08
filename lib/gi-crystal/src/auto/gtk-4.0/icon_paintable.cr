@@ -9,8 +9,11 @@ module Gtk
     include Gdk::Paintable
     include SymbolicPaintable
 
-    macro inherited
-      {{ raise "Cannot inherit from #{@type.superclass}" unless @type.annotation(GICrystal::GeneratedWrapper) }}
+    # :nodoc:
+    def self._register_derived_type(class_name : String, class_init, instance_init)
+      LibGObject.g_type_register_static_simple(g_type, class_name,
+        sizeof(LibGtk::IconPaintableClass), class_init,
+        sizeof(LibGtk::IconPaintable), instance_init, 0)
     end
 
     GICrystal.declare_new_method(IconPaintable, g_object_get_qdata)
@@ -35,9 +38,9 @@ module Gtk
       ptr
     end
 
-    def initialize(*, file : Gio::File? = nil, icon_name : ::String? = nil, is_symbolic : Bool? = nil)
-      _names = uninitialized Pointer(LibC::Char)[3]
-      _values = StaticArray(LibGObject::Value, 3).new(LibGObject::Value.new)
+    def initialize(*, file : Gio::File? = nil, icon_name : ::String? = nil, is_symbolic : Bool? = nil, scale : Int32? = nil, size : Int32? = nil)
+      _names = uninitialized Pointer(LibC::Char)[5]
+      _values = StaticArray(LibGObject::Value, 5).new(LibGObject::Value.new)
       _n = 0
 
       if !file.nil?
@@ -53,6 +56,16 @@ module Gtk
       if !is_symbolic.nil?
         (_names.to_unsafe + _n).value = "is-symbolic".to_unsafe
         GObject::Value.init_g_value(_values.to_unsafe + _n, is_symbolic)
+        _n += 1
+      end
+      if !scale.nil?
+        (_names.to_unsafe + _n).value = "scale".to_unsafe
+        GObject::Value.init_g_value(_values.to_unsafe + _n, scale)
+        _n += 1
+      end
+      if !size.nil?
+        (_names.to_unsafe + _n).value = "size".to_unsafe
+        GObject::Value.init_g_value(_values.to_unsafe + _n, size)
         _n += 1
       end
 
@@ -134,6 +147,36 @@ module Gtk
       GICrystal.to_bool(value)
     end
 
+    def scale=(value : Int32) : Int32
+      unsafe_value = value
+
+      LibGObject.g_object_set(self, "scale", unsafe_value, Pointer(Void).null)
+      value
+    end
+
+    def scale : Int32
+      # Returns: None
+
+      value = uninitialized Int32
+      LibGObject.g_object_get(self, "scale", pointerof(value), Pointer(Void).null)
+      value
+    end
+
+    def size=(value : Int32) : Int32
+      unsafe_value = value
+
+      LibGObject.g_object_set(self, "size", unsafe_value, Pointer(Void).null)
+      value
+    end
+
+    def size : Int32
+      # Returns: None
+
+      value = uninitialized Int32
+      LibGObject.g_object_get(self, "size", pointerof(value), Pointer(Void).null)
+      value
+    end
+
     def self.new_for_file(file : Gio::File, size : Int32, scale : Int32) : self
       # gtk_icon_paintable_new_for_file: (Constructor)
       # @file:
@@ -159,6 +202,7 @@ module Gtk
       Gio::AbstractFile.new(_retval, GICrystal::Transfer::Full) unless _retval.null?
     end
 
+    @[Deprecated]
     def icon_name : ::Path?
       # gtk_icon_paintable_get_icon_name: (Method | Getter)
       # Returns: (transfer none) (filename) (nullable)
@@ -170,6 +214,7 @@ module Gtk
       ::Path.new(::String.new(_retval)) unless _retval.null?
     end
 
+    @[Deprecated]
     def is_symbolic? : Bool
       # gtk_icon_paintable_is_symbolic: (Method | Getter)
       # Returns: (transfer none)

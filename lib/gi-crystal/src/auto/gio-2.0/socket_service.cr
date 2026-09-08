@@ -144,7 +144,8 @@ module Gio
           source_object = (lib_source_object.null? ? nil : GObject::Object.new(lib_source_object, GICrystal::Transfer::None))
           # Generator::BuiltInTypeArgPlan
           source_object = GObject::Object.new(lib_source_object, GICrystal::Transfer::None) unless lib_source_object.null?
-          ::Box(Proc(Gio::SocketConnection, GObject::Object?, Bool)).unbox(_lib_box).call(connection, source_object)
+          _retval = ::Box(Proc(Gio::SocketConnection, GObject::Object?, Bool)).unbox(_lib_box).call(connection, source_object)
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,
@@ -162,7 +163,8 @@ module Gio
           source_object = (lib_source_object.null? ? nil : GObject::Object.new(lib_source_object, GICrystal::Transfer::None))
           # Generator::BuiltInTypeArgPlan
           source_object = GObject::Object.new(lib_source_object, GICrystal::Transfer::None) unless lib_source_object.null?
-          ::Box(Proc(Gio::SocketService, Gio::SocketConnection, GObject::Object?, Bool)).unbox(_lib_box).call(_sender, connection, source_object)
+          _retval = ::Box(Proc(Gio::SocketService, Gio::SocketConnection, GObject::Object?, Bool)).unbox(_lib_box).call(_sender, connection, source_object)
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,

@@ -1550,7 +1550,8 @@ module Gtk
           prev_column = Gtk::TreeViewColumn.new(lib_prev_column, GICrystal::Transfer::None)
           # Generator::BuiltInTypeArgPlan
           next_column = Gtk::TreeViewColumn.new(lib_next_column, GICrystal::Transfer::None)
-          ::Box(Proc(Gtk::TreeView, Gtk::TreeViewColumn, Gtk::TreeViewColumn, Gtk::TreeViewColumn, Bool)).unbox(lib_data).call(tree_view, column, prev_column, next_column)
+          _retval = ::Box(Proc(Gtk::TreeView, Gtk::TreeViewColumn, Gtk::TreeViewColumn, Gtk::TreeViewColumn, Bool)).unbox(lib_data).call(tree_view, column, prev_column, next_column)
+          GICrystal.to_c_bool(_retval)
         }.pointer
         user_data = GICrystal::ClosureDataManager.register(_box)
         destroy = ->GICrystal::ClosureDataManager.deregister(Pointer(Void)).pointer
@@ -1807,7 +1808,8 @@ module Gtk
           model = Gtk::AbstractTreeModel.new(lib_model, GICrystal::Transfer::None)
           # Generator::BuiltInTypeArgPlan
           iter = Gtk::TreeIter.new(lib_iter, GICrystal::Transfer::None)
-          ::Box(Proc(Gtk::TreeModel, Gtk::TreeIter, Bool)).unbox(lib_data).call(model, iter)
+          _retval = ::Box(Proc(Gtk::TreeModel, Gtk::TreeIter, Bool)).unbox(lib_data).call(model, iter)
+          GICrystal.to_c_bool(_retval)
         }.pointer
         data = GICrystal::ClosureDataManager.register(_box)
         destroy = ->GICrystal::ClosureDataManager.deregister(Pointer(Void)).pointer
@@ -1884,7 +1886,8 @@ module Gtk
           key = ::String.new(lib_key)
           # Generator::BuiltInTypeArgPlan
           iter = Gtk::TreeIter.new(lib_iter, GICrystal::Transfer::None)
-          ::Box(Proc(Gtk::TreeModel, Int32, ::String, Gtk::TreeIter, Bool)).unbox(lib_search_data).call(model, column, key, iter)
+          _retval = ::Box(Proc(Gtk::TreeModel, Int32, ::String, Gtk::TreeIter, Bool)).unbox(lib_search_data).call(model, column, key, iter)
+          GICrystal.to_c_bool(_retval)
         }.pointer
         search_user_data = GICrystal::ClosureDataManager.register(_box)
         search_destroy = ->GICrystal::ClosureDataManager.deregister(Pointer(Void)).pointer
@@ -2091,7 +2094,8 @@ module Gtk
           p0 = GICrystal.to_bool(lib_p0)
           # Generator::BuiltInTypeArgPlan
           p1 = GICrystal.to_bool(lib_p1)
-          ::Box(Proc(Bool, Bool, Bool, Bool)).unbox(_lib_box).call(object, p0, p1)
+          _retval = ::Box(Proc(Bool, Bool, Bool, Bool)).unbox(_lib_box).call(object, p0, p1)
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,
@@ -2109,7 +2113,8 @@ module Gtk
           p0 = GICrystal.to_bool(lib_p0)
           # Generator::BuiltInTypeArgPlan
           p1 = GICrystal.to_bool(lib_p1)
-          ::Box(Proc(Gtk::TreeView, Bool, Bool, Bool, Bool)).unbox(_lib_box).call(_sender, object, p0, p1)
+          _retval = ::Box(Proc(Gtk::TreeView, Bool, Bool, Bool, Bool)).unbox(_lib_box).call(_sender, object, p0, p1)
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,
@@ -2146,7 +2151,8 @@ module Gtk
           _extend = GICrystal.to_bool(lib__extend)
           # Generator::BuiltInTypeArgPlan
           modify = GICrystal.to_bool(lib_modify)
-          ::Box(Proc(Gtk::MovementStep, Int32, Bool, Bool, Bool)).unbox(_lib_box).call(step, direction, _extend, modify)
+          _retval = ::Box(Proc(Gtk::MovementStep, Int32, Bool, Bool, Bool)).unbox(_lib_box).call(step, direction, _extend, modify)
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,
@@ -2166,7 +2172,8 @@ module Gtk
           _extend = GICrystal.to_bool(lib__extend)
           # Generator::BuiltInTypeArgPlan
           modify = GICrystal.to_bool(lib_modify)
-          ::Box(Proc(Gtk::TreeView, Gtk::MovementStep, Int32, Bool, Bool, Bool)).unbox(_lib_box).call(_sender, step, direction, _extend, modify)
+          _retval = ::Box(Proc(Gtk::TreeView, Gtk::MovementStep, Int32, Bool, Bool, Bool)).unbox(_lib_box).call(_sender, step, direction, _extend, modify)
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,
@@ -2353,7 +2360,8 @@ module Gtk
       def connect(handler : Proc(Bool), *, after : Bool = false) : GObject::SignalConnection
         _box = ::Box.box(handler)
         handler = ->(_lib_sender : Pointer(Void), _lib_box : Pointer(Void)) {
-          ::Box(Proc(Bool)).unbox(_lib_box).call
+          _retval = ::Box(Proc(Bool)).unbox(_lib_box).call
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,
@@ -2365,7 +2373,8 @@ module Gtk
         _box = ::Box.box(handler)
         handler = ->(_lib_sender : Pointer(Void), _lib_box : Pointer(Void)) {
           _sender = Gtk::TreeView.new(_lib_sender, GICrystal::Transfer::None)
-          ::Box(Proc(Gtk::TreeView, Bool)).unbox(_lib_box).call(_sender)
+          _retval = ::Box(Proc(Gtk::TreeView, Bool)).unbox(_lib_box).call(_sender)
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,
@@ -2394,7 +2403,8 @@ module Gtk
       def connect(handler : Proc(Bool), *, after : Bool = false) : GObject::SignalConnection
         _box = ::Box.box(handler)
         handler = ->(_lib_sender : Pointer(Void), _lib_box : Pointer(Void)) {
-          ::Box(Proc(Bool)).unbox(_lib_box).call
+          _retval = ::Box(Proc(Bool)).unbox(_lib_box).call
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,
@@ -2406,7 +2416,8 @@ module Gtk
         _box = ::Box.box(handler)
         handler = ->(_lib_sender : Pointer(Void), _lib_box : Pointer(Void)) {
           _sender = Gtk::TreeView.new(_lib_sender, GICrystal::Transfer::None)
-          ::Box(Proc(Gtk::TreeView, Bool)).unbox(_lib_box).call(_sender)
+          _retval = ::Box(Proc(Gtk::TreeView, Bool)).unbox(_lib_box).call(_sender)
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,
@@ -2437,7 +2448,8 @@ module Gtk
         handler = ->(_lib_sender : Pointer(Void), lib_object : LibC::Int, _lib_box : Pointer(Void)) {
           # Generator::BuiltInTypeArgPlan
           object = GICrystal.to_bool(lib_object)
-          ::Box(Proc(Bool, Bool)).unbox(_lib_box).call(object)
+          _retval = ::Box(Proc(Bool, Bool)).unbox(_lib_box).call(object)
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,
@@ -2451,7 +2463,8 @@ module Gtk
           _sender = Gtk::TreeView.new(_lib_sender, GICrystal::Transfer::None)
           # Generator::BuiltInTypeArgPlan
           object = GICrystal.to_bool(lib_object)
-          ::Box(Proc(Gtk::TreeView, Bool, Bool)).unbox(_lib_box).call(_sender, object)
+          _retval = ::Box(Proc(Gtk::TreeView, Bool, Bool)).unbox(_lib_box).call(_sender, object)
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,
@@ -2480,7 +2493,8 @@ module Gtk
       def connect(handler : Proc(Bool), *, after : Bool = false) : GObject::SignalConnection
         _box = ::Box.box(handler)
         handler = ->(_lib_sender : Pointer(Void), _lib_box : Pointer(Void)) {
-          ::Box(Proc(Bool)).unbox(_lib_box).call
+          _retval = ::Box(Proc(Bool)).unbox(_lib_box).call
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,
@@ -2492,7 +2506,8 @@ module Gtk
         _box = ::Box.box(handler)
         handler = ->(_lib_sender : Pointer(Void), _lib_box : Pointer(Void)) {
           _sender = Gtk::TreeView.new(_lib_sender, GICrystal::Transfer::None)
-          ::Box(Proc(Gtk::TreeView, Bool)).unbox(_lib_box).call(_sender)
+          _retval = ::Box(Proc(Gtk::TreeView, Bool)).unbox(_lib_box).call(_sender)
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,
@@ -2525,7 +2540,8 @@ module Gtk
           iter = Gtk::TreeIter.new(lib_iter, GICrystal::Transfer::None)
           # Generator::BuiltInTypeArgPlan
           path = Gtk::TreePath.new(lib_path, GICrystal::Transfer::None)
-          ::Box(Proc(Gtk::TreeIter, Gtk::TreePath, Bool)).unbox(_lib_box).call(iter, path)
+          _retval = ::Box(Proc(Gtk::TreeIter, Gtk::TreePath, Bool)).unbox(_lib_box).call(iter, path)
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,
@@ -2541,7 +2557,8 @@ module Gtk
           iter = Gtk::TreeIter.new(lib_iter, GICrystal::Transfer::None)
           # Generator::BuiltInTypeArgPlan
           path = Gtk::TreePath.new(lib_path, GICrystal::Transfer::None)
-          ::Box(Proc(Gtk::TreeView, Gtk::TreeIter, Gtk::TreePath, Bool)).unbox(_lib_box).call(_sender, iter, path)
+          _retval = ::Box(Proc(Gtk::TreeView, Gtk::TreeIter, Gtk::TreePath, Bool)).unbox(_lib_box).call(_sender, iter, path)
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,
@@ -2574,7 +2591,8 @@ module Gtk
           iter = Gtk::TreeIter.new(lib_iter, GICrystal::Transfer::None)
           # Generator::BuiltInTypeArgPlan
           path = Gtk::TreePath.new(lib_path, GICrystal::Transfer::None)
-          ::Box(Proc(Gtk::TreeIter, Gtk::TreePath, Bool)).unbox(_lib_box).call(iter, path)
+          _retval = ::Box(Proc(Gtk::TreeIter, Gtk::TreePath, Bool)).unbox(_lib_box).call(iter, path)
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,
@@ -2590,7 +2608,8 @@ module Gtk
           iter = Gtk::TreeIter.new(lib_iter, GICrystal::Transfer::None)
           # Generator::BuiltInTypeArgPlan
           path = Gtk::TreePath.new(lib_path, GICrystal::Transfer::None)
-          ::Box(Proc(Gtk::TreeView, Gtk::TreeIter, Gtk::TreePath, Bool)).unbox(_lib_box).call(_sender, iter, path)
+          _retval = ::Box(Proc(Gtk::TreeView, Gtk::TreeIter, Gtk::TreePath, Bool)).unbox(_lib_box).call(_sender, iter, path)
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,
@@ -2619,7 +2638,8 @@ module Gtk
       def connect(handler : Proc(Bool), *, after : Bool = false) : GObject::SignalConnection
         _box = ::Box.box(handler)
         handler = ->(_lib_sender : Pointer(Void), _lib_box : Pointer(Void)) {
-          ::Box(Proc(Bool)).unbox(_lib_box).call
+          _retval = ::Box(Proc(Bool)).unbox(_lib_box).call
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,
@@ -2631,7 +2651,8 @@ module Gtk
         _box = ::Box.box(handler)
         handler = ->(_lib_sender : Pointer(Void), _lib_box : Pointer(Void)) {
           _sender = Gtk::TreeView.new(_lib_sender, GICrystal::Transfer::None)
-          ::Box(Proc(Gtk::TreeView, Bool)).unbox(_lib_box).call(_sender)
+          _retval = ::Box(Proc(Gtk::TreeView, Bool)).unbox(_lib_box).call(_sender)
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,
@@ -2660,7 +2681,8 @@ module Gtk
       def connect(handler : Proc(Bool), *, after : Bool = false) : GObject::SignalConnection
         _box = ::Box.box(handler)
         handler = ->(_lib_sender : Pointer(Void), _lib_box : Pointer(Void)) {
-          ::Box(Proc(Bool)).unbox(_lib_box).call
+          _retval = ::Box(Proc(Bool)).unbox(_lib_box).call
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,
@@ -2672,7 +2694,8 @@ module Gtk
         _box = ::Box.box(handler)
         handler = ->(_lib_sender : Pointer(Void), _lib_box : Pointer(Void)) {
           _sender = Gtk::TreeView.new(_lib_sender, GICrystal::Transfer::None)
-          ::Box(Proc(Gtk::TreeView, Bool)).unbox(_lib_box).call(_sender)
+          _retval = ::Box(Proc(Gtk::TreeView, Bool)).unbox(_lib_box).call(_sender)
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,

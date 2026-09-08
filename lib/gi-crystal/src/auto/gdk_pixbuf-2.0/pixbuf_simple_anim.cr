@@ -79,6 +79,7 @@ module GdkPixbuf
       GICrystal.to_bool(value)
     end
 
+    @[Deprecated]
     def self.new(width : Int32, height : Int32, rate : Float32) : self
       # gdk_pixbuf_simple_anim_new: (Constructor)
       # @width:
@@ -93,6 +94,7 @@ module GdkPixbuf
       GdkPixbuf::PixbufSimpleAnim.new(_retval, GICrystal::Transfer::Full)
     end
 
+    @[Deprecated]
     def add_frame(pixbuf : GdkPixbuf::Pixbuf) : Nil
       # gdk_pixbuf_simple_anim_add_frame: (Method)
       # @pixbuf:
@@ -104,6 +106,7 @@ module GdkPixbuf
       # Return value handling
     end
 
+    @[Deprecated]
     def loop : Bool
       # gdk_pixbuf_simple_anim_get_loop: (Method | Getter)
       # Returns: (transfer none)
@@ -115,6 +118,7 @@ module GdkPixbuf
       GICrystal.to_bool(_retval)
     end
 
+    @[Deprecated]
     def loop=(loop : Bool) : Nil
       # gdk_pixbuf_simple_anim_set_loop: (Method | Setter)
       # @loop:

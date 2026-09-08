@@ -408,7 +408,8 @@ module Gtk
         handler = ->(_lib_sender : Pointer(Void), lib_state : LibC::Int, _lib_box : Pointer(Void)) {
           # Generator::BuiltInTypeArgPlan
           state = GICrystal.to_bool(lib_state)
-          ::Box(Proc(Bool, Bool)).unbox(_lib_box).call(state)
+          _retval = ::Box(Proc(Bool, Bool)).unbox(_lib_box).call(state)
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,
@@ -422,7 +423,8 @@ module Gtk
           _sender = Gtk::Switch.new(_lib_sender, GICrystal::Transfer::None)
           # Generator::BuiltInTypeArgPlan
           state = GICrystal.to_bool(lib_state)
-          ::Box(Proc(Gtk::Switch, Bool, Bool)).unbox(_lib_box).call(_sender, state)
+          _retval = ::Box(Proc(Gtk::Switch, Bool, Bool)).unbox(_lib_box).call(_sender, state)
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,

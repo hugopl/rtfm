@@ -339,7 +339,8 @@ module Gtk
         handler = ->(_lib_sender : Pointer(Void), lib_drop : Pointer(Void), _lib_box : Pointer(Void)) {
           # Generator::BuiltInTypeArgPlan
           drop = Gdk::Drop.new(lib_drop, GICrystal::Transfer::None)
-          ::Box(Proc(Gdk::Drop, Bool)).unbox(_lib_box).call(drop)
+          _retval = ::Box(Proc(Gdk::Drop, Bool)).unbox(_lib_box).call(drop)
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,
@@ -353,7 +354,8 @@ module Gtk
           _sender = Gtk::DropTarget.new(_lib_sender, GICrystal::Transfer::None)
           # Generator::BuiltInTypeArgPlan
           drop = Gdk::Drop.new(lib_drop, GICrystal::Transfer::None)
-          ::Box(Proc(Gtk::DropTarget, Gdk::Drop, Bool)).unbox(_lib_box).call(_sender, drop)
+          _retval = ::Box(Proc(Gtk::DropTarget, Gdk::Drop, Bool)).unbox(_lib_box).call(_sender, drop)
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,
@@ -388,7 +390,8 @@ module Gtk
           x = lib_x
           # NoStrategy
           y = lib_y
-          ::Box(Proc(GObject::Value, Float64, Float64, Bool)).unbox(_lib_box).call(value, x, y)
+          _retval = ::Box(Proc(GObject::Value, Float64, Float64, Bool)).unbox(_lib_box).call(value, x, y)
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,
@@ -406,7 +409,8 @@ module Gtk
           x = lib_x
           # NoStrategy
           y = lib_y
-          ::Box(Proc(Gtk::DropTarget, GObject::Value, Float64, Float64, Bool)).unbox(_lib_box).call(_sender, value, x, y)
+          _retval = ::Box(Proc(Gtk::DropTarget, GObject::Value, Float64, Float64, Bool)).unbox(_lib_box).call(_sender, value, x, y)
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,
@@ -446,7 +450,8 @@ module Gtk
           x = lib_x
           # NoStrategy
           y = lib_y
-          ::Box(Proc(Float64, Float64, Gdk::DragAction)).unbox(_lib_box).call(x, y)
+          _retval = ::Box(Proc(Float64, Float64, Gdk::DragAction)).unbox(_lib_box).call(x, y)
+          _retval.to_u32
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,
@@ -462,7 +467,8 @@ module Gtk
           x = lib_x
           # NoStrategy
           y = lib_y
-          ::Box(Proc(Gtk::DropTarget, Float64, Float64, Gdk::DragAction)).unbox(_lib_box).call(_sender, x, y)
+          _retval = ::Box(Proc(Gtk::DropTarget, Float64, Float64, Gdk::DragAction)).unbox(_lib_box).call(_sender, x, y)
+          _retval.to_u32
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,
@@ -536,7 +542,8 @@ module Gtk
           x = lib_x
           # NoStrategy
           y = lib_y
-          ::Box(Proc(Float64, Float64, Gdk::DragAction)).unbox(_lib_box).call(x, y)
+          _retval = ::Box(Proc(Float64, Float64, Gdk::DragAction)).unbox(_lib_box).call(x, y)
+          _retval.to_u32
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,
@@ -552,7 +559,8 @@ module Gtk
           x = lib_x
           # NoStrategy
           y = lib_y
-          ::Box(Proc(Gtk::DropTarget, Float64, Float64, Gdk::DragAction)).unbox(_lib_box).call(_sender, x, y)
+          _retval = ::Box(Proc(Gtk::DropTarget, Float64, Float64, Gdk::DragAction)).unbox(_lib_box).call(_sender, x, y)
+          _retval.to_u32
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,

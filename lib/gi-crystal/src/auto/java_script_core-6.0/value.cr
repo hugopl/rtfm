@@ -376,23 +376,18 @@ module JavaScriptCore
       JavaScriptCore::Value.new(_retval, GICrystal::Transfer::Full)
     end
 
-    def array_buffer_get_data(size : Pointer(UInt64)?) : Pointer(Void)?
+    def array_buffer_get_data : ::Bytes
       # jsc_value_array_buffer_get_data: (Method)
-      # @size: (nullable)
-      # Returns: (transfer none) (nullable)
+      # @size: (out) (transfer full) (optional)
+      # Returns: (transfer none) (array length=size element-type UInt8)
 
-      # Generator::NullableArrayPlan
-      size = if size.nil?
-               Pointer(UInt64).null
-             else
-               size.to_unsafe
-             end
-
+      # Generator::OutArgUsedInReturnPlan
+      size = 0_u64
       # C call
-      _retval = LibJavaScriptCore.jsc_value_array_buffer_get_data(to_unsafe, size)
+      _retval = LibJavaScriptCore.jsc_value_array_buffer_get_data(to_unsafe, pointerof(size))
 
       # Return value handling
-      _retval unless _retval.null?
+      GICrystal.transfer_array(_retval, size, GICrystal::Transfer::None)
     end
 
     def array_buffer_get_size : UInt64

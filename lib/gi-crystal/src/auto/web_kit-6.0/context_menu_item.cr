@@ -123,6 +123,17 @@ module WebKit
       Gio::AbstractAction.new(_retval, GICrystal::Transfer::None)
     end
 
+    def gaction_target : GLib::Variant?
+      # webkit_context_menu_item_get_gaction_target: (Method)
+      # Returns: (transfer none) (nullable)
+
+      # C call
+      _retval = LibWebKit.webkit_context_menu_item_get_gaction_target(to_unsafe)
+
+      # Return value handling
+      GLib::Variant.new(_retval, GICrystal::Transfer::None) unless _retval.null?
+    end
+
     def stock_action : WebKit::ContextMenuAction
       # webkit_context_menu_item_get_stock_action: (Method)
       # Returns: (transfer none)
@@ -143,6 +154,17 @@ module WebKit
 
       # Return value handling
       WebKit::ContextMenu.new(_retval, GICrystal::Transfer::None)
+    end
+
+    def title : ::String
+      # webkit_context_menu_item_get_title: (Method)
+      # Returns: (transfer none)
+
+      # C call
+      _retval = LibWebKit.webkit_context_menu_item_get_title(to_unsafe)
+
+      # Return value handling
+      ::String.new(_retval)
     end
 
     def is_separator : Bool

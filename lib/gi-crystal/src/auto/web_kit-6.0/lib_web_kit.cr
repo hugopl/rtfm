@@ -9,6 +9,7 @@ lib LibWebKit
   type SnapshotOptions = UInt32
   type WebExtensionMatchPatternOptions = UInt32
   type WebsiteDataTypes = UInt32
+  type XRSessionFeatures = UInt32
 
   # Enums
   type AuthenticationScheme = UInt32
@@ -47,9 +48,11 @@ lib LibWebKit
   type UserMessageError = UInt32
   type UserScriptInjectionTime = UInt32
   type UserStyleLevel = UInt32
+  type WebExtensionError = UInt32
   type WebExtensionMatchPatternError = UInt32
   type WebExtensionMode = UInt32
   type WebProcessTerminationReason = UInt32
+  type XRSessionMode = UInt32
 
   # Callbacks
   alias URISchemeRequestCallback = Pointer(LibWebKit::URISchemeRequest), Pointer(Void) -> Void
@@ -307,6 +310,10 @@ lib LibWebKit
     parent_class : LibGObject::ObjectClass
   end
 
+  struct WebExtensionClass # 136 bytes long
+    parent_class : LibGObject::ObjectClass
+  end
+
   type WebExtensionMatchPattern = Void # Struct with zero bytes
 
   struct WebInspectorClass # 136 bytes long
@@ -412,6 +419,10 @@ lib LibWebKit
     parent_class : LibGObject::ObjectClass
   end
 
+  struct XRPermissionRequestClass # 136 bytes long
+    parent_class : LibGObject::ObjectClass
+  end
+
   # Unions
 
   # Objects
@@ -503,6 +514,8 @@ lib LibWebKit
 
   type WebContext = Void # Object struct with no fields
 
+  type WebExtension = Void # Object struct with no fields
+
   type WebInspector = Void # Object struct with no fields
 
   type WebResource = Void # Object struct with no fields
@@ -524,6 +537,8 @@ lib LibWebKit
   type WebsitePolicies = Void # Object struct with no fields
 
   type WindowProperties = Void # Object struct with no fields
+
+  type XRPermissionRequest = Void # Object struct with no fields
 
   # All C Functions
   fun webkit_application_info_get_name(this : Void*) : Pointer(LibC::Char)
@@ -585,12 +600,15 @@ lib LibWebKit
   fun webkit_context_menu_get_item_at_position(this : Void*, position : UInt32) : Pointer(Void)
   fun webkit_context_menu_get_items(this : Void*) : Pointer(LibGLib::List)
   fun webkit_context_menu_get_n_items(this : Void*) : UInt32
+  fun webkit_context_menu_get_position(this : Void*, x : Pointer(Int32), y : Pointer(Int32)) : LibC::Int
   fun webkit_context_menu_get_type : UInt64
   fun webkit_context_menu_get_user_data(this : Void*) : Pointer(Void)
   fun webkit_context_menu_insert(this : Void*, item : Pointer(Void), position : Int32) : Void
   fun webkit_context_menu_item_get_gaction(this : Void*) : Pointer(Void)
+  fun webkit_context_menu_item_get_gaction_target(this : Void*) : Pointer(Void)
   fun webkit_context_menu_item_get_stock_action(this : Void*) : UInt32
   fun webkit_context_menu_item_get_submenu(this : Void*) : Pointer(Void)
+  fun webkit_context_menu_item_get_title(this : Void*) : Pointer(LibC::Char)
   fun webkit_context_menu_item_get_type : UInt64
   fun webkit_context_menu_item_is_separator(this : Void*) : LibC::Int
   fun webkit_context_menu_item_new_from_gaction(action : Pointer(Void), label : Pointer(LibC::Char), target : Pointer(Void)) : Pointer(Void)
@@ -978,6 +996,7 @@ lib LibWebKit
   fun webkit_settings_get_javascript_can_access_clipboard(this : Void*) : LibC::Int
   fun webkit_settings_get_javascript_can_open_windows_automatically(this : Void*) : LibC::Int
   fun webkit_settings_get_load_icons_ignoring_image_load_setting(this : Void*) : LibC::Int
+  fun webkit_settings_get_math_font_family(this : Void*) : Pointer(LibC::Char)
   fun webkit_settings_get_media_content_types_requiring_hardware_support(this : Void*) : Pointer(LibC::Char)
   fun webkit_settings_get_media_playback_allows_inline(this : Void*) : LibC::Int
   fun webkit_settings_get_media_playback_requires_user_gesture(this : Void*) : LibC::Int
@@ -1038,6 +1057,7 @@ lib LibWebKit
   fun webkit_settings_set_javascript_can_access_clipboard(this : Void*, enabled : LibC::Int) : Void
   fun webkit_settings_set_javascript_can_open_windows_automatically(this : Void*, enabled : LibC::Int) : Void
   fun webkit_settings_set_load_icons_ignoring_image_load_setting(this : Void*, enabled : LibC::Int) : Void
+  fun webkit_settings_set_math_font_family(this : Void*, math_font_family : Pointer(LibC::Char)) : Void
   fun webkit_settings_set_media_content_types_requiring_hardware_support(this : Void*, content_types : Pointer(LibC::Char)) : Void
   fun webkit_settings_set_media_playback_allows_inline(this : Void*, enabled : LibC::Int) : Void
   fun webkit_settings_set_media_playback_requires_user_gesture(this : Void*, enabled : LibC::Int) : Void
@@ -1168,6 +1188,32 @@ lib LibWebKit
   fun webkit_web_context_set_spell_checking_languages(this : Void*, languages : Pointer(Pointer(LibC::Char))) : Void
   fun webkit_web_context_set_web_process_extensions_directory(this : Void*, directory : Pointer(LibC::Char)) : Void
   fun webkit_web_context_set_web_process_extensions_initialization_user_data(this : Void*, user_data : Pointer(Void)) : Void
+  fun webkit_web_extension_error_get_type : UInt64
+  fun webkit_web_extension_error_quark : UInt32
+  fun webkit_web_extension_get_action_icon(this : Void*, width : Float64, height : Float64) : Pointer(Void)
+  fun webkit_web_extension_get_all_requested_match_patterns(this : Void*) : Pointer(LibWebKit::WebExtensionMatchPattern)
+  fun webkit_web_extension_get_default_locale(this : Void*) : Pointer(LibC::Char)
+  fun webkit_web_extension_get_display_action_label(this : Void*) : Pointer(LibC::Char)
+  fun webkit_web_extension_get_display_description(this : Void*) : Pointer(LibC::Char)
+  fun webkit_web_extension_get_display_name(this : Void*) : Pointer(LibC::Char)
+  fun webkit_web_extension_get_display_short_name(this : Void*) : Pointer(LibC::Char)
+  fun webkit_web_extension_get_display_version(this : Void*) : Pointer(LibC::Char)
+  fun webkit_web_extension_get_has_background_content(this : Void*) : LibC::Int
+  fun webkit_web_extension_get_has_commands(this : Void*) : LibC::Int
+  fun webkit_web_extension_get_has_content_modification_rules(this : Void*) : LibC::Int
+  fun webkit_web_extension_get_has_injected_content(this : Void*) : LibC::Int
+  fun webkit_web_extension_get_has_options_page(this : Void*) : LibC::Int
+  fun webkit_web_extension_get_has_override_new_tab_page(this : Void*) : LibC::Int
+  fun webkit_web_extension_get_has_persistent_background_content(this : Void*) : LibC::Int
+  fun webkit_web_extension_get_icon(this : Void*, width : Float64, height : Float64) : Pointer(Void)
+  fun webkit_web_extension_get_manifest_version(this : Void*) : Float64
+  fun webkit_web_extension_get_optional_permission_match_patterns(this : Void*) : Pointer(LibWebKit::WebExtensionMatchPattern)
+  fun webkit_web_extension_get_optional_permissions(this : Void*) : Pointer(Pointer(LibC::Char))
+  fun webkit_web_extension_get_path(this : Void*) : Pointer(LibC::Char)
+  fun webkit_web_extension_get_requested_permission_match_patterns(this : Void*) : Pointer(LibWebKit::WebExtensionMatchPattern)
+  fun webkit_web_extension_get_requested_permissions(this : Void*) : Pointer(Pointer(LibC::Char))
+  fun webkit_web_extension_get_type : UInt64
+  fun webkit_web_extension_get_version(this : Void*) : Pointer(LibC::Char)
   fun webkit_web_extension_match_pattern_error_get_type : UInt64
   fun webkit_web_extension_match_pattern_error_quark : UInt32
   fun webkit_web_extension_match_pattern_get_host(this : Void*) : Pointer(LibC::Char)
@@ -1187,8 +1233,12 @@ lib LibWebKit
   fun webkit_web_extension_match_pattern_ref(this : Void*) : Pointer(Void)
   fun webkit_web_extension_match_pattern_register_custom_URL_scheme(urlScheme : Pointer(LibC::Char)) : Void
   fun webkit_web_extension_match_pattern_register_custom_URL_scheme(urlScheme : Pointer(LibC::Char)) : Void
+  fun webkit_web_extension_match_pattern_register_custom_url_scheme(urlScheme : Pointer(LibC::Char)) : Void
+  fun webkit_web_extension_match_pattern_register_custom_url_scheme(urlScheme : Pointer(LibC::Char)) : Void
   fun webkit_web_extension_match_pattern_unref(this : Void*) : Void
   fun webkit_web_extension_mode_get_type : UInt64
+  fun webkit_web_extension_new(extension_path : Pointer(LibC::Char), error : LibGLib::Error**) : Pointer(Void)
+  fun webkit_web_extension_supports_manifest_version(this : Void*, manifest_version : Float64) : LibC::Int
   fun webkit_web_inspector_attach(this : Void*) : Void
   fun webkit_web_inspector_close(this : Void*) : Void
   fun webkit_web_inspector_detach(this : Void*) : Void
@@ -1242,6 +1292,7 @@ lib LibWebKit
   fun webkit_web_view_get_settings(this : Void*) : Pointer(Void)
   fun webkit_web_view_get_snapshot(this : Void*, region : UInt32, options : UInt32, cancellable : Pointer(Void), callback : Void*, user_data : Pointer(Void)) : Void
   fun webkit_web_view_get_snapshot_finish(this : Void*, result : Pointer(Void), error : LibGLib::Error**) : Pointer(Void)
+  fun webkit_web_view_get_theme_color(this : Void*, rgba : Pointer(Void)) : LibC::Int
   fun webkit_web_view_get_title(this : Void*) : Pointer(LibC::Char)
   fun webkit_web_view_get_tls_info(this : Void*, certificate : Pointer(Pointer(Void)), errors : Pointer(UInt32)) : LibC::Int
   fun webkit_web_view_get_type : UInt64
@@ -1256,8 +1307,10 @@ lib LibWebKit
   fun webkit_web_view_go_to_back_forward_list_item(this : Void*, list_item : Pointer(Void)) : Void
   fun webkit_web_view_is_controlled_by_automation(this : Void*) : LibC::Int
   fun webkit_web_view_is_editable(this : Void*) : LibC::Int
+  fun webkit_web_view_is_immersive_mode_enabled(this : Void*) : LibC::Int
   fun webkit_web_view_is_loading(this : Void*) : LibC::Int
   fun webkit_web_view_is_playing_audio(this : Void*) : LibC::Int
+  fun webkit_web_view_leave_immersive_mode(this : Void*) : Void
   fun webkit_web_view_load_alternate_html(this : Void*, content : Pointer(LibC::Char), content_uri : Pointer(LibC::Char), base_uri : Pointer(LibC::Char)) : Void
   fun webkit_web_view_load_bytes(this : Void*, bytes : Pointer(Void), mime_type : Pointer(LibC::Char), encoding : Pointer(LibC::Char), base_uri : Pointer(LibC::Char)) : Void
   fun webkit_web_view_load_html(this : Void*, content : Pointer(LibC::Char), base_uri : Pointer(LibC::Char)) : Void
@@ -1330,4 +1383,15 @@ lib LibWebKit
   fun webkit_window_properties_get_statusbar_visible(this : Void*) : LibC::Int
   fun webkit_window_properties_get_toolbar_visible(this : Void*) : LibC::Int
   fun webkit_window_properties_get_type : UInt64
+  fun webkit_xr_permission_request_get_consent_optional_features(this : Void*) : UInt32
+  fun webkit_xr_permission_request_get_consent_required_features(this : Void*) : UInt32
+  fun webkit_xr_permission_request_get_granted_features(this : Void*) : UInt32
+  fun webkit_xr_permission_request_get_optional_features_requested(this : Void*) : UInt32
+  fun webkit_xr_permission_request_get_required_features_requested(this : Void*) : UInt32
+  fun webkit_xr_permission_request_get_security_origin(this : Void*) : Pointer(Void)
+  fun webkit_xr_permission_request_get_session_mode(this : Void*) : UInt32
+  fun webkit_xr_permission_request_get_type : UInt64
+  fun webkit_xr_permission_request_set_granted_optional_features(this : Void*, granted : UInt32) : Void
+  fun webkit_xr_session_features_get_type : UInt64
+  fun webkit_xr_session_mode_get_type : UInt64
 end

@@ -285,12 +285,36 @@ module Gdk
       _retval
     end
 
+    def offset(plane : UInt32) : UInt64
+      # gdk_memory_texture_builder_get_offset: (Method)
+      # @plane:
+      # Returns: (transfer none)
+
+      # C call
+      _retval = LibGdk.gdk_memory_texture_builder_get_offset(to_unsafe, plane)
+
+      # Return value handling
+      _retval
+    end
+
     def stride : UInt64
       # gdk_memory_texture_builder_get_stride: (Method | Getter)
       # Returns: (transfer none)
 
       # C call
       _retval = LibGdk.gdk_memory_texture_builder_get_stride(to_unsafe)
+
+      # Return value handling
+      _retval
+    end
+
+    def stride_for_plane(plane : UInt32) : UInt64
+      # gdk_memory_texture_builder_get_stride_for_plane: (Method)
+      # @plane:
+      # Returns: (transfer none)
+
+      # C call
+      _retval = LibGdk.gdk_memory_texture_builder_get_stride_for_plane(to_unsafe, plane)
 
       # Return value handling
       _retval
@@ -347,17 +371,10 @@ module Gdk
       # Return value handling
     end
 
-    def color_state=(color_state : Gdk::ColorState?) : Nil
+    def color_state=(color_state : Gdk::ColorState) : Nil
       # gdk_memory_texture_builder_set_color_state: (Method | Setter)
-      # @color_state: (nullable)
+      # @color_state:
       # Returns: (transfer none)
-
-      # Generator::NullableArrayPlan
-      color_state = if color_state.nil?
-                      Pointer(Void).null
-                    else
-                      color_state.to_unsafe
-                    end
 
       # C call
       LibGdk.gdk_memory_texture_builder_set_color_state(to_unsafe, color_state)
@@ -387,6 +404,18 @@ module Gdk
       # Return value handling
     end
 
+    def set_offset(plane : UInt32, offset : UInt64) : Nil
+      # gdk_memory_texture_builder_set_offset: (Method)
+      # @plane:
+      # @offset:
+      # Returns: (transfer none)
+
+      # C call
+      LibGdk.gdk_memory_texture_builder_set_offset(to_unsafe, plane, offset)
+
+      # Return value handling
+    end
+
     def stride=(stride : UInt64) : Nil
       # gdk_memory_texture_builder_set_stride: (Method | Setter)
       # @stride:
@@ -394,6 +423,18 @@ module Gdk
 
       # C call
       LibGdk.gdk_memory_texture_builder_set_stride(to_unsafe, stride)
+
+      # Return value handling
+    end
+
+    def set_stride_for_plane(plane : UInt32, stride : UInt64) : Nil
+      # gdk_memory_texture_builder_set_stride_for_plane: (Method)
+      # @plane:
+      # @stride:
+      # Returns: (transfer none)
+
+      # C call
+      LibGdk.gdk_memory_texture_builder_set_stride_for_plane(to_unsafe, plane, stride)
 
       # Return value handling
     end

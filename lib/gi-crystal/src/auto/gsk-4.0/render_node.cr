@@ -91,6 +91,20 @@ module Gsk
       bounds
     end
 
+    def children : Enumerable(Gsk::RenderNode)?
+      # gsk_render_node_get_children: (Method)
+      # @n_children: (out) (transfer full)
+      # Returns: (transfer none) (nullable) (array length=n_children element-type Interface)
+
+      # Generator::OutArgUsedInReturnPlan
+      n_children = 0_u64
+      # C call
+      _retval = LibGsk.gsk_render_node_get_children(to_unsafe, pointerof(n_children))
+
+      # Return value handling
+      GICrystal.transfer_array(_retval, n_children, GICrystal::Transfer::None) unless _retval.null?
+    end
+
     def node_type : Gsk::RenderNodeType
       # gsk_render_node_get_node_type: (Method)
       # Returns: (transfer none)

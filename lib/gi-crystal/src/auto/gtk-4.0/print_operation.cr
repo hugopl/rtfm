@@ -867,7 +867,8 @@ module Gtk
       def connect(handler : Proc(GObject::Object), *, after : Bool = false) : GObject::SignalConnection
         _box = ::Box.box(handler)
         handler = ->(_lib_sender : Pointer(Void), _lib_box : Pointer(Void)) {
-          ::Box(Proc(GObject::Object)).unbox(_lib_box).call
+          _retval = ::Box(Proc(GObject::Object)).unbox(_lib_box).call
+          _retval.nil? ? Pointer(Void).null : _retval.to_unsafe
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,
@@ -879,7 +880,8 @@ module Gtk
         _box = ::Box.box(handler)
         handler = ->(_lib_sender : Pointer(Void), _lib_box : Pointer(Void)) {
           _sender = Gtk::PrintOperation.new(_lib_sender, GICrystal::Transfer::None)
-          ::Box(Proc(Gtk::PrintOperation, GObject::Object)).unbox(_lib_box).call(_sender)
+          _retval = ::Box(Proc(Gtk::PrintOperation, GObject::Object)).unbox(_lib_box).call(_sender)
+          _retval.nil? ? Pointer(Void).null : _retval.to_unsafe
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,
@@ -1094,7 +1096,8 @@ module Gtk
         handler = ->(_lib_sender : Pointer(Void), lib_context : Pointer(Void), _lib_box : Pointer(Void)) {
           # Generator::BuiltInTypeArgPlan
           context = Gtk::PrintContext.new(lib_context, GICrystal::Transfer::None)
-          ::Box(Proc(Gtk::PrintContext, Bool)).unbox(_lib_box).call(context)
+          _retval = ::Box(Proc(Gtk::PrintContext, Bool)).unbox(_lib_box).call(context)
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,
@@ -1108,7 +1111,8 @@ module Gtk
           _sender = Gtk::PrintOperation.new(_lib_sender, GICrystal::Transfer::None)
           # Generator::BuiltInTypeArgPlan
           context = Gtk::PrintContext.new(lib_context, GICrystal::Transfer::None)
-          ::Box(Proc(Gtk::PrintOperation, Gtk::PrintContext, Bool)).unbox(_lib_box).call(_sender, context)
+          _retval = ::Box(Proc(Gtk::PrintOperation, Gtk::PrintContext, Bool)).unbox(_lib_box).call(_sender, context)
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,
@@ -1145,7 +1149,8 @@ module Gtk
           parent = (lib_parent.null? ? nil : Gtk::Window.new(lib_parent, GICrystal::Transfer::None))
           # Generator::BuiltInTypeArgPlan
           parent = Gtk::Window.new(lib_parent, GICrystal::Transfer::None) unless lib_parent.null?
-          ::Box(Proc(Gtk::PrintOperationPreview, Gtk::PrintContext, Gtk::Window?, Bool)).unbox(_lib_box).call(preview, context, parent)
+          _retval = ::Box(Proc(Gtk::PrintOperationPreview, Gtk::PrintContext, Gtk::Window?, Bool)).unbox(_lib_box).call(preview, context, parent)
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,
@@ -1165,7 +1170,8 @@ module Gtk
           parent = (lib_parent.null? ? nil : Gtk::Window.new(lib_parent, GICrystal::Transfer::None))
           # Generator::BuiltInTypeArgPlan
           parent = Gtk::Window.new(lib_parent, GICrystal::Transfer::None) unless lib_parent.null?
-          ::Box(Proc(Gtk::PrintOperation, Gtk::PrintOperationPreview, Gtk::PrintContext, Gtk::Window?, Bool)).unbox(_lib_box).call(_sender, preview, context, parent)
+          _retval = ::Box(Proc(Gtk::PrintOperation, Gtk::PrintOperationPreview, Gtk::PrintContext, Gtk::Window?, Bool)).unbox(_lib_box).call(_sender, preview, context, parent)
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,

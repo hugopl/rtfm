@@ -32,9 +32,9 @@ module Gio
       ptr
     end
 
-    def initialize(*, bytes : Pointer(Void)? = nil, family : Gio::SocketFamily? = nil, is_any : Bool? = nil, is_link_local : Bool? = nil, is_loopback : Bool? = nil, is_mc_global : Bool? = nil, is_mc_link_local : Bool? = nil, is_mc_node_local : Bool? = nil, is_mc_org_local : Bool? = nil, is_mc_site_local : Bool? = nil, is_multicast : Bool? = nil, is_site_local : Bool? = nil)
-      _names = uninitialized Pointer(LibC::Char)[12]
-      _values = StaticArray(LibGObject::Value, 12).new(LibGObject::Value.new)
+    def initialize(*, bytes : Pointer(Void)? = nil, family : Gio::SocketFamily? = nil, flowinfo : UInt32? = nil, is_any : Bool? = nil, is_link_local : Bool? = nil, is_loopback : Bool? = nil, is_mc_global : Bool? = nil, is_mc_link_local : Bool? = nil, is_mc_node_local : Bool? = nil, is_mc_org_local : Bool? = nil, is_mc_site_local : Bool? = nil, is_multicast : Bool? = nil, is_site_local : Bool? = nil, scope_id : UInt32? = nil)
+      _names = uninitialized Pointer(LibC::Char)[14]
+      _values = StaticArray(LibGObject::Value, 14).new(LibGObject::Value.new)
       _n = 0
 
       if !bytes.nil?
@@ -45,6 +45,11 @@ module Gio
       if !family.nil?
         (_names.to_unsafe + _n).value = "family".to_unsafe
         GObject::Value.init_g_value(_values.to_unsafe + _n, family)
+        _n += 1
+      end
+      if !flowinfo.nil?
+        (_names.to_unsafe + _n).value = "flowinfo".to_unsafe
+        GObject::Value.init_g_value(_values.to_unsafe + _n, flowinfo)
         _n += 1
       end
       if !is_any.nil?
@@ -97,6 +102,11 @@ module Gio
         GObject::Value.init_g_value(_values.to_unsafe + _n, is_site_local)
         _n += 1
       end
+      if !scope_id.nil?
+        (_names.to_unsafe + _n).value = "scope-id".to_unsafe
+        GObject::Value.init_g_value(_values.to_unsafe + _n, scope_id)
+        _n += 1
+      end
 
       ptr = LibGObject.g_object_new_with_properties(self.class.g_type, _n, _names, _values)
       super(ptr, :full)
@@ -147,6 +157,21 @@ module Gio
       value = uninitialized UInt32
       LibGObject.g_object_get(self, "family", pointerof(value), Pointer(Void).null)
       Gio::SocketFamily.new(value)
+    end
+
+    def flowinfo=(value : UInt32) : UInt32
+      unsafe_value = value
+
+      LibGObject.g_object_set(self, "flowinfo", unsafe_value, Pointer(Void).null)
+      value
+    end
+
+    def flowinfo : UInt32
+      # Returns: None
+
+      value = uninitialized UInt32
+      LibGObject.g_object_get(self, "flowinfo", pointerof(value), Pointer(Void).null)
+      value
     end
 
     def is_any? : Bool
@@ -229,6 +254,21 @@ module Gio
       GICrystal.to_bool(value)
     end
 
+    def scope_id=(value : UInt32) : UInt32
+      unsafe_value = value
+
+      LibGObject.g_object_set(self, "scope-id", unsafe_value, Pointer(Void).null)
+      value
+    end
+
+    def scope_id : UInt32
+      # Returns: None
+
+      value = uninitialized UInt32
+      LibGObject.g_object_get(self, "scope-id", pointerof(value), Pointer(Void).null)
+      value
+    end
+
     def self.new_any(family : Gio::SocketFamily) : self
       # g_inet_address_new_any: (Constructor)
       # @family:
@@ -252,6 +292,24 @@ module Gio
 
       # C call
       _retval = LibGio.g_inet_address_new_from_bytes(bytes, family)
+
+      # Return value handling
+      Gio::InetAddress.new(_retval, GICrystal::Transfer::Full)
+    end
+
+    def self.new_from_bytes_with_ipv6_info(bytes : ::Bytes, family : Gio::SocketFamily, flowinfo : UInt32, scope_id : UInt32) : self
+      # g_inet_address_new_from_bytes_with_ipv6_info: (Constructor)
+      # @bytes: (array element-type UInt8)
+      # @family:
+      # @flowinfo:
+      # @scope_id:
+      # Returns: (transfer full)
+
+      # Generator::ArrayArgPlan
+      bytes = bytes.to_a.to_unsafe.as(Pointer(UInt8))
+
+      # C call
+      _retval = LibGio.g_inet_address_new_from_bytes_with_ipv6_info(bytes, family, flowinfo, scope_id)
 
       # Return value handling
       Gio::InetAddress.new(_retval, GICrystal::Transfer::Full)
@@ -302,6 +360,17 @@ module Gio
 
       # Return value handling
       Gio::SocketFamily.new(_retval)
+    end
+
+    def flowinfo : UInt32
+      # g_inet_address_get_flowinfo: (Method | Getter)
+      # Returns: (transfer none)
+
+      # C call
+      _retval = LibGio.g_inet_address_get_flowinfo(to_unsafe)
+
+      # Return value handling
+      _retval
     end
 
     def is_any : Bool
@@ -420,6 +489,17 @@ module Gio
 
       # C call
       _retval = LibGio.g_inet_address_get_native_size(to_unsafe)
+
+      # Return value handling
+      _retval
+    end
+
+    def scope_id : UInt32
+      # g_inet_address_get_scope_id: (Method | Getter)
+      # Returns: (transfer none)
+
+      # C call
+      _retval = LibGio.g_inet_address_get_scope_id(to_unsafe)
 
       # Return value handling
       _retval

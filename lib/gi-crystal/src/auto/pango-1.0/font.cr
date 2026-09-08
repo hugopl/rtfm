@@ -121,15 +121,15 @@ module Pango
       Pango::Coverage.new(_retval, GICrystal::Transfer::Full)
     end
 
-    def face : Pango::FontFace
+    def face : Pango::FontFace?
       # pango_font_get_face: (Method)
-      # Returns: (transfer none)
+      # Returns: (transfer none) (nullable)
 
       # C call
       _retval = LibPango.pango_font_get_face(to_unsafe)
 
       # Return value handling
-      Pango::FontFace.new(_retval, GICrystal::Transfer::None)
+      Pango::FontFace.new(_retval, GICrystal::Transfer::None) unless _retval.null?
     end
 
     def features(features : Enumerable(HarfBuzz::FeatureT), num_features : UInt32) : Nil

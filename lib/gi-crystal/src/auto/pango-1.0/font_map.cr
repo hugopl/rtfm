@@ -126,16 +126,16 @@ module Pango
       Pango::Context.new(_retval, GICrystal::Transfer::Full)
     end
 
-    def family(name : ::String) : Pango::FontFamily
+    def family(name : ::String) : Pango::FontFamily?
       # pango_font_map_get_family: (Method)
       # @name:
-      # Returns: (transfer none)
+      # Returns: (transfer none) (nullable)
 
       # C call
       _retval = LibPango.pango_font_map_get_family(to_unsafe, name)
 
       # Return value handling
-      Pango::FontFamily.new(_retval, GICrystal::Transfer::None)
+      Pango::FontFamily.new(_retval, GICrystal::Transfer::None) unless _retval.null?
     end
 
     def serial : UInt32
@@ -269,7 +269,7 @@ module Pango
 
     # get_family: (None)
     # @name:
-    # Returns: (transfer none)
+    # Returns: (transfer none) (nullable)
     private macro _register_get_family_vfunc(impl_method_name)
       private def self._vfunc_get_family(%this : Pointer(Void), lib_name :  Pointer(LibC::Char), ) : Pointer(Void)
         # @name: 
@@ -283,7 +283,7 @@ name=::String.new(lib_name)
 
         %retval = %instance.as(self).{{ impl_method_name.id }}(name)
         
-        %retval.to_unsafe
+        %retval.nil? ? Pointer(Void).null : %retval.to_unsafe
       end
 
       def self._class_init(type_struct : Pointer(LibGObject::TypeClass), user_data : Pointer(Void)) : Nil
@@ -295,7 +295,7 @@ name=::String.new(lib_name)
 
     # get_family: (None)
     # @name:
-    # Returns: (transfer none)
+    # Returns: (transfer none) (nullable)
     private macro _register_unsafe_get_family_vfunc(impl_method_name)
       private def self._vfunc_unsafe_get_family(%this : Pointer(Void), lib_name :  Pointer(LibC::Char), ) : Pointer(Void)
 # @name: 

@@ -457,15 +457,15 @@ module Gio
       ::String.new(_retval)
     end
 
-    def supported_types : Enumerable(::String)
+    def supported_types : Enumerable(::String)?
       # g_app_info_get_supported_types: (Method)
-      # Returns: (transfer none) (array zero-terminated=1 element-type Utf8)
+      # Returns: (transfer none) (nullable) (array zero-terminated=1 element-type Utf8)
 
       # C call
       _retval = LibGio.g_app_info_get_supported_types(to_unsafe)
 
       # Return value handling
-      GICrystal.transfer_null_ended_array(_retval, GICrystal::Transfer::None)
+      GICrystal.transfer_null_ended_array(_retval, GICrystal::Transfer::None) unless _retval.null?
     end
 
     def launch(files : GLib::List?, context : Gio::AppLaunchContext?) : Bool
@@ -1256,7 +1256,7 @@ appinfo2=Gio::AbstractAppInfo.new(lib_appinfo2, GICrystal::Transfer::None)
     end
 
     # get_supported_types: (None)
-    # Returns: (transfer none) (array zero-terminated=1 element-type Utf8)
+    # Returns: (transfer none) (nullable) (array zero-terminated=1 element-type Utf8)
     private macro _register_get_supported_types_vfunc(impl_method_name)
       private def self._vfunc_get_supported_types(%this : Pointer(Void), ) : Pointer(Pointer(LibC::Char))
         
@@ -1277,7 +1277,7 @@ appinfo2=Gio::AbstractAppInfo.new(lib_appinfo2, GICrystal::Transfer::None)
     end
 
     # get_supported_types: (None)
-    # Returns: (transfer none) (array zero-terminated=1 element-type Utf8)
+    # Returns: (transfer none) (nullable) (array zero-terminated=1 element-type Utf8)
     private macro _register_unsafe_get_supported_types_vfunc(impl_method_name)
       private def self._vfunc_unsafe_get_supported_types(%this : Pointer(Void), ) : Pointer(Pointer(LibC::Char))
 

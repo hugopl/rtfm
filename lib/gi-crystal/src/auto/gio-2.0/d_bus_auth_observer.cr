@@ -97,7 +97,8 @@ module Gio
         handler = ->(_lib_sender : Pointer(Void), lib_mechanism : Pointer(LibC::Char), _lib_box : Pointer(Void)) {
           # Generator::BuiltInTypeArgPlan
           mechanism = ::String.new(lib_mechanism)
-          ::Box(Proc(::String, Bool)).unbox(_lib_box).call(mechanism)
+          _retval = ::Box(Proc(::String, Bool)).unbox(_lib_box).call(mechanism)
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,
@@ -111,7 +112,8 @@ module Gio
           _sender = Gio::DBusAuthObserver.new(_lib_sender, GICrystal::Transfer::None)
           # Generator::BuiltInTypeArgPlan
           mechanism = ::String.new(lib_mechanism)
-          ::Box(Proc(Gio::DBusAuthObserver, ::String, Bool)).unbox(_lib_box).call(_sender, mechanism)
+          _retval = ::Box(Proc(Gio::DBusAuthObserver, ::String, Bool)).unbox(_lib_box).call(_sender, mechanism)
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,
@@ -146,7 +148,8 @@ module Gio
           credentials = (lib_credentials.null? ? nil : Gio::Credentials.new(lib_credentials, GICrystal::Transfer::None))
           # Generator::BuiltInTypeArgPlan
           credentials = Gio::Credentials.new(lib_credentials, GICrystal::Transfer::None) unless lib_credentials.null?
-          ::Box(Proc(Gio::IOStream, Gio::Credentials?, Bool)).unbox(_lib_box).call(stream, credentials)
+          _retval = ::Box(Proc(Gio::IOStream, Gio::Credentials?, Bool)).unbox(_lib_box).call(stream, credentials)
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,
@@ -164,7 +167,8 @@ module Gio
           credentials = (lib_credentials.null? ? nil : Gio::Credentials.new(lib_credentials, GICrystal::Transfer::None))
           # Generator::BuiltInTypeArgPlan
           credentials = Gio::Credentials.new(lib_credentials, GICrystal::Transfer::None) unless lib_credentials.null?
-          ::Box(Proc(Gio::DBusAuthObserver, Gio::IOStream, Gio::Credentials?, Bool)).unbox(_lib_box).call(_sender, stream, credentials)
+          _retval = ::Box(Proc(Gio::DBusAuthObserver, Gio::IOStream, Gio::Credentials?, Bool)).unbox(_lib_box).call(_sender, stream, credentials)
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,

@@ -812,7 +812,7 @@ module Gtk
       # Return value handling
     end
 
-    def popover=(popover : Gtk::Widget?) : Nil
+    def popover=(popover : Gtk::Popover?) : Nil
       # gtk_menu_button_set_popover: (Method | Setter)
       # @popover: (nullable)
       # Returns: (transfer none)

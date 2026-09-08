@@ -558,13 +558,13 @@ lib LibGObject
   fun g_closure_ref(this : Void*) : Pointer(Void)
   fun g_closure_sink(this : Void*) : Void
   fun g_closure_unref(this : Void*) : Void
-  fun g_enum_complete_type_info(g_enum_type : UInt64, info : Pointer(Void), const_values : Pointer(Void)) : Void
+  fun g_enum_complete_type_info(g_enum_type : UInt64, info : Pointer(Void), const_values : Pointer(LibGObject::EnumValue)) : Void
   fun g_enum_get_value(enum_class : Pointer(Void), value : Int32) : Pointer(Void)
   fun g_enum_get_value_by_name(enum_class : Pointer(Void), name : Pointer(LibC::Char)) : Pointer(Void)
   fun g_enum_get_value_by_nick(enum_class : Pointer(Void), nick : Pointer(LibC::Char)) : Pointer(Void)
   fun g_enum_register_static(name : Pointer(LibC::Char), const_static_values : Pointer(LibGObject::EnumValue)) : UInt64
   fun g_enum_to_string(g_enum_type : UInt64, value : Int32) : Pointer(LibC::Char)
-  fun g_flags_complete_type_info(g_flags_type : UInt64, info : Pointer(Void), const_values : Pointer(Void)) : Void
+  fun g_flags_complete_type_info(g_flags_type : UInt64, info : Pointer(Void), const_values : Pointer(LibGObject::FlagsValue)) : Void
   fun g_flags_get_first_value(flags_class : Pointer(Void), value : UInt32) : Pointer(Void)
   fun g_flags_get_value_by_name(flags_class : Pointer(Void), name : Pointer(LibC::Char)) : Pointer(Void)
   fun g_flags_get_value_by_nick(flags_class : Pointer(Void), nick : Pointer(LibC::Char)) : Pointer(Void)
@@ -752,8 +752,8 @@ lib LibGObject
   fun g_type_is_a(type : UInt64, is_a_type : UInt64) : LibC::Int
   fun g_type_module_add_interface(this : Void*, instance_type : UInt64, interface_type : UInt64, interface_info : Pointer(Void)) : Void
   fun g_type_module_get_type : UInt64
-  fun g_type_module_register_enum(this : Void*, name : Pointer(LibC::Char), const_static_values : Pointer(Void)) : UInt64
-  fun g_type_module_register_flags(this : Void*, name : Pointer(LibC::Char), const_static_values : Pointer(Void)) : UInt64
+  fun g_type_module_register_enum(this : Void*, name : Pointer(LibC::Char), const_static_values : Pointer(LibGObject::EnumValue)) : UInt64
+  fun g_type_module_register_flags(this : Void*, name : Pointer(LibC::Char), const_static_values : Pointer(LibGObject::FlagsValue)) : UInt64
   fun g_type_module_register_type(this : Void*, parent_type : UInt64, type_name : Pointer(LibC::Char), type_info : Pointer(Void), flags : UInt32) : UInt64
   fun g_type_module_set_name(this : Void*, name : Pointer(LibC::Char)) : Void
   fun g_type_module_unuse(this : Void*) : Void

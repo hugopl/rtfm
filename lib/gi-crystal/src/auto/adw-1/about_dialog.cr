@@ -41,14 +41,19 @@ module Adw
       ptr
     end
 
-    def initialize(*, accessible_role : Gtk::AccessibleRole? = nil, application_icon : ::String? = nil, application_name : ::String? = nil, artists : Enumerable(::String)? = nil, can_close : Bool? = nil, can_focus : Bool? = nil, can_target : Bool? = nil, child : Gtk::Widget? = nil, comments : ::String? = nil, content_height : Int32? = nil, content_width : Int32? = nil, copyright : ::String? = nil, css_classes : Enumerable(::String)? = nil, css_name : ::String? = nil, current_breakpoint : Adw::Breakpoint? = nil, cursor : Gdk::Cursor? = nil, debug_info : ::String? = nil, debug_info_filename : ::String? = nil, default_widget : Gtk::Widget? = nil, designers : Enumerable(::String)? = nil, developer_name : ::String? = nil, developers : Enumerable(::String)? = nil, documenters : Enumerable(::String)? = nil, focus_on_click : Bool? = nil, focus_widget : Gtk::Widget? = nil, focusable : Bool? = nil, follows_content_size : Bool? = nil, halign : Gtk::Align? = nil, has_default : Bool? = nil, has_focus : Bool? = nil, has_tooltip : Bool? = nil, height_request : Int32? = nil, hexpand : Bool? = nil, hexpand_set : Bool? = nil, issue_url : ::String? = nil, layout_manager : Gtk::LayoutManager? = nil, license : ::String? = nil, license_type : Gtk::License? = nil, limit_events : Bool? = nil, margin_bottom : Int32? = nil, margin_end : Int32? = nil, margin_start : Int32? = nil, margin_top : Int32? = nil, name : ::String? = nil, opacity : Float64? = nil, overflow : Gtk::Overflow? = nil, parent : Gtk::Widget? = nil, presentation_mode : Adw::DialogPresentationMode? = nil, receives_default : Bool? = nil, release_notes : ::String? = nil, release_notes_version : ::String? = nil, root : Gtk::Root? = nil, scale_factor : Int32? = nil, sensitive : Bool? = nil, support_url : ::String? = nil, title : ::String? = nil, tooltip_markup : ::String? = nil, tooltip_text : ::String? = nil, translator_credits : ::String? = nil, valign : Gtk::Align? = nil, version : ::String? = nil, vexpand : Bool? = nil, vexpand_set : Bool? = nil, visible : Bool? = nil, website : ::String? = nil, width_request : Int32? = nil)
-      _names = uninitialized Pointer(LibC::Char)[66]
-      _values = StaticArray(LibGObject::Value, 66).new(LibGObject::Value.new)
+    def initialize(*, accessible_role : Gtk::AccessibleRole? = nil, appdata_resource_path : ::String? = nil, application_icon : ::String? = nil, application_name : ::String? = nil, artists : Enumerable(::String)? = nil, can_close : Bool? = nil, can_focus : Bool? = nil, can_target : Bool? = nil, child : Gtk::Widget? = nil, comments : ::String? = nil, content_height : Int32? = nil, content_width : Int32? = nil, copyright : ::String? = nil, css_classes : Enumerable(::String)? = nil, css_name : ::String? = nil, current_breakpoint : Adw::Breakpoint? = nil, cursor : Gdk::Cursor? = nil, debug_info : ::String? = nil, debug_info_filename : ::String? = nil, default_widget : Gtk::Widget? = nil, designers : Enumerable(::String)? = nil, developer_name : ::String? = nil, developers : Enumerable(::String)? = nil, documenters : Enumerable(::String)? = nil, focus_on_click : Bool? = nil, focus_widget : Gtk::Widget? = nil, focusable : Bool? = nil, follows_content_size : Bool? = nil, halign : Gtk::Align? = nil, has_default : Bool? = nil, has_focus : Bool? = nil, has_tooltip : Bool? = nil, height_request : Int32? = nil, hexpand : Bool? = nil, hexpand_set : Bool? = nil, issue_url : ::String? = nil, layout_manager : Gtk::LayoutManager? = nil, license : ::String? = nil, license_type : Gtk::License? = nil, limit_events : Bool? = nil, margin_bottom : Int32? = nil, margin_end : Int32? = nil, margin_start : Int32? = nil, margin_top : Int32? = nil, name : ::String? = nil, opacity : Float64? = nil, overflow : Gtk::Overflow? = nil, parent : Gtk::Widget? = nil, presentation_mode : Adw::DialogPresentationMode? = nil, receives_default : Bool? = nil, release_notes : ::String? = nil, release_notes_version : ::String? = nil, root : Gtk::Root? = nil, scale_factor : Int32? = nil, sensitive : Bool? = nil, support_url : ::String? = nil, title : ::String? = nil, tooltip_markup : ::String? = nil, tooltip_text : ::String? = nil, translator_credits : ::String? = nil, valign : Gtk::Align? = nil, version : ::String? = nil, vexpand : Bool? = nil, vexpand_set : Bool? = nil, visible : Bool? = nil, website : ::String? = nil, width_request : Int32? = nil)
+      _names = uninitialized Pointer(LibC::Char)[67]
+      _values = StaticArray(LibGObject::Value, 67).new(LibGObject::Value.new)
       _n = 0
 
       if !accessible_role.nil?
         (_names.to_unsafe + _n).value = "accessible-role".to_unsafe
         GObject::Value.init_g_value(_values.to_unsafe + _n, accessible_role)
+        _n += 1
+      end
+      if !appdata_resource_path.nil?
+        (_names.to_unsafe + _n).value = "appdata-resource-path".to_unsafe
+        GObject::Value.init_g_value(_values.to_unsafe + _n, appdata_resource_path)
         _n += 1
       end
       if !application_icon.nil?
@@ -396,6 +401,33 @@ module Adw
         ctor = ->Adw::AboutDialog.new(Void*, GICrystal::Transfer)
         LibGObject.g_type_set_qdata(g_type, GICrystal::INSTANCE_FACTORY, ctor.pointer)
       end
+    end
+
+    def appdata_resource_path=(value : ::String) : ::String
+      unsafe_value = value
+
+      LibGObject.g_object_set(self, "appdata-resource-path", unsafe_value, Pointer(Void).null)
+      value
+    end
+
+    def appdata_resource_path : ::String
+      # Returns: None
+
+      value = uninitialized Pointer(LibC::Char)
+      LibGObject.g_object_get(self, "appdata-resource-path", pointerof(value), Pointer(Void).null)
+      ::String.new(value)
+    end
+
+    # Set `#appdata_resource_path` property to nil.
+    def appdata_resource_path=(value : Nil) : Nil
+      LibGObject.g_object_set(self, "appdata-resource-path", Pointer(Void).null, Pointer(Void).null)
+    end
+
+    # Same as `#appdata_resource_path`, but can return nil.
+    def appdata_resource_path? : ::String?
+      value = uninitialized Pointer(LibC::Char)
+      LibGObject.g_object_get(self, "appdata-resource-path", pointerof(value), Pointer(Void).null)
+      ::String.new(value) if value
     end
 
     def application_icon=(value : ::String) : ::String
@@ -1007,6 +1039,17 @@ module Adw
       # Return value handling
     end
 
+    def appdata_resource_path : ::String?
+      # adw_about_dialog_get_appdata_resource_path: (Method | Getter)
+      # Returns: (transfer none) (nullable)
+
+      # C call
+      _retval = LibAdw.adw_about_dialog_get_appdata_resource_path(to_unsafe)
+
+      # Return value handling
+      ::String.new(_retval) unless _retval.null?
+    end
+
     def application_icon : ::String
       # adw_about_dialog_get_application_icon: (Method | Getter)
       # Returns: (transfer none)
@@ -1489,7 +1532,8 @@ module Adw
         handler = ->(_lib_sender : Pointer(Void), lib_uri : Pointer(LibC::Char), _lib_box : Pointer(Void)) {
           # Generator::BuiltInTypeArgPlan
           uri = ::String.new(lib_uri)
-          ::Box(Proc(::String, Bool)).unbox(_lib_box).call(uri)
+          _retval = ::Box(Proc(::String, Bool)).unbox(_lib_box).call(uri)
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,
@@ -1503,7 +1547,8 @@ module Adw
           _sender = Adw::AboutDialog.new(_lib_sender, GICrystal::Transfer::None)
           # Generator::BuiltInTypeArgPlan
           uri = ::String.new(lib_uri)
-          ::Box(Proc(Adw::AboutDialog, ::String, Bool)).unbox(_lib_box).call(_sender, uri)
+          _retval = ::Box(Proc(Adw::AboutDialog, ::String, Bool)).unbox(_lib_box).call(_sender, uri)
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,

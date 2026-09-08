@@ -244,13 +244,13 @@ module GObject
 
     def ref : GObject::Closure
       # g_closure_ref: (Method)
-      # Returns: (transfer none)
+      # Returns: (transfer full)
 
       # C call
       _retval = LibGObject.g_closure_ref(to_unsafe)
 
       # Return value handling
-      GObject::Closure.new(_retval, GICrystal::Transfer::None)
+      GObject::Closure.new(_retval, GICrystal::Transfer::Full)
     end
 
     def sink : Nil

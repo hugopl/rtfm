@@ -376,7 +376,8 @@ module Soup
           tls_peer_certificate = Gio::TlsCertificate.new(lib_tls_peer_certificate, GICrystal::Transfer::None)
           # Generator::BuiltInTypeArgPlan
           tls_peer_errors = Gio::TlsCertificateFlags.new(lib_tls_peer_errors)
-          ::Box(Proc(Gio::TlsCertificate, Gio::TlsCertificateFlags, Bool)).unbox(_lib_box).call(tls_peer_certificate, tls_peer_errors)
+          _retval = ::Box(Proc(Gio::TlsCertificate, Gio::TlsCertificateFlags, Bool)).unbox(_lib_box).call(tls_peer_certificate, tls_peer_errors)
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,
@@ -392,7 +393,8 @@ module Soup
           tls_peer_certificate = Gio::TlsCertificate.new(lib_tls_peer_certificate, GICrystal::Transfer::None)
           # Generator::BuiltInTypeArgPlan
           tls_peer_errors = Gio::TlsCertificateFlags.new(lib_tls_peer_errors)
-          ::Box(Proc(Soup::ServerMessage, Gio::TlsCertificate, Gio::TlsCertificateFlags, Bool)).unbox(_lib_box).call(_sender, tls_peer_certificate, tls_peer_errors)
+          _retval = ::Box(Proc(Soup::ServerMessage, Gio::TlsCertificate, Gio::TlsCertificateFlags, Bool)).unbox(_lib_box).call(_sender, tls_peer_certificate, tls_peer_errors)
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,

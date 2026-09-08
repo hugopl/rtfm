@@ -58,7 +58,8 @@ module Gtk
           widget = Gtk::Widget.new(lib_widget, GICrystal::Transfer::None)
           # Generator::HandmadeArgPlan
           args = GLib::Variant.new(lib_args, :none) unless lib_args.null?
-          ::Box(Proc(Gtk::Widget, GLib::Variant?, Bool)).unbox(lib_user_data).call(widget, args)
+          _retval = ::Box(Proc(Gtk::Widget, GLib::Variant?, Bool)).unbox(lib_user_data).call(widget, args)
+          GICrystal.to_c_bool(_retval)
         }.pointer
         data = GICrystal::ClosureDataManager.register(_box)
         destroy = ->GICrystal::ClosureDataManager.deregister(Pointer(Void)).pointer

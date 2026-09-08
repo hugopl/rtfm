@@ -374,6 +374,42 @@ module Adw
       # Return value handling
     end
 
+    def bind_model(model : Gio::ListModel?, create_row_func : Gtk::ListBoxCreateWidgetFunc?) : Nil
+      # adw_preferences_group_bind_model: (Method)
+      # @model: (nullable)
+      # @create_row_func: (nullable)
+      # @user_data: (nullable)
+      # @user_data_free_func:
+      # Returns: (transfer none)
+
+      # Generator::NullableArrayPlan
+      model = if model.nil?
+                Pointer(Void).null
+              else
+                model.to_unsafe
+              end
+      # Generator::CallbackArgPlan
+      if create_row_func
+        _box = ::Box.box(create_row_func)
+        create_row_func = ->(lib_item : Pointer(Void), lib_user_data : Pointer(Void)) {
+          # Generator::BuiltInTypeArgPlan
+          item = GObject::Object.new(lib_item, GICrystal::Transfer::None)
+          _retval = ::Box(Proc(GObject::Object, Gtk::Widget)).unbox(lib_user_data).call(item)
+          LibGObject.g_object_ref(_retval) if _retval
+          _retval.to_unsafe
+        }.pointer
+        user_data = GICrystal::ClosureDataManager.register(_box)
+        user_data_free_func = ->GICrystal::ClosureDataManager.deregister(Pointer(Void)).pointer
+      else
+        create_row_func = user_data = user_data_free_func = Pointer(Void).null
+      end
+
+      # C call
+      LibAdw.adw_preferences_group_bind_model(to_unsafe, model, create_row_func, user_data, user_data_free_func)
+
+      # Return value handling
+    end
+
     def description : ::String?
       # adw_preferences_group_get_description: (Method | Getter)
       # Returns: (transfer none) (nullable)
@@ -391,6 +427,18 @@ module Adw
 
       # C call
       _retval = LibAdw.adw_preferences_group_get_header_suffix(to_unsafe)
+
+      # Return value handling
+      Gtk::Widget.new(_retval, GICrystal::Transfer::None) unless _retval.null?
+    end
+
+    def row(index : UInt32) : Gtk::Widget?
+      # adw_preferences_group_get_row: (Method)
+      # @index:
+      # Returns: (transfer none) (nullable)
+
+      # C call
+      _retval = LibAdw.adw_preferences_group_get_row(to_unsafe, index)
 
       # Return value handling
       Gtk::Widget.new(_retval, GICrystal::Transfer::None) unless _retval.null?

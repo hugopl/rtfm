@@ -779,7 +779,8 @@ module Adw
       def connect(handler : Proc(Adw::TabPage), *, after : Bool = false) : GObject::SignalConnection
         _box = ::Box.box(handler)
         handler = ->(_lib_sender : Pointer(Void), _lib_box : Pointer(Void)) {
-          ::Box(Proc(Adw::TabPage)).unbox(_lib_box).call
+          _retval = ::Box(Proc(Adw::TabPage)).unbox(_lib_box).call
+          _retval.to_unsafe
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,
@@ -791,7 +792,8 @@ module Adw
         _box = ::Box.box(handler)
         handler = ->(_lib_sender : Pointer(Void), _lib_box : Pointer(Void)) {
           _sender = Adw::TabOverview.new(_lib_sender, GICrystal::Transfer::None)
-          ::Box(Proc(Adw::TabOverview, Adw::TabPage)).unbox(_lib_box).call(_sender)
+          _retval = ::Box(Proc(Adw::TabOverview, Adw::TabPage)).unbox(_lib_box).call(_sender)
+          _retval.to_unsafe
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,
@@ -824,7 +826,8 @@ module Adw
           page = Adw::TabPage.new(lib_page, GICrystal::Transfer::None)
           # Generator::HandmadeArgPlan
           value = GObject::Value.new(lib_value, :none)
-          ::Box(Proc(Adw::TabPage, GObject::Value, Bool)).unbox(_lib_box).call(page, value)
+          _retval = ::Box(Proc(Adw::TabPage, GObject::Value, Bool)).unbox(_lib_box).call(page, value)
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,
@@ -840,7 +843,8 @@ module Adw
           page = Adw::TabPage.new(lib_page, GICrystal::Transfer::None)
           # Generator::HandmadeArgPlan
           value = GObject::Value.new(lib_value, :none)
-          ::Box(Proc(Adw::TabOverview, Adw::TabPage, GObject::Value, Bool)).unbox(_lib_box).call(_sender, page, value)
+          _retval = ::Box(Proc(Adw::TabOverview, Adw::TabPage, GObject::Value, Bool)).unbox(_lib_box).call(_sender, page, value)
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,
@@ -869,18 +873,19 @@ module Adw
         @detail ? "extra-drag-value::#{@detail}" : "extra-drag-value"
       end
 
-      def connect(*, after : Bool = false, &block : Proc(Adw::TabPage, GObject::Value, Gdk::DragAction)) : GObject::SignalConnection
+      def connect(*, after : Bool = false, &block : Proc(Adw::TabPage, GObject::Value?, Gdk::DragAction)) : GObject::SignalConnection
         connect(block, after: after)
       end
 
-      def connect(handler : Proc(Adw::TabPage, GObject::Value, Gdk::DragAction), *, after : Bool = false) : GObject::SignalConnection
+      def connect(handler : Proc(Adw::TabPage, GObject::Value?, Gdk::DragAction), *, after : Bool = false) : GObject::SignalConnection
         _box = ::Box.box(handler)
         handler = ->(_lib_sender : Pointer(Void), lib_page : Pointer(Void), lib_value : Pointer(Void), _lib_box : Pointer(Void)) {
           # Generator::BuiltInTypeArgPlan
           page = Adw::TabPage.new(lib_page, GICrystal::Transfer::None)
           # Generator::HandmadeArgPlan
-          value = GObject::Value.new(lib_value, :none)
-          ::Box(Proc(Adw::TabPage, GObject::Value, Gdk::DragAction)).unbox(_lib_box).call(page, value)
+          value = GObject::Value.new(lib_value, :none) unless lib_value.null?
+          _retval = ::Box(Proc(Adw::TabPage, GObject::Value?, Gdk::DragAction)).unbox(_lib_box).call(page, value)
+          _retval.to_u32
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,
@@ -888,15 +893,16 @@ module Adw
         GObject::SignalConnection.new(@source, handler_id)
       end
 
-      def connect(handler : Proc(Adw::TabOverview, Adw::TabPage, GObject::Value, Gdk::DragAction), *, after : Bool = false) : GObject::SignalConnection
+      def connect(handler : Proc(Adw::TabOverview, Adw::TabPage, GObject::Value?, Gdk::DragAction), *, after : Bool = false) : GObject::SignalConnection
         _box = ::Box.box(handler)
         handler = ->(_lib_sender : Pointer(Void), lib_page : Pointer(Void), lib_value : Pointer(Void), _lib_box : Pointer(Void)) {
           _sender = Adw::TabOverview.new(_lib_sender, GICrystal::Transfer::None)
           # Generator::BuiltInTypeArgPlan
           page = Adw::TabPage.new(lib_page, GICrystal::Transfer::None)
           # Generator::HandmadeArgPlan
-          value = GObject::Value.new(lib_value, :none)
-          ::Box(Proc(Adw::TabOverview, Adw::TabPage, GObject::Value, Gdk::DragAction)).unbox(_lib_box).call(_sender, page, value)
+          value = GObject::Value.new(lib_value, :none) unless lib_value.null?
+          _retval = ::Box(Proc(Adw::TabOverview, Adw::TabPage, GObject::Value?, Gdk::DragAction)).unbox(_lib_box).call(_sender, page, value)
+          _retval.to_u32
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,
@@ -904,9 +910,11 @@ module Adw
         GObject::SignalConnection.new(@source, handler_id)
       end
 
-      def emit(page : Adw::TabPage, value : _) : Nil
+      def emit(page : Adw::TabPage, value : _?) : Nil
         # Generator::HandmadeArgPlan
-        value = if !value.is_a?(GObject::Value)
+        value = if value.nil?
+                  Pointer(Void).null
+                elsif !value.is_a?(GObject::Value)
                   GObject::Value.new(value).to_unsafe
                 else
                   value.to_unsafe

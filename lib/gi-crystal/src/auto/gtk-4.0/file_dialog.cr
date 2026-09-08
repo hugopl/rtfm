@@ -392,10 +392,10 @@ module Gtk
       # Return value handling
     end
 
-    def open_finish(result : Gio::AsyncResult) : Gio::File?
+    def open_finish(result : Gio::AsyncResult) : Gio::File
       # gtk_file_dialog_open_finish: (Method | Throws)
       # @result:
-      # Returns: (transfer full) (nullable)
+      # Returns: (transfer full)
 
       _error = Pointer(LibGLib::Error).null
 
@@ -406,7 +406,7 @@ module Gtk
       Gtk.raise_gerror(_error) unless _error.null?
 
       # Return value handling
-      Gio::AbstractFile.new(_retval, GICrystal::Transfer::Full) unless _retval.null?
+      Gio::AbstractFile.new(_retval, GICrystal::Transfer::Full)
     end
 
     def open_multiple(parent : Gtk::Window?, cancellable : Gio::Cancellable?, &callback : Gio::AsyncReadyCallback) : Nil
@@ -447,10 +447,10 @@ module Gtk
       # Return value handling
     end
 
-    def open_multiple_finish(result : Gio::AsyncResult) : Gio::ListModel?
+    def open_multiple_finish(result : Gio::AsyncResult) : Gio::ListModel
       # gtk_file_dialog_open_multiple_finish: (Method | Throws)
       # @result:
-      # Returns: (transfer full) (nullable)
+      # Returns: (transfer full)
 
       _error = Pointer(LibGLib::Error).null
 
@@ -461,7 +461,7 @@ module Gtk
       Gtk.raise_gerror(_error) unless _error.null?
 
       # Return value handling
-      Gio::AbstractListModel.new(_retval, GICrystal::Transfer::Full) unless _retval.null?
+      Gio::AbstractListModel.new(_retval, GICrystal::Transfer::Full)
     end
 
     def open_multiple_text_files(parent : Gtk::Window?, cancellable : Gio::Cancellable?, &callback : Gio::AsyncReadyCallback) : Nil
@@ -502,11 +502,11 @@ module Gtk
       # Return value handling
     end
 
-    def open_multiple_text_files_finish(result : Gio::AsyncResult, encoding : ::String) : Gio::ListModel?
+    def open_multiple_text_files_finish(result : Gio::AsyncResult, encoding : ::String) : Gio::ListModel
       # gtk_file_dialog_open_multiple_text_files_finish: (Method | Throws)
       # @result:
       # @encoding: (out)
-      # Returns: (transfer full) (nullable)
+      # Returns: (transfer full)
 
       _error = Pointer(LibGLib::Error).null
 
@@ -517,7 +517,7 @@ module Gtk
       Gtk.raise_gerror(_error) unless _error.null?
 
       # Return value handling
-      Gio::AbstractListModel.new(_retval, GICrystal::Transfer::Full) unless _retval.null?
+      Gio::AbstractListModel.new(_retval, GICrystal::Transfer::Full)
     end
 
     def open_text_file(parent : Gtk::Window?, cancellable : Gio::Cancellable?, &callback : Gio::AsyncReadyCallback) : Nil
@@ -558,11 +558,11 @@ module Gtk
       # Return value handling
     end
 
-    def open_text_file_finish(result : Gio::AsyncResult, encoding : ::String) : Gio::File?
+    def open_text_file_finish(result : Gio::AsyncResult, encoding : ::String) : Gio::File
       # gtk_file_dialog_open_text_file_finish: (Method | Throws)
       # @result:
       # @encoding: (out)
-      # Returns: (transfer full) (nullable)
+      # Returns: (transfer full)
 
       _error = Pointer(LibGLib::Error).null
 
@@ -573,7 +573,7 @@ module Gtk
       Gtk.raise_gerror(_error) unless _error.null?
 
       # Return value handling
-      Gio::AbstractFile.new(_retval, GICrystal::Transfer::Full) unless _retval.null?
+      Gio::AbstractFile.new(_retval, GICrystal::Transfer::Full)
     end
 
     def save(parent : Gtk::Window?, cancellable : Gio::Cancellable?, &callback : Gio::AsyncReadyCallback) : Nil
@@ -614,10 +614,10 @@ module Gtk
       # Return value handling
     end
 
-    def save_finish(result : Gio::AsyncResult) : Gio::File?
+    def save_finish(result : Gio::AsyncResult) : Gio::File
       # gtk_file_dialog_save_finish: (Method | Throws)
       # @result:
-      # Returns: (transfer full) (nullable)
+      # Returns: (transfer full)
 
       _error = Pointer(LibGLib::Error).null
 
@@ -628,7 +628,7 @@ module Gtk
       Gtk.raise_gerror(_error) unless _error.null?
 
       # Return value handling
-      Gio::AbstractFile.new(_retval, GICrystal::Transfer::Full) unless _retval.null?
+      Gio::AbstractFile.new(_retval, GICrystal::Transfer::Full)
     end
 
     def save_text_file(parent : Gtk::Window?, cancellable : Gio::Cancellable?, &callback : Gio::AsyncReadyCallback) : Nil
@@ -669,12 +669,12 @@ module Gtk
       # Return value handling
     end
 
-    def save_text_file_finish(result : Gio::AsyncResult, encoding : ::String, line_ending : ::String) : Gio::File?
+    def save_text_file_finish(result : Gio::AsyncResult, encoding : ::String, line_ending : ::String) : Gio::File
       # gtk_file_dialog_save_text_file_finish: (Method | Throws)
       # @result:
       # @encoding: (out)
       # @line_ending: (out)
-      # Returns: (transfer full) (nullable)
+      # Returns: (transfer full)
 
       _error = Pointer(LibGLib::Error).null
 
@@ -685,7 +685,7 @@ module Gtk
       Gtk.raise_gerror(_error) unless _error.null?
 
       # Return value handling
-      Gio::AbstractFile.new(_retval, GICrystal::Transfer::Full) unless _retval.null?
+      Gio::AbstractFile.new(_retval, GICrystal::Transfer::Full)
     end
 
     def select_folder(parent : Gtk::Window?, cancellable : Gio::Cancellable?, &callback : Gio::AsyncReadyCallback) : Nil
@@ -726,10 +726,10 @@ module Gtk
       # Return value handling
     end
 
-    def select_folder_finish(result : Gio::AsyncResult) : Gio::File?
+    def select_folder_finish(result : Gio::AsyncResult) : Gio::File
       # gtk_file_dialog_select_folder_finish: (Method | Throws)
       # @result:
-      # Returns: (transfer full) (nullable)
+      # Returns: (transfer full)
 
       _error = Pointer(LibGLib::Error).null
 
@@ -740,7 +740,7 @@ module Gtk
       Gtk.raise_gerror(_error) unless _error.null?
 
       # Return value handling
-      Gio::AbstractFile.new(_retval, GICrystal::Transfer::Full) unless _retval.null?
+      Gio::AbstractFile.new(_retval, GICrystal::Transfer::Full)
     end
 
     def select_multiple_folders(parent : Gtk::Window?, cancellable : Gio::Cancellable?, &callback : Gio::AsyncReadyCallback) : Nil
@@ -781,10 +781,10 @@ module Gtk
       # Return value handling
     end
 
-    def select_multiple_folders_finish(result : Gio::AsyncResult) : Gio::ListModel?
+    def select_multiple_folders_finish(result : Gio::AsyncResult) : Gio::ListModel
       # gtk_file_dialog_select_multiple_folders_finish: (Method | Throws)
       # @result:
-      # Returns: (transfer full) (nullable)
+      # Returns: (transfer full)
 
       _error = Pointer(LibGLib::Error).null
 
@@ -795,7 +795,7 @@ module Gtk
       Gtk.raise_gerror(_error) unless _error.null?
 
       # Return value handling
-      Gio::AbstractListModel.new(_retval, GICrystal::Transfer::Full) unless _retval.null?
+      Gio::AbstractListModel.new(_retval, GICrystal::Transfer::Full)
     end
 
     def accept_label=(accept_label : ::String?) : Nil

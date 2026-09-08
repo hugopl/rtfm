@@ -104,6 +104,17 @@ module GLib
       GLib::SList(::String).new(_retval, GICrystal::Transfer::None)
     end
 
+    def offset : UInt64
+      # g_markup_parse_context_get_offset: (Method)
+      # Returns: (transfer none)
+
+      # C call
+      _retval = LibGLib.g_markup_parse_context_get_offset(to_unsafe)
+
+      # Return value handling
+      _retval
+    end
+
     def position : Nil
       # g_markup_parse_context_get_position: (Method)
       # @line_number: (out) (transfer full) (optional)
@@ -115,6 +126,19 @@ module GLib
       char_number = Pointer(Int32).null
       # C call
       LibGLib.g_markup_parse_context_get_position(to_unsafe, line_number, char_number)
+
+      # Return value handling
+    end
+
+    def tag_start(line_number : UInt64, char_number : UInt64, offset : UInt64) : Nil
+      # g_markup_parse_context_get_tag_start: (Method)
+      # @line_number: (out) (transfer full)
+      # @char_number: (out) (transfer full)
+      # @offset: (out) (transfer full)
+      # Returns: (transfer none)
+
+      # C call
+      LibGLib.g_markup_parse_context_get_tag_start(to_unsafe, line_number, char_number, offset)
 
       # Return value handling
     end

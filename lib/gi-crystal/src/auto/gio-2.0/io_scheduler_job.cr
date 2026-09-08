@@ -30,7 +30,8 @@ module Gio
       if func
         _box = ::Box.box(func)
         func = ->(lib_user_data : Pointer(Void)) {
-          ::Box(Proc(Bool)).unbox(lib_user_data).call
+          _retval = ::Box(Proc(Bool)).unbox(lib_user_data).call
+          GICrystal.to_c_bool(_retval)
         }.pointer
         user_data = GICrystal::ClosureDataManager.register(_box)
         notify = ->GICrystal::ClosureDataManager.deregister(Pointer(Void)).pointer
@@ -57,7 +58,8 @@ module Gio
       if func
         _box = ::Box.box(func)
         func = ->(lib_user_data : Pointer(Void)) {
-          ::Box(Proc(Bool)).unbox(lib_user_data).call
+          _retval = ::Box(Proc(Bool)).unbox(lib_user_data).call
+          GICrystal.to_c_bool(_retval)
         }.pointer
         user_data = GICrystal::ClosureDataManager.register(_box)
         notify = ->GICrystal::ClosureDataManager.deregister(Pointer(Void)).pointer

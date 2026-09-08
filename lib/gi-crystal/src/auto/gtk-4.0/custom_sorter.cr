@@ -58,7 +58,8 @@ module Gtk
           a = (lib_a.null? ? nil : lib_a)
           # Generator::NullableArrayPlan
           b = (lib_b.null? ? nil : lib_b)
-          ::Box(Proc(Pointer(Void)?, Pointer(Void)?, Int32)).unbox(lib_user_data).call(a, b)
+          _retval = ::Box(Proc(Pointer(Void)?, Pointer(Void)?, Int32)).unbox(lib_user_data).call(a, b)
+          _retval
         }.pointer
         user_data = GICrystal::ClosureDataManager.register(_box)
         user_destroy = ->GICrystal::ClosureDataManager.deregister(Pointer(Void)).pointer
@@ -88,7 +89,8 @@ module Gtk
           a = (lib_a.null? ? nil : lib_a)
           # Generator::NullableArrayPlan
           b = (lib_b.null? ? nil : lib_b)
-          ::Box(Proc(Pointer(Void)?, Pointer(Void)?, Int32)).unbox(lib_user_data).call(a, b)
+          _retval = ::Box(Proc(Pointer(Void)?, Pointer(Void)?, Int32)).unbox(lib_user_data).call(a, b)
+          _retval
         }.pointer
         user_data = GICrystal::ClosureDataManager.register(_box)
         user_destroy = ->GICrystal::ClosureDataManager.deregister(Pointer(Void)).pointer

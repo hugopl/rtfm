@@ -464,7 +464,8 @@ module Gtk
           key = ::String.new(lib_key)
           # Generator::BuiltInTypeArgPlan
           iter = Gtk::TreeIter.new(lib_iter, GICrystal::Transfer::None)
-          ::Box(Proc(Gtk::EntryCompletion, ::String, Gtk::TreeIter, Bool)).unbox(lib_user_data).call(completion, key, iter)
+          _retval = ::Box(Proc(Gtk::EntryCompletion, ::String, Gtk::TreeIter, Bool)).unbox(lib_user_data).call(completion, key, iter)
+          GICrystal.to_c_bool(_retval)
         }.pointer
         func_data = GICrystal::ClosureDataManager.register(_box)
         func_notify = ->GICrystal::ClosureDataManager.deregister(Pointer(Void)).pointer
@@ -573,7 +574,8 @@ module Gtk
           model = Gtk::AbstractTreeModel.new(lib_model, GICrystal::Transfer::None)
           # Generator::BuiltInTypeArgPlan
           iter = Gtk::TreeIter.new(lib_iter, GICrystal::Transfer::None)
-          ::Box(Proc(Gtk::TreeModel, Gtk::TreeIter, Bool)).unbox(_lib_box).call(model, iter)
+          _retval = ::Box(Proc(Gtk::TreeModel, Gtk::TreeIter, Bool)).unbox(_lib_box).call(model, iter)
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,
@@ -589,7 +591,8 @@ module Gtk
           model = Gtk::AbstractTreeModel.new(lib_model, GICrystal::Transfer::None)
           # Generator::BuiltInTypeArgPlan
           iter = Gtk::TreeIter.new(lib_iter, GICrystal::Transfer::None)
-          ::Box(Proc(Gtk::EntryCompletion, Gtk::TreeModel, Gtk::TreeIter, Bool)).unbox(_lib_box).call(_sender, model, iter)
+          _retval = ::Box(Proc(Gtk::EntryCompletion, Gtk::TreeModel, Gtk::TreeIter, Bool)).unbox(_lib_box).call(_sender, model, iter)
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,
@@ -620,7 +623,8 @@ module Gtk
         handler = ->(_lib_sender : Pointer(Void), lib_prefix : Pointer(LibC::Char), _lib_box : Pointer(Void)) {
           # Generator::BuiltInTypeArgPlan
           prefix = ::String.new(lib_prefix)
-          ::Box(Proc(::String, Bool)).unbox(_lib_box).call(prefix)
+          _retval = ::Box(Proc(::String, Bool)).unbox(_lib_box).call(prefix)
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,
@@ -634,7 +638,8 @@ module Gtk
           _sender = Gtk::EntryCompletion.new(_lib_sender, GICrystal::Transfer::None)
           # Generator::BuiltInTypeArgPlan
           prefix = ::String.new(lib_prefix)
-          ::Box(Proc(Gtk::EntryCompletion, ::String, Bool)).unbox(_lib_box).call(_sender, prefix)
+          _retval = ::Box(Proc(Gtk::EntryCompletion, ::String, Bool)).unbox(_lib_box).call(_sender, prefix)
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,
@@ -667,7 +672,8 @@ module Gtk
           model = Gtk::AbstractTreeModel.new(lib_model, GICrystal::Transfer::None)
           # Generator::BuiltInTypeArgPlan
           iter = Gtk::TreeIter.new(lib_iter, GICrystal::Transfer::None)
-          ::Box(Proc(Gtk::TreeModel, Gtk::TreeIter, Bool)).unbox(_lib_box).call(model, iter)
+          _retval = ::Box(Proc(Gtk::TreeModel, Gtk::TreeIter, Bool)).unbox(_lib_box).call(model, iter)
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,
@@ -683,7 +689,8 @@ module Gtk
           model = Gtk::AbstractTreeModel.new(lib_model, GICrystal::Transfer::None)
           # Generator::BuiltInTypeArgPlan
           iter = Gtk::TreeIter.new(lib_iter, GICrystal::Transfer::None)
-          ::Box(Proc(Gtk::EntryCompletion, Gtk::TreeModel, Gtk::TreeIter, Bool)).unbox(_lib_box).call(_sender, model, iter)
+          _retval = ::Box(Proc(Gtk::EntryCompletion, Gtk::TreeModel, Gtk::TreeIter, Bool)).unbox(_lib_box).call(_sender, model, iter)
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,

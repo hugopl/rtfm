@@ -43,6 +43,7 @@ module GdkPixbuf
       end
     end
 
+    @[Deprecated]
     def advance(current_time : GLib::TimeVal?) : Bool
       # gdk_pixbuf_animation_iter_advance: (Method)
       # @current_time: (nullable)
@@ -62,6 +63,7 @@ module GdkPixbuf
       GICrystal.to_bool(_retval)
     end
 
+    @[Deprecated]
     def delay_time : Int32
       # gdk_pixbuf_animation_iter_get_delay_time: (Method)
       # Returns: (transfer none)
@@ -73,6 +75,7 @@ module GdkPixbuf
       _retval
     end
 
+    @[Deprecated]
     def pixbuf : GdkPixbuf::Pixbuf
       # gdk_pixbuf_animation_iter_get_pixbuf: (Method)
       # Returns: (transfer none)
@@ -84,6 +87,7 @@ module GdkPixbuf
       GdkPixbuf::Pixbuf.new(_retval, GICrystal::Transfer::None)
     end
 
+    @[Deprecated]
     def on_currently_loading_frame : Bool
       # gdk_pixbuf_animation_iter_on_currently_loading_frame: (Method)
       # Returns: (transfer none)

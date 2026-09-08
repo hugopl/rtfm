@@ -183,6 +183,7 @@ module WebKit
       # Return value handling
     end
 
+    @[Deprecated]
     def self.register_custom_URL_scheme(urlScheme : ::String) : Nil
       # webkit_web_extension_match_pattern_register_custom_URL_scheme: (None)
       # @urlScheme:
@@ -190,6 +191,17 @@ module WebKit
 
       # C call
       LibWebKit.webkit_web_extension_match_pattern_register_custom_URL_scheme(urlScheme)
+
+      # Return value handling
+    end
+
+    def self.register_custom_url_scheme(urlScheme : ::String) : Nil
+      # webkit_web_extension_match_pattern_register_custom_url_scheme: (None)
+      # @urlScheme:
+      # Returns: (transfer none)
+
+      # C call
+      LibWebKit.webkit_web_extension_match_pattern_register_custom_url_scheme(urlScheme)
 
       # Return value handling
     end

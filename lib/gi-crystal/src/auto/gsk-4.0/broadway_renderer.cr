@@ -69,6 +69,7 @@ module Gsk
       end
     end
 
+    @[Deprecated]
     def self.new : self
       # gsk_broadway_renderer_new: (Constructor)
       # Returns: (transfer full)

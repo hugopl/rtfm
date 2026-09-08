@@ -43,6 +43,7 @@ module GdkPixbuf
       end
     end
 
+    @[Deprecated]
     def self.new_from_file(filename : ::String) : self?
       # gdk_pixbuf_animation_new_from_file: (Constructor | Throws)
       # @filename:
@@ -60,6 +61,7 @@ module GdkPixbuf
       GdkPixbuf::PixbufAnimation.new(_retval, GICrystal::Transfer::Full) unless _retval.null?
     end
 
+    @[Deprecated]
     def self.new_from_resource(resource_path : ::String) : self?
       # gdk_pixbuf_animation_new_from_resource: (Constructor | Throws)
       # @resource_path:
@@ -77,6 +79,7 @@ module GdkPixbuf
       GdkPixbuf::PixbufAnimation.new(_retval, GICrystal::Transfer::Full) unless _retval.null?
     end
 
+    @[Deprecated]
     def self.new_from_stream(stream : Gio::InputStream, cancellable : Gio::Cancellable?) : self?
       # gdk_pixbuf_animation_new_from_stream: (Constructor | Throws)
       # @stream:
@@ -102,6 +105,7 @@ module GdkPixbuf
       GdkPixbuf::PixbufAnimation.new(_retval, GICrystal::Transfer::Full) unless _retval.null?
     end
 
+    @[Deprecated]
     def self.new_from_stream_finish(async_result : Gio::AsyncResult) : self?
       # gdk_pixbuf_animation_new_from_stream_finish: (Constructor | Throws)
       # @async_result:
@@ -119,6 +123,7 @@ module GdkPixbuf
       GdkPixbuf::PixbufAnimation.new(_retval, GICrystal::Transfer::Full) unless _retval.null?
     end
 
+    @[Deprecated]
     def self.new_from_stream_async(stream : Gio::InputStream, cancellable : Gio::Cancellable?, &callback : Gio::AsyncReadyCallback) : Nil
       # gdk_pixbuf_animation_new_from_stream_async: (None)
       # @stream:
@@ -151,6 +156,7 @@ module GdkPixbuf
       # Return value handling
     end
 
+    @[Deprecated]
     def height : Int32
       # gdk_pixbuf_animation_get_height: (Method)
       # Returns: (transfer none)
@@ -162,6 +168,7 @@ module GdkPixbuf
       _retval
     end
 
+    @[Deprecated]
     def iter(start_time : GLib::TimeVal?) : GdkPixbuf::PixbufAnimationIter
       # gdk_pixbuf_animation_get_iter: (Method)
       # @start_time: (nullable)
@@ -181,6 +188,7 @@ module GdkPixbuf
       GdkPixbuf::PixbufAnimationIter.new(_retval, GICrystal::Transfer::Full)
     end
 
+    @[Deprecated]
     def static_image : GdkPixbuf::Pixbuf
       # gdk_pixbuf_animation_get_static_image: (Method)
       # Returns: (transfer none)
@@ -192,6 +200,7 @@ module GdkPixbuf
       GdkPixbuf::Pixbuf.new(_retval, GICrystal::Transfer::None)
     end
 
+    @[Deprecated]
     def width : Int32
       # gdk_pixbuf_animation_get_width: (Method)
       # Returns: (transfer none)
@@ -203,6 +212,7 @@ module GdkPixbuf
       _retval
     end
 
+    @[Deprecated]
     def is_static_image : Bool
       # gdk_pixbuf_animation_is_static_image: (Method)
       # Returns: (transfer none)

@@ -32,9 +32,9 @@ module Gtk
       ptr
     end
 
-    def initialize(*, accessible : Gtk::Accessible? = nil, accessible_role : Gtk::AccessibleRole? = nil, display : Gdk::Display? = nil)
-      _names = uninitialized Pointer(LibC::Char)[3]
-      _values = StaticArray(LibGObject::Value, 3).new(LibGObject::Value.new)
+    def initialize(*, accessible : Gtk::Accessible? = nil, accessible_role : Gtk::AccessibleRole? = nil, display : Gdk::Display? = nil, realized : Bool? = nil)
+      _names = uninitialized Pointer(LibC::Char)[4]
+      _values = StaticArray(LibGObject::Value, 4).new(LibGObject::Value.new)
       _n = 0
 
       if !accessible.nil?
@@ -50,6 +50,11 @@ module Gtk
       if !display.nil?
         (_names.to_unsafe + _n).value = "display".to_unsafe
         GObject::Value.init_g_value(_values.to_unsafe + _n, display)
+        _n += 1
+      end
+      if !realized.nil?
+        (_names.to_unsafe + _n).value = "realized".to_unsafe
+        GObject::Value.init_g_value(_values.to_unsafe + _n, realized)
         _n += 1
       end
 
@@ -117,6 +122,14 @@ module Gtk
       value = uninitialized Pointer(Void)
       LibGObject.g_object_get(self, "display", pointerof(value), Pointer(Void).null)
       Gdk::Display.new(value, GICrystal::Transfer::None) unless value.null?
+    end
+
+    def realized? : Bool
+      # Returns: None
+
+      value = uninitialized LibC::Int
+      LibGObject.g_object_get(self, "realized", pointerof(value), Pointer(Void).null)
+      GICrystal.to_bool(value)
     end
 
     def self.create(accessible_role : Gtk::AccessibleRole, accessible : Gtk::Accessible, display : Gdk::Display) : self?

@@ -86,11 +86,11 @@ module GLib
       # Return value handling
     end
 
-    def find_source_by_funcs_user_data(funcs : GLib::SourceFuncs, user_data : Pointer(Void)?) : GLib::Source
+    def find_source_by_funcs_user_data(funcs : GLib::SourceFuncs, user_data : Pointer(Void)?) : GLib::Source?
       # g_main_context_find_source_by_funcs_user_data: (Method)
       # @funcs:
       # @user_data: (nullable)
-      # Returns: (transfer none)
+      # Returns: (transfer none) (nullable)
 
       # Generator::NullableArrayPlan
       user_data = if user_data.nil?
@@ -103,7 +103,7 @@ module GLib
       _retval = LibGLib.g_main_context_find_source_by_funcs_user_data(to_unsafe, funcs, user_data)
 
       # Return value handling
-      GLib::Source.new(_retval, GICrystal::Transfer::None)
+      GLib::Source.new(_retval, GICrystal::Transfer::None) unless _retval.null?
     end
 
     def find_source_by_id(source_id : UInt32) : GLib::Source
@@ -118,10 +118,10 @@ module GLib
       GLib::Source.new(_retval, GICrystal::Transfer::None)
     end
 
-    def find_source_by_user_data(user_data : Pointer(Void)?) : GLib::Source
+    def find_source_by_user_data(user_data : Pointer(Void)?) : GLib::Source?
       # g_main_context_find_source_by_user_data: (Method)
       # @user_data: (nullable)
-      # Returns: (transfer none)
+      # Returns: (transfer none) (nullable)
 
       # Generator::NullableArrayPlan
       user_data = if user_data.nil?
@@ -134,7 +134,7 @@ module GLib
       _retval = LibGLib.g_main_context_find_source_by_user_data(to_unsafe, user_data)
 
       # Return value handling
-      GLib::Source.new(_retval, GICrystal::Transfer::None)
+      GLib::Source.new(_retval, GICrystal::Transfer::None) unless _retval.null?
     end
 
     def invoke_full(priority : Int32, function : GLib::SourceFunc) : Nil
@@ -149,7 +149,8 @@ module GLib
       if function
         _box = ::Box.box(function)
         function = ->(lib_user_data : Pointer(Void)) {
-          ::Box(Proc(Bool)).unbox(lib_user_data).call
+          _retval = ::Box(Proc(Bool)).unbox(lib_user_data).call
+          GICrystal.to_c_bool(_retval)
         }.pointer
         data = GICrystal::ClosureDataManager.register(_box)
         notify = ->GICrystal::ClosureDataManager.deregister(Pointer(Void)).pointer

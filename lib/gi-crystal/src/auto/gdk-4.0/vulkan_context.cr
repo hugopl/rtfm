@@ -1,11 +1,8 @@
 require "./draw_context"
-require "../gio-2.0/initable"
 
 module Gdk
   @[GICrystal::GeneratedWrapper]
   class VulkanContext < DrawContext
-    include Gio::Initable
-
     macro inherited
       {{ raise "Cannot inherit from #{@type.superclass}" unless @type.annotation(GICrystal::GeneratedWrapper) }}
     end

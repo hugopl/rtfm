@@ -268,17 +268,10 @@ module Pango
       # Return value handling
     end
 
-    def font_description=(desc : Pango::FontDescription?) : Nil
+    def font_description=(desc : Pango::FontDescription) : Nil
       # pango_context_set_font_description: (Method)
-      # @desc: (nullable)
+      # @desc:
       # Returns: (transfer none)
-
-      # Generator::NullableArrayPlan
-      desc = if desc.nil?
-               Pointer(Void).null
-             else
-               desc.to_unsafe
-             end
 
       # C call
       LibPango.pango_context_set_font_description(to_unsafe, desc)

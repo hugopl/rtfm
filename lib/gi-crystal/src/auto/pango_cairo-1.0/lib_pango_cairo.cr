@@ -42,6 +42,7 @@ lib LibPangoCairo
   fun pango_cairo_glyph_string_path(cr : Pointer(Void), font : Pointer(Void), glyphs : Pointer(Void)) : Void
   fun pango_cairo_layout_line_path(cr : Pointer(Void), line : Pointer(Void)) : Void
   fun pango_cairo_layout_path(cr : Pointer(Void), layout : Pointer(Void)) : Void
+  fun pango_cairo_layout_path_for_components(cr : Pointer(Void), layout : Pointer(Void), components : UInt32) : Void
   fun pango_cairo_show_error_underline(cr : Pointer(Void), x : Float64, y : Float64, width : Float64, height : Float64) : Void
   fun pango_cairo_show_glyph_item(cr : Pointer(Void), text : Pointer(LibC::Char), glyph_item : Pointer(Void)) : Void
   fun pango_cairo_show_glyph_string(cr : Pointer(Void), font : Pointer(Void), glyphs : Pointer(Void)) : Void

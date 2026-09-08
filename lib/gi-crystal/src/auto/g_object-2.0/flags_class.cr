@@ -60,11 +60,11 @@ module GObject
       self.values.not_nil!
     end
 
-    def values : GObject::FlagsValue?
+    def values : Enumerable(GObject::FlagsValue)?
       value = to_unsafe.as(Pointer(LibGObject::FlagsClass)).value.values
       return if value.null?
       value = value.as(Pointer(Void))
-      GObject::FlagsValue.new(value, GICrystal::Transfer::None)
+      GICrystal.transfer_array(value, n_values, GICrystal::Transfer::None)
     end
 
     def to_unsafe

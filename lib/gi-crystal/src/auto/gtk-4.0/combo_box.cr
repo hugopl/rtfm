@@ -844,7 +844,8 @@ module Gtk
           model = Gtk::AbstractTreeModel.new(lib_model, GICrystal::Transfer::None)
           # Generator::BuiltInTypeArgPlan
           iter = Gtk::TreeIter.new(lib_iter, GICrystal::Transfer::None)
-          ::Box(Proc(Gtk::TreeModel, Gtk::TreeIter, Bool)).unbox(lib_data).call(model, iter)
+          _retval = ::Box(Proc(Gtk::TreeModel, Gtk::TreeIter, Bool)).unbox(lib_data).call(model, iter)
+          GICrystal.to_c_bool(_retval)
         }.pointer
         data = GICrystal::ClosureDataManager.register(_box)
         destroy = ->GICrystal::ClosureDataManager.deregister(Pointer(Void)).pointer
@@ -954,7 +955,8 @@ module Gtk
         handler = ->(_lib_sender : Pointer(Void), lib_path : Pointer(LibC::Char), _lib_box : Pointer(Void)) {
           # Generator::BuiltInTypeArgPlan
           path = ::String.new(lib_path)
-          ::Box(Proc(::String, ::String)).unbox(_lib_box).call(path)
+          _retval = ::Box(Proc(::String, ::String)).unbox(_lib_box).call(path)
+          _retval.to_unsafe
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,
@@ -968,7 +970,8 @@ module Gtk
           _sender = Gtk::ComboBox.new(_lib_sender, GICrystal::Transfer::None)
           # Generator::BuiltInTypeArgPlan
           path = ::String.new(lib_path)
-          ::Box(Proc(Gtk::ComboBox, ::String, ::String)).unbox(_lib_box).call(_sender, path)
+          _retval = ::Box(Proc(Gtk::ComboBox, ::String, ::String)).unbox(_lib_box).call(_sender, path)
+          _retval.to_unsafe
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,
@@ -1042,7 +1045,8 @@ module Gtk
       def connect(handler : Proc(Bool), *, after : Bool = false) : GObject::SignalConnection
         _box = ::Box.box(handler)
         handler = ->(_lib_sender : Pointer(Void), _lib_box : Pointer(Void)) {
-          ::Box(Proc(Bool)).unbox(_lib_box).call
+          _retval = ::Box(Proc(Bool)).unbox(_lib_box).call
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,
@@ -1054,7 +1058,8 @@ module Gtk
         _box = ::Box.box(handler)
         handler = ->(_lib_sender : Pointer(Void), _lib_box : Pointer(Void)) {
           _sender = Gtk::ComboBox.new(_lib_sender, GICrystal::Transfer::None)
-          ::Box(Proc(Gtk::ComboBox, Bool)).unbox(_lib_box).call(_sender)
+          _retval = ::Box(Proc(Gtk::ComboBox, Bool)).unbox(_lib_box).call(_sender)
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,

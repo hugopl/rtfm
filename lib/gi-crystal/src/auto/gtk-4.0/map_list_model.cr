@@ -147,7 +147,9 @@ module Gtk
           # Generator::TransferFullArgPlan
           # Generator::BuiltInTypeArgPlan
           item = GObject::Object.new(lib_item, GICrystal::Transfer::Full)
-          ::Box(Proc(GObject::Object, GObject::Object)).unbox(lib_user_data).call(item)
+          _retval = ::Box(Proc(GObject::Object, GObject::Object)).unbox(lib_user_data).call(item)
+          LibGObject.g_object_ref(_retval) if _retval
+          _retval.to_unsafe
         }.pointer
         user_data = GICrystal::ClosureDataManager.register(_box)
         user_destroy = ->GICrystal::ClosureDataManager.deregister(Pointer(Void)).pointer
@@ -198,7 +200,9 @@ module Gtk
           # Generator::TransferFullArgPlan
           # Generator::BuiltInTypeArgPlan
           item = GObject::Object.new(lib_item, GICrystal::Transfer::Full)
-          ::Box(Proc(GObject::Object, GObject::Object)).unbox(lib_user_data).call(item)
+          _retval = ::Box(Proc(GObject::Object, GObject::Object)).unbox(lib_user_data).call(item)
+          LibGObject.g_object_ref(_retval) if _retval
+          _retval.to_unsafe
         }.pointer
         user_data = GICrystal::ClosureDataManager.register(_box)
         user_destroy = ->GICrystal::ClosureDataManager.deregister(Pointer(Void)).pointer
@@ -213,7 +217,7 @@ module Gtk
     end
 
     def model=(model : Gio::ListModel?) : Nil
-      # gtk_map_list_model_set_model: (Method)
+      # gtk_map_list_model_set_model: (Method | Setter)
       # @model: (nullable)
       # Returns: (transfer none)
 

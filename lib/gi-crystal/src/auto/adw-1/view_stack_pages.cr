@@ -1,12 +1,15 @@
 require "../g_object-2.0/object"
 require "../gio-2.0/list_model"
 
+require "../gtk-4.0/section_model"
+
 require "../gtk-4.0/selection_model"
 
 module Adw
   @[GICrystal::GeneratedWrapper]
   class ViewStackPages < GObject::Object
     include Gio::ListModel
+    include Gtk::SectionModel
     include Gtk::SelectionModel
 
     macro inherited
@@ -35,11 +38,21 @@ module Adw
       ptr
     end
 
-    def initialize(*, selected_page : Adw::ViewStackPage? = nil)
-      _names = uninitialized Pointer(LibC::Char)[1]
-      _values = StaticArray(LibGObject::Value, 1).new(LibGObject::Value.new)
+    def initialize(*, item_type : UInt64? = nil, n_items : UInt32? = nil, selected_page : Adw::ViewStackPage? = nil)
+      _names = uninitialized Pointer(LibC::Char)[3]
+      _values = StaticArray(LibGObject::Value, 3).new(LibGObject::Value.new)
       _n = 0
 
+      if !item_type.nil?
+        (_names.to_unsafe + _n).value = "item-type".to_unsafe
+        GObject::Value.init_g_value(_values.to_unsafe + _n, item_type)
+        _n += 1
+      end
+      if !n_items.nil?
+        (_names.to_unsafe + _n).value = "n-items".to_unsafe
+        GObject::Value.init_g_value(_values.to_unsafe + _n, n_items)
+        _n += 1
+      end
       if !selected_page.nil?
         (_names.to_unsafe + _n).value = "selected-page".to_unsafe
         GObject::Value.init_g_value(_values.to_unsafe + _n, selected_page)
@@ -65,6 +78,22 @@ module Adw
         ctor = ->Adw::ViewStackPages.new(Void*, GICrystal::Transfer)
         LibGObject.g_type_set_qdata(g_type, GICrystal::INSTANCE_FACTORY, ctor.pointer)
       end
+    end
+
+    def item_type : UInt64
+      # Returns: None
+
+      value = uninitialized UInt64
+      LibGObject.g_object_get(self, "item-type", pointerof(value), Pointer(Void).null)
+      value
+    end
+
+    def n_items : UInt32
+      # Returns: None
+
+      value = uninitialized UInt32
+      LibGObject.g_object_get(self, "n-items", pointerof(value), Pointer(Void).null)
+      value
     end
 
     def selected_page=(value : Adw::ViewStackPage?) : Adw::ViewStackPage?

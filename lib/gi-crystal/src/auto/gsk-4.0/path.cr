@@ -34,6 +34,18 @@ module Gsk
       LibGsk.gsk_path_get_type
     end
 
+    def equal(path2 : Gsk::Path) : Bool
+      # gsk_path_equal: (Method)
+      # @path2:
+      # Returns: (transfer none)
+
+      # C call
+      _retval = LibGsk.gsk_path_equal(to_unsafe, path2)
+
+      # Return value handling
+      GICrystal.to_bool(_retval)
+    end
+
     def foreach(flags : Gsk::PathForeachFlags, func : Gsk::PathForeachFunc, user_data : Pointer(Void)?) : Bool
       # gsk_path_foreach: (Method)
       # @flags:
@@ -50,6 +62,33 @@ module Gsk
 
       # C call
       _retval = LibGsk.gsk_path_foreach(to_unsafe, flags, func, user_data)
+
+      # Return value handling
+      GICrystal.to_bool(_retval)
+    end
+
+    def foreach_intersection(path2 : Gsk::Path?, func : Gsk::PathIntersectionFunc, user_data : Pointer(Void)?) : Bool
+      # gsk_path_foreach_intersection: (Method)
+      # @path2: (nullable)
+      # @func:
+      # @user_data: (nullable)
+      # Returns: (transfer none)
+
+      # Generator::NullableArrayPlan
+      path2 = if path2.nil?
+                Pointer(Void).null
+              else
+                path2.to_unsafe
+              end
+      # Generator::NullableArrayPlan
+      user_data = if user_data.nil?
+                    Pointer(Void).null
+                  else
+                    user_data.to_unsafe
+                  end
+
+      # C call
+      _retval = LibGsk.gsk_path_foreach_intersection(to_unsafe, path2, func, user_data)
 
       # Return value handling
       GICrystal.to_bool(_retval)
@@ -101,6 +140,30 @@ module Gsk
       result
     end
 
+    def next(point : Gsk::PathPoint) : Bool
+      # gsk_path_get_next: (Method)
+      # @point: (inout) (transfer full)
+      # Returns: (transfer none)
+
+      # C call
+      _retval = LibGsk.gsk_path_get_next(to_unsafe, point)
+
+      # Return value handling
+      GICrystal.to_bool(_retval)
+    end
+
+    def previous(point : Gsk::PathPoint) : Bool
+      # gsk_path_get_previous: (Method)
+      # @point: (inout) (transfer full)
+      # Returns: (transfer none)
+
+      # C call
+      _retval = LibGsk.gsk_path_get_previous(to_unsafe, point)
+
+      # Return value handling
+      GICrystal.to_bool(_retval)
+    end
+
     def start_point : Gsk::PathPoint
       # gsk_path_get_start_point: (Method)
       # @result: (out) (caller-allocates)
@@ -125,6 +188,20 @@ module Gsk
       bounds = Graphene::Rect.new
       # C call
       _retval = LibGsk.gsk_path_get_stroke_bounds(to_unsafe, stroke, bounds)
+
+      # Return value handling
+      bounds
+    end
+
+    def tight_bounds : Graphene::Rect
+      # gsk_path_get_tight_bounds: (Method)
+      # @bounds: (out) (caller-allocates)
+      # Returns: (transfer none)
+
+      # Generator::CallerAllocatesPlan
+      bounds = Graphene::Rect.new
+      # C call
+      _retval = LibGsk.gsk_path_get_tight_bounds(to_unsafe, bounds)
 
       # Return value handling
       bounds

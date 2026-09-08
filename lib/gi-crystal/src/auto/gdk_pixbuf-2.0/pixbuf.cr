@@ -493,6 +493,7 @@ module GdkPixbuf
       GdkPixbuf::Pixbuf.new(_retval, GICrystal::Transfer::Full) unless _retval.null?
     end
 
+    @[Deprecated]
     def self.new_from_xpm_data(data : Enumerable(::String)) : self?
       # gdk_pixbuf_new_from_xpm_data: (Constructor)
       # @data: (array zero-terminated=1 element-type Utf8)

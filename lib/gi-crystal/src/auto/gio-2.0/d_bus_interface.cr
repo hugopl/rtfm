@@ -29,15 +29,15 @@ module Gio
       Gio::AbstractDBusObject.new(_retval, GICrystal::Transfer::Full) unless _retval.null?
     end
 
-    def info : Gio::DBusInterfaceInfo
+    def info : Gio::DBusInterfaceInfo?
       # g_dbus_interface_get_info: (Method)
-      # Returns: (transfer none)
+      # Returns: (transfer none) (nullable)
 
       # C call
       _retval = LibGio.g_dbus_interface_get_info(to_unsafe)
 
       # Return value handling
-      Gio::DBusInterfaceInfo.new(_retval, GICrystal::Transfer::None)
+      Gio::DBusInterfaceInfo.new(_retval, GICrystal::Transfer::None) unless _retval.null?
     end
 
     def object=(object : Gio::DBusObject?) : Nil
@@ -103,7 +103,7 @@ module Gio
     end
 
     # get_info: (None)
-    # Returns: (transfer none)
+    # Returns: (transfer none) (nullable)
     private macro _register_get_info_vfunc(impl_method_name)
       private def self._vfunc_get_info(%this : Pointer(Void), ) : Pointer(Void)
         
@@ -113,7 +113,7 @@ module Gio
 
         %retval = %instance.as(self).{{ impl_method_name.id }}()
         
-        %retval.to_unsafe
+        %retval.nil? ? Pointer(Void).null : %retval.to_unsafe
       end
 
       def self._install_iface_Gio__DBusInterface(type_struct : Pointer(LibGObject::TypeInterface)) : Nil
@@ -124,7 +124,7 @@ module Gio
     end
 
     # get_info: (None)
-    # Returns: (transfer none)
+    # Returns: (transfer none) (nullable)
     private macro _register_unsafe_get_info_vfunc(impl_method_name)
       private def self._vfunc_unsafe_get_info(%this : Pointer(Void), ) : Pointer(Void)
 

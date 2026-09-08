@@ -541,7 +541,8 @@ module Gtk
           scale = Gtk::Scale.new(lib_scale, GICrystal::Transfer::None)
           # NoStrategy
           value = lib_value
-          ::Box(Proc(Gtk::Scale, Float64, ::String)).unbox(lib_user_data).call(scale, value)
+          _retval = ::Box(Proc(Gtk::Scale, Float64, ::String)).unbox(lib_user_data).call(scale, value)
+          _retval.to_unsafe
         }.pointer
         user_data = GICrystal::ClosureDataManager.register(_box)
         destroy_notify = ->GICrystal::ClosureDataManager.deregister(Pointer(Void)).pointer

@@ -133,7 +133,8 @@ module WebKit
       def connect(handler : Proc(WebKit::WebView), *, after : Bool = false) : GObject::SignalConnection
         _box = ::Box.box(handler)
         handler = ->(_lib_sender : Pointer(Void), _lib_box : Pointer(Void)) {
-          ::Box(Proc(WebKit::WebView)).unbox(_lib_box).call
+          _retval = ::Box(Proc(WebKit::WebView)).unbox(_lib_box).call
+          _retval.to_unsafe
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,
@@ -145,7 +146,8 @@ module WebKit
         _box = ::Box.box(handler)
         handler = ->(_lib_sender : Pointer(Void), _lib_box : Pointer(Void)) {
           _sender = WebKit::AutomationSession.new(_lib_sender, GICrystal::Transfer::None)
-          ::Box(Proc(WebKit::AutomationSession, WebKit::WebView)).unbox(_lib_box).call(_sender)
+          _retval = ::Box(Proc(WebKit::AutomationSession, WebKit::WebView)).unbox(_lib_box).call(_sender)
+          _retval.to_unsafe
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,

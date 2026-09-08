@@ -308,7 +308,8 @@ module Gio
         handler = ->(_lib_sender : Pointer(Void), lib_connection : Pointer(Void), _lib_box : Pointer(Void)) {
           # Generator::BuiltInTypeArgPlan
           connection = Gio::DBusConnection.new(lib_connection, GICrystal::Transfer::None)
-          ::Box(Proc(Gio::DBusConnection, Bool)).unbox(_lib_box).call(connection)
+          _retval = ::Box(Proc(Gio::DBusConnection, Bool)).unbox(_lib_box).call(connection)
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,
@@ -322,7 +323,8 @@ module Gio
           _sender = Gio::DBusServer.new(_lib_sender, GICrystal::Transfer::None)
           # Generator::BuiltInTypeArgPlan
           connection = Gio::DBusConnection.new(lib_connection, GICrystal::Transfer::None)
-          ::Box(Proc(Gio::DBusServer, Gio::DBusConnection, Bool)).unbox(_lib_box).call(_sender, connection)
+          _retval = ::Box(Proc(Gio::DBusServer, Gio::DBusConnection, Bool)).unbox(_lib_box).call(_sender, connection)
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,

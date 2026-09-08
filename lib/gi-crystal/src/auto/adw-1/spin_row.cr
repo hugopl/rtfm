@@ -800,7 +800,8 @@ module Adw
         handler = ->(_lib_sender : Pointer(Void), lib_new_value : Float64, _lib_box : Pointer(Void)) {
           # NoStrategy
           new_value = lib_new_value
-          ::Box(Proc(Float64, Int32)).unbox(_lib_box).call(new_value)
+          _retval = ::Box(Proc(Float64, Int32)).unbox(_lib_box).call(new_value)
+          _retval
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,
@@ -814,7 +815,8 @@ module Adw
           _sender = Adw::SpinRow.new(_lib_sender, GICrystal::Transfer::None)
           # NoStrategy
           new_value = lib_new_value
-          ::Box(Proc(Adw::SpinRow, Float64, Int32)).unbox(_lib_box).call(_sender, new_value)
+          _retval = ::Box(Proc(Adw::SpinRow, Float64, Int32)).unbox(_lib_box).call(_sender, new_value)
+          _retval
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,
@@ -843,7 +845,8 @@ module Adw
       def connect(handler : Proc(Bool), *, after : Bool = false) : GObject::SignalConnection
         _box = ::Box.box(handler)
         handler = ->(_lib_sender : Pointer(Void), _lib_box : Pointer(Void)) {
-          ::Box(Proc(Bool)).unbox(_lib_box).call
+          _retval = ::Box(Proc(Bool)).unbox(_lib_box).call
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,
@@ -855,7 +858,8 @@ module Adw
         _box = ::Box.box(handler)
         handler = ->(_lib_sender : Pointer(Void), _lib_box : Pointer(Void)) {
           _sender = Adw::SpinRow.new(_lib_sender, GICrystal::Transfer::None)
-          ::Box(Proc(Adw::SpinRow, Bool)).unbox(_lib_box).call(_sender)
+          _retval = ::Box(Proc(Adw::SpinRow, Bool)).unbox(_lib_box).call(_sender)
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,

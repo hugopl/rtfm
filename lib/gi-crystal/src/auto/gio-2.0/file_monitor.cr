@@ -103,12 +103,19 @@ module Gio
       GICrystal.to_bool(_retval)
     end
 
-    def emit_event(child : Gio::File, other_file : Gio::File, event_type : Gio::FileMonitorEvent) : Nil
+    def emit_event(child : Gio::File, other_file : Gio::File?, event_type : Gio::FileMonitorEvent) : Nil
       # g_file_monitor_emit_event: (Method)
       # @child:
-      # @other_file:
+      # @other_file: (nullable)
       # @event_type:
       # Returns: (transfer none)
+
+      # Generator::NullableArrayPlan
+      other_file = if other_file.nil?
+                     Pointer(Void).null
+                   else
+                     other_file.to_unsafe
+                   end
 
       # C call
       LibGio.g_file_monitor_emit_event(to_unsafe, child, other_file, event_type)

@@ -48,6 +48,7 @@ require "./multi_layout_view.cr"
 require "./navigation_page.cr"
 require "./navigation_split_view.cr"
 require "./navigation_view.cr"
+require "./none_animation_target.cr"
 require "./overlay_split_view.cr"
 require "./password_entry_row.cr"
 require "./preferences_dialog.cr"
@@ -56,6 +57,13 @@ require "./preferences_page.cr"
 require "./preferences_row.cr"
 require "./preferences_window.cr"
 require "./property_animation_target.cr"
+require "./shortcut_label.cr"
+require "./shortcuts_dialog.cr"
+require "./shortcuts_item.cr"
+require "./shortcuts_section.cr"
+require "./sidebar.cr"
+require "./sidebar_item.cr"
+require "./sidebar_section.cr"
 require "./spin_row.cr"
 require "./spinner.cr"
 require "./spinner_paintable.cr"
@@ -85,6 +93,7 @@ require "./view_stack_page.cr"
 require "./view_stack_pages.cr"
 require "./view_switcher.cr"
 require "./view_switcher_bar.cr"
+require "./view_switcher_sidebar.cr"
 require "./view_switcher_title.cr"
 require "./window.cr"
 require "./window_title.cr"
@@ -94,13 +103,15 @@ require "./wrap_layout.cr"
 module Adw
   DURATION_INFINITE = 4294967295_u32
   MAJOR_VERSION     =              1
-  MICRO_VERSION     =              0
-  MINOR_VERSION     =              7
-  VERSION_S         = "1.7.0"
+  MICRO_VERSION     =              3
+  MINOR_VERSION     =              9
+  VERSION_S         = "1.9.3"
 
   # Callbacks
 
   alias AnimationTargetFunc = Proc(Float64, Nil)
+
+  alias SidebarSectionCreateItemFunc = Proc(GObject::Object, Adw::SidebarItem)
 
   # Enums
 
@@ -346,6 +357,16 @@ module Adw
     # Returns the type id (GType) registered in GLib type system.
     def self.g_type : UInt64
       LibAdw.adw_response_appearance_get_type
+    end
+  end
+
+  enum SidebarMode : UInt32
+    Sidebar = 0
+    Page    = 1
+
+    # Returns the type id (GType) registered in GLib type system.
+    def self.g_type : UInt64
+      LibAdw.adw_sidebar_mode_get_type
     end
   end
 

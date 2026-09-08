@@ -47,9 +47,9 @@ module Adw
       ptr
     end
 
-    def initialize(*, accessible_role : Gtk::AccessibleRole? = nil, adaptive_preview : Bool? = nil, application : Gtk::Application? = nil, application_icon : ::String? = nil, application_name : ::String? = nil, artists : Enumerable(::String)? = nil, can_focus : Bool? = nil, can_target : Bool? = nil, child : Gtk::Widget? = nil, comments : ::String? = nil, content : Gtk::Widget? = nil, copyright : ::String? = nil, css_classes : Enumerable(::String)? = nil, css_name : ::String? = nil, current_breakpoint : Adw::Breakpoint? = nil, cursor : Gdk::Cursor? = nil, debug_info : ::String? = nil, debug_info_filename : ::String? = nil, decorated : Bool? = nil, default_height : Int32? = nil, default_widget : Gtk::Widget? = nil, default_width : Int32? = nil, deletable : Bool? = nil, designers : Enumerable(::String)? = nil, destroy_with_parent : Bool? = nil, developer_name : ::String? = nil, developers : Enumerable(::String)? = nil, dialogs : Gio::ListModel? = nil, display : Gdk::Display? = nil, documenters : Enumerable(::String)? = nil, focus_on_click : Bool? = nil, focus_visible : Bool? = nil, focus_widget : Gtk::Widget? = nil, focusable : Bool? = nil, fullscreened : Bool? = nil, halign : Gtk::Align? = nil, handle_menubar_accel : Bool? = nil, has_default : Bool? = nil, has_focus : Bool? = nil, has_tooltip : Bool? = nil, height_request : Int32? = nil, hexpand : Bool? = nil, hexpand_set : Bool? = nil, hide_on_close : Bool? = nil, icon_name : ::String? = nil, is_active : Bool? = nil, issue_url : ::String? = nil, layout_manager : Gtk::LayoutManager? = nil, license : ::String? = nil, license_type : Gtk::License? = nil, limit_events : Bool? = nil, margin_bottom : Int32? = nil, margin_end : Int32? = nil, margin_start : Int32? = nil, margin_top : Int32? = nil, maximized : Bool? = nil, mnemonics_visible : Bool? = nil, modal : Bool? = nil, name : ::String? = nil, opacity : Float64? = nil, overflow : Gtk::Overflow? = nil, parent : Gtk::Widget? = nil, receives_default : Bool? = nil, release_notes : ::String? = nil, release_notes_version : ::String? = nil, resizable : Bool? = nil, root : Gtk::Root? = nil, scale_factor : Int32? = nil, sensitive : Bool? = nil, startup_id : ::String? = nil, support_url : ::String? = nil, suspended : Bool? = nil, title : ::String? = nil, titlebar : Gtk::Widget? = nil, tooltip_markup : ::String? = nil, tooltip_text : ::String? = nil, transient_for : Gtk::Window? = nil, translator_credits : ::String? = nil, valign : Gtk::Align? = nil, version : ::String? = nil, vexpand : Bool? = nil, vexpand_set : Bool? = nil, visible : Bool? = nil, visible_dialog : Adw::Dialog? = nil, website : ::String? = nil, width_request : Int32? = nil)
-      _names = uninitialized Pointer(LibC::Char)[86]
-      _values = StaticArray(LibGObject::Value, 86).new(LibGObject::Value.new)
+    def initialize(*, accessible_role : Gtk::AccessibleRole? = nil, adaptive_preview : Bool? = nil, application : Gtk::Application? = nil, application_icon : ::String? = nil, application_name : ::String? = nil, artists : Enumerable(::String)? = nil, can_focus : Bool? = nil, can_target : Bool? = nil, child : Gtk::Widget? = nil, comments : ::String? = nil, content : Gtk::Widget? = nil, copyright : ::String? = nil, css_classes : Enumerable(::String)? = nil, css_name : ::String? = nil, current_breakpoint : Adw::Breakpoint? = nil, cursor : Gdk::Cursor? = nil, debug_info : ::String? = nil, debug_info_filename : ::String? = nil, decorated : Bool? = nil, default_height : Int32? = nil, default_widget : Gtk::Widget? = nil, default_width : Int32? = nil, deletable : Bool? = nil, designers : Enumerable(::String)? = nil, destroy_with_parent : Bool? = nil, developer_name : ::String? = nil, developers : Enumerable(::String)? = nil, dialogs : Gio::ListModel? = nil, display : Gdk::Display? = nil, documenters : Enumerable(::String)? = nil, focus_on_click : Bool? = nil, focus_visible : Bool? = nil, focus_widget : Gtk::Widget? = nil, focusable : Bool? = nil, fullscreened : Bool? = nil, gravity : Gtk::WindowGravity? = nil, halign : Gtk::Align? = nil, handle_menubar_accel : Bool? = nil, has_default : Bool? = nil, has_focus : Bool? = nil, has_tooltip : Bool? = nil, height_request : Int32? = nil, hexpand : Bool? = nil, hexpand_set : Bool? = nil, hide_on_close : Bool? = nil, icon_name : ::String? = nil, is_active : Bool? = nil, issue_url : ::String? = nil, layout_manager : Gtk::LayoutManager? = nil, license : ::String? = nil, license_type : Gtk::License? = nil, limit_events : Bool? = nil, margin_bottom : Int32? = nil, margin_end : Int32? = nil, margin_start : Int32? = nil, margin_top : Int32? = nil, maximized : Bool? = nil, mnemonics_visible : Bool? = nil, modal : Bool? = nil, name : ::String? = nil, opacity : Float64? = nil, overflow : Gtk::Overflow? = nil, parent : Gtk::Widget? = nil, receives_default : Bool? = nil, release_notes : ::String? = nil, release_notes_version : ::String? = nil, resizable : Bool? = nil, root : Gtk::Root? = nil, scale_factor : Int32? = nil, sensitive : Bool? = nil, startup_id : ::String? = nil, support_url : ::String? = nil, suspended : Bool? = nil, title : ::String? = nil, titlebar : Gtk::Widget? = nil, tooltip_markup : ::String? = nil, tooltip_text : ::String? = nil, transient_for : Gtk::Window? = nil, translator_credits : ::String? = nil, valign : Gtk::Align? = nil, version : ::String? = nil, vexpand : Bool? = nil, vexpand_set : Bool? = nil, visible : Bool? = nil, visible_dialog : Adw::Dialog? = nil, website : ::String? = nil, width_request : Int32? = nil)
+      _names = uninitialized Pointer(LibC::Char)[87]
+      _values = StaticArray(LibGObject::Value, 87).new(LibGObject::Value.new)
       _n = 0
 
       if !accessible_role.nil?
@@ -225,6 +225,11 @@ module Adw
       if !fullscreened.nil?
         (_names.to_unsafe + _n).value = "fullscreened".to_unsafe
         GObject::Value.init_g_value(_values.to_unsafe + _n, fullscreened)
+        _n += 1
+      end
+      if !gravity.nil?
+        (_names.to_unsafe + _n).value = "gravity".to_unsafe
+        GObject::Value.init_g_value(_values.to_unsafe + _n, gravity)
         _n += 1
       end
       if !halign.nil?
@@ -1628,7 +1633,8 @@ module Adw
         handler = ->(_lib_sender : Pointer(Void), lib_uri : Pointer(LibC::Char), _lib_box : Pointer(Void)) {
           # Generator::BuiltInTypeArgPlan
           uri = ::String.new(lib_uri)
-          ::Box(Proc(::String, Bool)).unbox(_lib_box).call(uri)
+          _retval = ::Box(Proc(::String, Bool)).unbox(_lib_box).call(uri)
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,
@@ -1642,7 +1648,8 @@ module Adw
           _sender = Adw::AboutWindow.new(_lib_sender, GICrystal::Transfer::None)
           # Generator::BuiltInTypeArgPlan
           uri = ::String.new(lib_uri)
-          ::Box(Proc(Adw::AboutWindow, ::String, Bool)).unbox(_lib_box).call(_sender, uri)
+          _retval = ::Box(Proc(Adw::AboutWindow, ::String, Bool)).unbox(_lib_box).call(_sender, uri)
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,

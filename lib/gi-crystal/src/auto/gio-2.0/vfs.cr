@@ -148,7 +148,9 @@ module Gio
           vfs = Gio::Vfs.new(lib_vfs, GICrystal::Transfer::None)
           # Generator::BuiltInTypeArgPlan
           identifier = ::String.new(lib_identifier)
-          ::Box(Proc(Gio::Vfs, ::String, Gio::File)).unbox(lib_user_data).call(vfs, identifier)
+          _retval = ::Box(Proc(Gio::Vfs, ::String, Gio::File)).unbox(lib_user_data).call(vfs, identifier)
+          LibGObject.g_object_ref(_retval) if _retval
+          _retval.nil? ? Pointer(Void).null : _retval.to_unsafe
         }.pointer
         parse_name_data = GICrystal::ClosureDataManager.register(_box)
         parse_name_destroy = ->GICrystal::ClosureDataManager.deregister(Pointer(Void)).pointer
@@ -232,7 +234,7 @@ list=Gio::FileAttributeInfoList.new(lib_list, GICrystal::Transfer::None)
         # @path: 
 
 # Generator::BuiltInTypeArgPlan
-path=::String.new(lib_path)
+path=::Path.new(::String.new(lib_path))
 
 
         %instance = LibGObject.g_object_get_qdata(%this, GICrystal::INSTANCE_QDATA_KEY)

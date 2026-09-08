@@ -486,6 +486,18 @@ module Adw
       GICrystal.to_bool(_retval)
     end
 
+    def group(index : UInt32) : Adw::PreferencesGroup?
+      # adw_preferences_page_get_group: (Method)
+      # @index:
+      # Returns: (transfer none) (nullable)
+
+      # C call
+      _retval = LibAdw.adw_preferences_page_get_group(to_unsafe, index)
+
+      # Return value handling
+      Adw::PreferencesGroup.new(_retval, GICrystal::Transfer::None) unless _retval.null?
+    end
+
     def icon_name : ::String?
       # adw_preferences_page_get_icon_name: (Method | Getter)
       # Returns: (transfer none) (nullable)
@@ -528,6 +540,18 @@ module Adw
 
       # Return value handling
       GICrystal.to_bool(_retval)
+    end
+
+    def insert(group : Adw::PreferencesGroup, index : Int32) : Nil
+      # adw_preferences_page_insert: (Method)
+      # @group:
+      # @index:
+      # Returns: (transfer none)
+
+      # C call
+      LibAdw.adw_preferences_page_insert(to_unsafe, group, index)
+
+      # Return value handling
     end
 
     def remove(group : Adw::PreferencesGroup) : Nil

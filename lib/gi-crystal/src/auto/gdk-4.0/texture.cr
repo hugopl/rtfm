@@ -128,6 +128,7 @@ module Gdk
       value
     end
 
+    @[Deprecated]
     def self.new_for_pixbuf(pixbuf : GdkPixbuf::Pixbuf) : self
       # gdk_texture_new_for_pixbuf: (Constructor)
       # @pixbuf:

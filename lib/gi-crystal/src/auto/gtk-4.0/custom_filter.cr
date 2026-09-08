@@ -56,7 +56,8 @@ module Gtk
         match_func = ->(lib_item : Pointer(Void), lib_user_data : Pointer(Void)) {
           # Generator::BuiltInTypeArgPlan
           item = GObject::Object.new(lib_item, GICrystal::Transfer::None)
-          ::Box(Proc(GObject::Object, Bool)).unbox(lib_user_data).call(item)
+          _retval = ::Box(Proc(GObject::Object, Bool)).unbox(lib_user_data).call(item)
+          GICrystal.to_c_bool(_retval)
         }.pointer
         user_data = GICrystal::ClosureDataManager.register(_box)
         user_destroy = ->GICrystal::ClosureDataManager.deregister(Pointer(Void)).pointer
@@ -84,7 +85,8 @@ module Gtk
         match_func = ->(lib_item : Pointer(Void), lib_user_data : Pointer(Void)) {
           # Generator::BuiltInTypeArgPlan
           item = GObject::Object.new(lib_item, GICrystal::Transfer::None)
-          ::Box(Proc(GObject::Object, Bool)).unbox(lib_user_data).call(item)
+          _retval = ::Box(Proc(GObject::Object, Bool)).unbox(lib_user_data).call(item)
+          GICrystal.to_c_bool(_retval)
         }.pointer
         user_data = GICrystal::ClosureDataManager.register(_box)
         user_destroy = ->GICrystal::ClosureDataManager.deregister(Pointer(Void)).pointer

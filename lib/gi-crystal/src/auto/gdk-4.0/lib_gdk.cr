@@ -9,11 +9,13 @@ lib LibGdk
   type ModifierType = UInt32
   type PaintableFlags = UInt32
   type SeatCapabilities = UInt32
+  type ToplevelCapabilities = UInt32
   type ToplevelState = UInt32
 
   # Enums
   type AxisUse = UInt32
   type CicpRange = UInt32
+  type ColorChannel = UInt32
   type CrossingMode = UInt32
   type DevicePadFeature = UInt32
   type DeviceToolType = UInt32
@@ -28,6 +30,7 @@ lib LibGdk
   type MemoryFormat = UInt32
   type NotifyType = UInt32
   type ScrollDirection = UInt32
+  type ScrollRelativeDirection = UInt32
   type ScrollUnit = UInt32
   type SubpixelLayout = UInt32
   type SurfaceEdge = UInt32
@@ -298,8 +301,10 @@ lib LibGdk
   fun gdk_clipboard_set_value(this : Void*, value : Pointer(Void)) : Void
   fun gdk_clipboard_store_async(this : Void*, io_priority : Int32, cancellable : Pointer(Void), callback : Void*, user_data : Pointer(Void)) : Void
   fun gdk_clipboard_store_finish(this : Void*, result : Pointer(Void), error : LibGLib::Error**) : LibC::Int
+  fun gdk_color_channel_get_type : UInt64
   fun gdk_color_state_create_cicp_params(this : Void*) : Pointer(Void)
   fun gdk_color_state_equal(this : Void*, other : Pointer(Void)) : LibC::Int
+  fun gdk_color_state_equivalent(this : Void*, other : Pointer(Void)) : LibC::Int
   fun gdk_color_state_get_oklab : Pointer(Void)
   fun gdk_color_state_get_oklab : Pointer(Void)
   fun gdk_color_state_get_oklch : Pointer(Void)
@@ -684,7 +689,9 @@ lib LibGdk
   fun gdk_memory_texture_builder_get_color_state(this : Void*) : Pointer(Void)
   fun gdk_memory_texture_builder_get_format(this : Void*) : UInt32
   fun gdk_memory_texture_builder_get_height(this : Void*) : Int32
+  fun gdk_memory_texture_builder_get_offset(this : Void*, plane : UInt32) : UInt64
   fun gdk_memory_texture_builder_get_stride(this : Void*) : UInt64
+  fun gdk_memory_texture_builder_get_stride_for_plane(this : Void*, plane : UInt32) : UInt64
   fun gdk_memory_texture_builder_get_type : UInt64
   fun gdk_memory_texture_builder_get_update_region(this : Void*) : Pointer(Void)
   fun gdk_memory_texture_builder_get_update_texture(this : Void*) : Pointer(Void)
@@ -694,7 +701,9 @@ lib LibGdk
   fun gdk_memory_texture_builder_set_color_state(this : Void*, color_state : Pointer(Void)) : Void
   fun gdk_memory_texture_builder_set_format(this : Void*, format : UInt32) : Void
   fun gdk_memory_texture_builder_set_height(this : Void*, height : Int32) : Void
+  fun gdk_memory_texture_builder_set_offset(this : Void*, plane : UInt32, offset : UInt64) : Void
   fun gdk_memory_texture_builder_set_stride(this : Void*, stride : UInt64) : Void
+  fun gdk_memory_texture_builder_set_stride_for_plane(this : Void*, plane : UInt32, stride : UInt64) : Void
   fun gdk_memory_texture_builder_set_update_region(this : Void*, region : Pointer(Void)) : Void
   fun gdk_memory_texture_builder_set_update_texture(this : Void*, texture : Pointer(Void)) : Void
   fun gdk_memory_texture_builder_set_width(this : Void*, width : Int32) : Void
@@ -776,13 +785,16 @@ lib LibGdk
   fun gdk_rgba_is_clear(this : Void*) : LibC::Int
   fun gdk_rgba_is_opaque(this : Void*) : LibC::Int
   fun gdk_rgba_parse(this : Void*, spec : Pointer(LibC::Char)) : LibC::Int
+  fun gdk_rgba_print(this : Void*, string : Pointer(Void)) : Pointer(Void)
   fun gdk_rgba_to_string(this : Void*) : Pointer(LibC::Char)
   fun gdk_scroll_direction_get_type : UInt64
   fun gdk_scroll_event_get_deltas(this : Void*, delta_x : Pointer(Float64), delta_y : Pointer(Float64)) : Void
   fun gdk_scroll_event_get_direction(this : Void*) : UInt32
+  fun gdk_scroll_event_get_relative_direction(this : Void*) : UInt32
   fun gdk_scroll_event_get_type : UInt64
   fun gdk_scroll_event_get_unit(this : Void*) : UInt32
   fun gdk_scroll_event_is_stop(this : Void*) : LibC::Int
+  fun gdk_scroll_relative_direction_get_type : UInt64
   fun gdk_scroll_unit_get_type : UInt64
   fun gdk_seat_capabilities_get_type : UInt64
   fun gdk_seat_get_capabilities(this : Void*) : UInt32
@@ -827,6 +839,7 @@ lib LibGdk
   fun gdk_texture_download(this : Void*, data : Pointer(UInt8), stride : UInt64) : Void
   fun gdk_texture_downloader_copy(this : Void*) : Pointer(Void)
   fun gdk_texture_downloader_download_bytes(this : Void*, out_stride : Pointer(UInt64)) : Pointer(Void)
+  fun gdk_texture_downloader_download_bytes_with_planes(this : Void*, out_offsets : Pointer(Pointer(UInt64)), out_strides : Pointer(Pointer(UInt64))) : Pointer(Void)
   fun gdk_texture_downloader_download_into(this : Void*, data : Pointer(UInt8), stride : UInt64) : Void
   fun gdk_texture_downloader_free(this : Void*) : Void
   fun gdk_texture_downloader_get_color_state(this : Void*) : Pointer(Void)
@@ -856,7 +869,10 @@ lib LibGdk
   fun gdk_titlebar_gesture_get_type : UInt64
   fun gdk_toplevel_begin_move(this : Void*, device : Pointer(Void), button : Int32, x : Float64, y : Float64, timestamp : UInt32) : Void
   fun gdk_toplevel_begin_resize(this : Void*, edge : UInt32, device : Pointer(Void), button : Int32, x : Float64, y : Float64, timestamp : UInt32) : Void
+  fun gdk_toplevel_capabilities_get_type : UInt64
   fun gdk_toplevel_focus(this : Void*, timestamp : UInt32) : Void
+  fun gdk_toplevel_get_capabilities(this : Void*) : UInt32
+  fun gdk_toplevel_get_gravity(this : Void*) : UInt32
   fun gdk_toplevel_get_state(this : Void*) : UInt32
   fun gdk_toplevel_get_type : UInt64
   fun gdk_toplevel_inhibit_system_shortcuts(this : Void*, event : Pointer(Void)) : Void
@@ -879,6 +895,7 @@ lib LibGdk
   fun gdk_toplevel_restore_system_shortcuts(this : Void*) : Void
   fun gdk_toplevel_set_decorated(this : Void*, decorated : LibC::Int) : Void
   fun gdk_toplevel_set_deletable(this : Void*, deletable : LibC::Int) : Void
+  fun gdk_toplevel_set_gravity(this : Void*, gravity : UInt32) : Void
   fun gdk_toplevel_set_icon_list(this : Void*, surfaces : Pointer(LibGLib::List)) : Void
   fun gdk_toplevel_set_modal(this : Void*, modal : LibC::Int) : Void
   fun gdk_toplevel_set_startup_id(this : Void*, startup_id : Pointer(LibC::Char)) : Void

@@ -59,11 +59,14 @@ module GObject
       # Return value handling
     end
 
-    def register_enum(name : ::String, const_static_values : GObject::EnumValue) : UInt64
+    def register_enum(name : ::String, const_static_values : Enumerable(GObject::EnumValue)) : UInt64
       # g_type_module_register_enum: (Method)
       # @name:
-      # @const_static_values:
+      # @const_static_values: (array zero-terminated=1 element-type Interface)
       # Returns: (transfer none)
+
+      # Generator::ArrayArgPlan
+      const_static_values = const_static_values.to_a.map(&.to_unsafe).to_unsafe.as(Pointer(LibGObject::EnumValue))
 
       # C call
       _retval = LibGObject.g_type_module_register_enum(to_unsafe, name, const_static_values)
@@ -72,11 +75,14 @@ module GObject
       _retval
     end
 
-    def register_flags(name : ::String, const_static_values : GObject::FlagsValue) : UInt64
+    def register_flags(name : ::String, const_static_values : Enumerable(GObject::FlagsValue)) : UInt64
       # g_type_module_register_flags: (Method)
       # @name:
-      # @const_static_values:
+      # @const_static_values: (array zero-terminated=1 element-type Interface)
       # Returns: (transfer none)
+
+      # Generator::ArrayArgPlan
+      const_static_values = const_static_values.to_a.map(&.to_unsafe).to_unsafe.as(Pointer(LibGObject::FlagsValue))
 
       # C call
       _retval = LibGObject.g_type_module_register_flags(to_unsafe, name, const_static_values)

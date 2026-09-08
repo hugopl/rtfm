@@ -58,8 +58,6 @@ require "./data_output_stream.cr"
 require "./datagram_based.cr"
 require "./debug_controller.cr"
 require "./debug_controller_d_bus.cr"
-require "./desktop_app_info.cr"
-require "./desktop_app_info_lookup.cr"
 require "./drive.cr"
 require "./dtls_client_connection.cr"
 require "./dtls_connection.cr"
@@ -70,7 +68,6 @@ require "./file.cr"
 require "./file_attribute_info.cr"
 require "./file_attribute_info_list.cr"
 require "./file_attribute_matcher.cr"
-require "./file_descriptor_based.cr"
 require "./file_enumerator.cr"
 require "./file_icon.cr"
 require "./file_info.cr"
@@ -81,6 +78,7 @@ require "./file_output_stream.cr"
 require "./filename_completer.cr"
 require "./filter_input_stream.cr"
 require "./filter_output_stream.cr"
+require "./i_pv6_tclass_message.cr"
 require "./icon.cr"
 require "./inet_address.cr"
 require "./inet_address_mask.cr"
@@ -96,6 +94,7 @@ require "./io_module_scope.cr"
 require "./io_scheduler_job.cr"
 require "./io_stream.cr"
 require "./io_stream_adapter.cr"
+require "./ip_tos_message.cr"
 require "./list_model.cr"
 require "./list_store.cr"
 require "./loadable_icon.cr"
@@ -173,12 +172,6 @@ require "./tls_server_connection.cr"
 require "./unix_connection.cr"
 require "./unix_credentials_message.cr"
 require "./unix_fd_list.cr"
-require "./unix_fd_message.cr"
-require "./unix_input_stream.cr"
-require "./unix_mount_entry.cr"
-require "./unix_mount_monitor.cr"
-require "./unix_mount_point.cr"
-require "./unix_output_stream.cr"
 require "./unix_socket_address.cr"
 require "./vfs.cr"
 require "./volume.cr"
@@ -190,7 +183,6 @@ module Gio
   DBUS_METHOD_INVOCATION_HANDLED                    = true
   DBUS_METHOD_INVOCATION_UNHANDLED                  = false
   DEBUG_CONTROLLER_EXTENSION_POINT_NAME             = "gio-debug-controller"
-  DESKTOP_APP_INFO_LOOKUP_EXTENSION_POINT_NAME      = "gio-desktop-app-info-lookup"
   DRIVE_IDENTIFIER_KIND_UNIX_DEVICE                 = "unix-device"
   FILE_ATTRIBUTE_ACCESS_CAN_DELETE                  = "access::can-delete"
   FILE_ATTRIBUTE_ACCESS_CAN_EXECUTE                 = "access::can-execute"
@@ -354,8 +346,6 @@ module Gio
 
   alias DatagramBasedSourceFunc = Proc(Gio::DatagramBased, GLib::IOCondition, Bool)
 
-  alias DesktopAppLaunchCallback = Proc(Gio::DesktopAppInfo, Int32, Nil)
-
   alias FileMeasureProgressCallback = Proc(Bool, UInt64, UInt64, UInt64, Nil)
 
   alias FileProgressCallback = Proc(Int64, Int64, Nil)
@@ -372,7 +362,7 @@ module Gio
 
   alias SettingsBindSetMapping = Proc(GObject::Value, GLib::VariantType, GLib::Variant)
 
-  alias SettingsGetMapping = Proc(GLib::Variant, Pointer(Void), Bool)
+  alias SettingsGetMapping = Proc(GLib::Variant?, Pointer(Void), Bool)
 
   alias SimpleAsyncThreadFunc = Proc(Gio::SimpleAsyncResult, GObject::Object, Gio::Cancellable?, Nil)
 
@@ -505,6 +495,18 @@ module Gio
     end
   end
 
+  enum EcnCodePoint : UInt32
+    NoEcn = 0
+    Ect1  = 1
+    Ect0  = 2
+    EctCe = 3
+
+    # Returns the type id (GType) registered in GLib type system.
+    def self.g_type : UInt64
+      LibGio.g_ecn_code_point_get_type
+    end
+  end
+
   enum EmblemOrigin : UInt32
     Unknown      = 0
     Device       = 1
@@ -588,16 +590,6 @@ module Gio
     # Returns the type id (GType) registered in GLib type system.
     def self.g_type : UInt64
       LibGio.g_filesystem_preview_type_get_type
-    end
-  end
-
-  enum IOModuleScopeFlags : UInt32
-    None            = 0
-    BlockDuplicates = 1
-
-    # Returns the type id (GType) registered in GLib type system.
-    def self.g_type : UInt64
-      LibGio.g_io_module_scope_flags_get_type
     end
   end
 
@@ -759,15 +751,6 @@ module Gio
     end
   end
 
-  enum TlsCertificateRequestFlags : UInt32
-    None = 0
-
-    # Returns the type id (GType) registered in GLib type system.
-    def self.g_type : UInt64
-      LibGio.g_tls_certificate_request_flags_get_type
-    end
-  end
-
   enum TlsChannelBindingType : UInt32
     Unique         = 0
     ServerEndPoint = 1
@@ -776,16 +759,6 @@ module Gio
     # Returns the type id (GType) registered in GLib type system.
     def self.g_type : UInt64
       LibGio.g_tls_channel_binding_type_get_type
-    end
-  end
-
-  enum TlsDatabaseLookupFlags : UInt32
-    None    = 0
-    Keypair = 1
-
-    # Returns the type id (GType) registered in GLib type system.
-    def self.g_type : UInt64
-      LibGio.g_tls_database_lookup_flags_get_type
     end
   end
 
@@ -1155,6 +1128,16 @@ module Gio
   end
 
   @[Flags]
+  enum IOModuleScopeFlags : UInt32
+    BlockDuplicates = 1
+
+    # Returns the type id (GType) registered in GLib type system.
+    def self.g_type : UInt64
+      LibGio.g_io_module_scope_flags_get_type
+    end
+  end
+
+  @[Flags]
   enum IOStreamSpliceFlags : UInt32
     CloseStream1 = 1
     CloseStream2 = 2
@@ -1296,6 +1279,25 @@ module Gio
     # Returns the type id (GType) registered in GLib type system.
     def self.g_type : UInt64
       LibGio.g_tls_certificate_flags_get_type
+    end
+  end
+
+  enum TlsCertificateRequestFlags : UInt32
+    None = 0
+
+    # Returns the type id (GType) registered in GLib type system.
+    def self.g_type : UInt64
+      LibGio.g_tls_certificate_request_flags_get_type
+    end
+  end
+
+  @[Flags]
+  enum TlsDatabaseLookupFlags : UInt32
+    Keypair = 1
+
+    # Returns the type id (GType) registered in GLib type system.
+    def self.g_type : UInt64
+      LibGio.g_tls_database_lookup_flags_get_type
     end
   end
 
@@ -2355,10 +2357,10 @@ module Gio
     GICrystal.to_bool(_retval)
   end
 
-  def self.dbus_error_register_error_domain(error_domain_quark_name : ::String, quark_volatile : Pointer(UInt64), entries : Enumerable(Gio::DBusErrorEntry)) : Nil
+  def self.dbus_error_register_error_domain(error_domain_quark_name : ::String, quark_volatile : UInt64, entries : Enumerable(Gio::DBusErrorEntry)) : Nil
     # g_dbus_error_register_error_domain: (None)
     # @error_domain_quark_name:
-    # @quark_volatile:
+    # @quark_volatile: (out) (transfer full)
     # @entries: (array length=num_entries element-type Interface)
     # @num_entries:
     # Returns: (transfer none)
@@ -3631,452 +3633,6 @@ module Gio
 
     # Return value handling
     Gio::AbstractTlsServerConnection.new(_retval, GICrystal::Transfer::Full)
-  end
-
-  def self.unix_is_mount_path_system_internal(mount_path : ::String) : Bool
-    # g_unix_is_mount_path_system_internal: (None)
-    # @mount_path:
-    # Returns: (transfer none)
-
-    # C call
-    _retval = LibGio.g_unix_is_mount_path_system_internal(mount_path)
-
-    # Return value handling
-    GICrystal.to_bool(_retval)
-  end
-
-  def self.unix_is_system_device_path(device_path : ::String) : Bool
-    # g_unix_is_system_device_path: (None)
-    # @device_path:
-    # Returns: (transfer none)
-
-    # C call
-    _retval = LibGio.g_unix_is_system_device_path(device_path)
-
-    # Return value handling
-    GICrystal.to_bool(_retval)
-  end
-
-  def self.unix_is_system_fs_type(fs_type : ::String) : Bool
-    # g_unix_is_system_fs_type: (None)
-    # @fs_type:
-    # Returns: (transfer none)
-
-    # C call
-    _retval = LibGio.g_unix_is_system_fs_type(fs_type)
-
-    # Return value handling
-    GICrystal.to_bool(_retval)
-  end
-
-  @[Deprecated]
-  def self.unix_mount_at(mount_path : ::String) : Gio::UnixMountEntry?
-    # g_unix_mount_at: (None)
-    # @mount_path:
-    # @time_read: (out) (transfer full) (optional)
-    # Returns: (transfer full) (nullable)
-
-    # Generator::OutArgUsedInReturnPlan
-    time_read = Pointer(UInt64).null
-    # C call
-    _retval = LibGio.g_unix_mount_at(mount_path, time_read)
-
-    # Return value handling
-    Gio::UnixMountEntry.new(_retval, GICrystal::Transfer::Full) unless _retval.null?
-  end
-
-  @[Deprecated]
-  def self.unix_mount_compare(mount1 : Gio::UnixMountEntry, mount2 : Gio::UnixMountEntry) : Int32
-    # g_unix_mount_compare: (None)
-    # @mount1:
-    # @mount2:
-    # Returns: (transfer none)
-
-    # C call
-    _retval = LibGio.g_unix_mount_compare(mount1, mount2)
-
-    # Return value handling
-    _retval
-  end
-
-  @[Deprecated]
-  def self.unix_mount_copy(mount_entry : Gio::UnixMountEntry) : Gio::UnixMountEntry
-    # g_unix_mount_copy: (None)
-    # @mount_entry:
-    # Returns: (transfer full)
-
-    # C call
-    _retval = LibGio.g_unix_mount_copy(mount_entry)
-
-    # Return value handling
-    Gio::UnixMountEntry.new(_retval, GICrystal::Transfer::Full)
-  end
-
-  def self.unix_mount_entries_changed_since(time : UInt64) : Bool
-    # g_unix_mount_entries_changed_since: (None)
-    # @time:
-    # Returns: (transfer none)
-
-    # C call
-    _retval = LibGio.g_unix_mount_entries_changed_since(time)
-
-    # Return value handling
-    GICrystal.to_bool(_retval)
-  end
-
-  def self.unix_mount_entries_get : GLib::List
-    # g_unix_mount_entries_get: (None)
-    # @time_read: (out) (transfer full) (optional)
-    # Returns: (transfer full)
-
-    # Generator::OutArgUsedInReturnPlan
-    time_read = Pointer(UInt64).null
-    # C call
-    _retval = LibGio.g_unix_mount_entries_get(time_read)
-
-    # Return value handling
-    GLib::List(Gio::UnixMountEntry).new(_retval, GICrystal::Transfer::Full)
-  end
-
-  def self.unix_mount_entries_get_from_file(table_path : ::String) : UInt64
-    # g_unix_mount_entries_get_from_file: (None)
-    # @table_path:
-    # @time_read_out: (out) (caller-allocates) (optional)
-    # @n_entries_out: (out) (transfer full) (caller-allocates) (optional)
-    # Returns: (transfer full) (nullable) (array length=n_entries_out element-type Interface)
-
-    # Generator::OutArgUsedInReturnPlan
-    time_read_out = Pointer(UInt64).null # Generator::CallerAllocatesPlan
-    time_read_out = UInt64.new           # Generator::OutArgUsedInReturnPlan
-    n_entries_out = 0_u64                # Generator::CallerAllocatesPlan
-    n_entries_out = UInt64.new
-    # C call
-    _retval = LibGio.g_unix_mount_entries_get_from_file(table_path, time_read_out, pointerof(n_entries_out))
-
-    # Return value handling
-    time_read_out unless _retval.null?
-  end
-
-  def self.unix_mount_entry_at(mount_path : ::String) : Gio::UnixMountEntry?
-    # g_unix_mount_entry_at: (None)
-    # @mount_path:
-    # @time_read: (out) (transfer full) (optional)
-    # Returns: (transfer full) (nullable)
-
-    # Generator::OutArgUsedInReturnPlan
-    time_read = Pointer(UInt64).null
-    # C call
-    _retval = LibGio.g_unix_mount_entry_at(mount_path, time_read)
-
-    # Return value handling
-    Gio::UnixMountEntry.new(_retval, GICrystal::Transfer::Full) unless _retval.null?
-  end
-
-  def self.unix_mount_entry_for(file_path : ::String) : Gio::UnixMountEntry?
-    # g_unix_mount_entry_for: (None)
-    # @file_path:
-    # @time_read: (out) (transfer full) (optional)
-    # Returns: (transfer full) (nullable)
-
-    # Generator::OutArgUsedInReturnPlan
-    time_read = Pointer(UInt64).null
-    # C call
-    _retval = LibGio.g_unix_mount_entry_for(file_path, time_read)
-
-    # Return value handling
-    Gio::UnixMountEntry.new(_retval, GICrystal::Transfer::Full) unless _retval.null?
-  end
-
-  @[Deprecated]
-  def self.unix_mount_for(file_path : ::String) : Gio::UnixMountEntry?
-    # g_unix_mount_for: (None)
-    # @file_path:
-    # @time_read: (out) (transfer full) (optional)
-    # Returns: (transfer full) (nullable)
-
-    # Generator::OutArgUsedInReturnPlan
-    time_read = Pointer(UInt64).null
-    # C call
-    _retval = LibGio.g_unix_mount_for(file_path, time_read)
-
-    # Return value handling
-    Gio::UnixMountEntry.new(_retval, GICrystal::Transfer::Full) unless _retval.null?
-  end
-
-  @[Deprecated]
-  def self.unix_mount_free(mount_entry : Gio::UnixMountEntry) : Nil
-    # g_unix_mount_free: (None)
-    # @mount_entry:
-    # Returns: (transfer none)
-
-    # C call
-    LibGio.g_unix_mount_free(mount_entry)
-
-    # Return value handling
-  end
-
-  @[Deprecated]
-  def self.unix_mount_get_device_path(mount_entry : Gio::UnixMountEntry) : ::Path
-    # g_unix_mount_get_device_path: (None)
-    # @mount_entry:
-    # Returns: (transfer none) (filename)
-
-    # C call
-    _retval = LibGio.g_unix_mount_get_device_path(mount_entry)
-
-    # Return value handling
-    ::Path.new(::String.new(_retval))
-  end
-
-  @[Deprecated]
-  def self.unix_mount_get_fs_type(mount_entry : Gio::UnixMountEntry) : ::String
-    # g_unix_mount_get_fs_type: (None)
-    # @mount_entry:
-    # Returns: (transfer none)
-
-    # C call
-    _retval = LibGio.g_unix_mount_get_fs_type(mount_entry)
-
-    # Return value handling
-    ::String.new(_retval)
-  end
-
-  @[Deprecated]
-  def self.unix_mount_get_mount_path(mount_entry : Gio::UnixMountEntry) : ::Path
-    # g_unix_mount_get_mount_path: (None)
-    # @mount_entry:
-    # Returns: (transfer none) (filename)
-
-    # C call
-    _retval = LibGio.g_unix_mount_get_mount_path(mount_entry)
-
-    # Return value handling
-    ::Path.new(::String.new(_retval))
-  end
-
-  @[Deprecated]
-  def self.unix_mount_get_options(mount_entry : Gio::UnixMountEntry) : ::String?
-    # g_unix_mount_get_options: (None)
-    # @mount_entry:
-    # Returns: (transfer none) (nullable)
-
-    # C call
-    _retval = LibGio.g_unix_mount_get_options(mount_entry)
-
-    # Return value handling
-    ::String.new(_retval) unless _retval.null?
-  end
-
-  @[Deprecated]
-  def self.unix_mount_get_root_path(mount_entry : Gio::UnixMountEntry) : ::String?
-    # g_unix_mount_get_root_path: (None)
-    # @mount_entry:
-    # Returns: (transfer none) (nullable)
-
-    # C call
-    _retval = LibGio.g_unix_mount_get_root_path(mount_entry)
-
-    # Return value handling
-    ::String.new(_retval) unless _retval.null?
-  end
-
-  @[Deprecated]
-  def self.unix_mount_guess_can_eject(mount_entry : Gio::UnixMountEntry) : Bool
-    # g_unix_mount_guess_can_eject: (None)
-    # @mount_entry:
-    # Returns: (transfer none)
-
-    # C call
-    _retval = LibGio.g_unix_mount_guess_can_eject(mount_entry)
-
-    # Return value handling
-    GICrystal.to_bool(_retval)
-  end
-
-  @[Deprecated]
-  def self.unix_mount_guess_icon(mount_entry : Gio::UnixMountEntry) : Gio::Icon
-    # g_unix_mount_guess_icon: (None)
-    # @mount_entry:
-    # Returns: (transfer full)
-
-    # C call
-    _retval = LibGio.g_unix_mount_guess_icon(mount_entry)
-
-    # Return value handling
-    Gio::AbstractIcon.new(_retval, GICrystal::Transfer::Full)
-  end
-
-  @[Deprecated]
-  def self.unix_mount_guess_name(mount_entry : Gio::UnixMountEntry) : ::String
-    # g_unix_mount_guess_name: (None)
-    # @mount_entry:
-    # Returns: (transfer full)
-
-    # C call
-    _retval = LibGio.g_unix_mount_guess_name(mount_entry)
-
-    # Return value handling
-    GICrystal.transfer_full(_retval)
-  end
-
-  @[Deprecated]
-  def self.unix_mount_guess_should_display(mount_entry : Gio::UnixMountEntry) : Bool
-    # g_unix_mount_guess_should_display: (None)
-    # @mount_entry:
-    # Returns: (transfer none)
-
-    # C call
-    _retval = LibGio.g_unix_mount_guess_should_display(mount_entry)
-
-    # Return value handling
-    GICrystal.to_bool(_retval)
-  end
-
-  @[Deprecated]
-  def self.unix_mount_guess_symbolic_icon(mount_entry : Gio::UnixMountEntry) : Gio::Icon
-    # g_unix_mount_guess_symbolic_icon: (None)
-    # @mount_entry:
-    # Returns: (transfer full)
-
-    # C call
-    _retval = LibGio.g_unix_mount_guess_symbolic_icon(mount_entry)
-
-    # Return value handling
-    Gio::AbstractIcon.new(_retval, GICrystal::Transfer::Full)
-  end
-
-  @[Deprecated]
-  def self.unix_mount_is_readonly(mount_entry : Gio::UnixMountEntry) : Bool
-    # g_unix_mount_is_readonly: (None)
-    # @mount_entry:
-    # Returns: (transfer none)
-
-    # C call
-    _retval = LibGio.g_unix_mount_is_readonly(mount_entry)
-
-    # Return value handling
-    GICrystal.to_bool(_retval)
-  end
-
-  @[Deprecated]
-  def self.unix_mount_is_system_internal(mount_entry : Gio::UnixMountEntry) : Bool
-    # g_unix_mount_is_system_internal: (None)
-    # @mount_entry:
-    # Returns: (transfer none)
-
-    # C call
-    _retval = LibGio.g_unix_mount_is_system_internal(mount_entry)
-
-    # Return value handling
-    GICrystal.to_bool(_retval)
-  end
-
-  def self.unix_mount_point_at(mount_path : ::String) : Gio::UnixMountPoint?
-    # g_unix_mount_point_at: (None)
-    # @mount_path:
-    # @time_read: (out) (transfer full) (optional)
-    # Returns: (transfer full) (nullable)
-
-    # Generator::OutArgUsedInReturnPlan
-    time_read = Pointer(UInt64).null
-    # C call
-    _retval = LibGio.g_unix_mount_point_at(mount_path, time_read)
-
-    # Return value handling
-    Gio::UnixMountPoint.new(_retval, GICrystal::Transfer::Full) unless _retval.null?
-  end
-
-  def self.unix_mount_points_changed_since(time : UInt64) : Bool
-    # g_unix_mount_points_changed_since: (None)
-    # @time:
-    # Returns: (transfer none)
-
-    # C call
-    _retval = LibGio.g_unix_mount_points_changed_since(time)
-
-    # Return value handling
-    GICrystal.to_bool(_retval)
-  end
-
-  def self.unix_mount_points_get : GLib::List
-    # g_unix_mount_points_get: (None)
-    # @time_read: (out) (transfer full) (optional)
-    # Returns: (transfer full)
-
-    # Generator::OutArgUsedInReturnPlan
-    time_read = Pointer(UInt64).null
-    # C call
-    _retval = LibGio.g_unix_mount_points_get(time_read)
-
-    # Return value handling
-    GLib::List(Gio::UnixMountPoint).new(_retval, GICrystal::Transfer::Full)
-  end
-
-  def self.unix_mount_points_get_from_file(table_path : ::String) : UInt64
-    # g_unix_mount_points_get_from_file: (None)
-    # @table_path:
-    # @time_read_out: (out) (caller-allocates) (optional)
-    # @n_points_out: (out) (transfer full) (caller-allocates) (optional)
-    # Returns: (transfer full) (nullable) (array length=n_points_out element-type Interface)
-
-    # Generator::OutArgUsedInReturnPlan
-    time_read_out = Pointer(UInt64).null # Generator::CallerAllocatesPlan
-    time_read_out = UInt64.new           # Generator::OutArgUsedInReturnPlan
-    n_points_out = 0_u64                 # Generator::CallerAllocatesPlan
-    n_points_out = UInt64.new
-    # C call
-    _retval = LibGio.g_unix_mount_points_get_from_file(table_path, time_read_out, pointerof(n_points_out))
-
-    # Return value handling
-    time_read_out unless _retval.null?
-  end
-
-  @[Deprecated]
-  def self.unix_mounts_changed_since(time : UInt64) : Bool
-    # g_unix_mounts_changed_since: (None)
-    # @time:
-    # Returns: (transfer none)
-
-    # C call
-    _retval = LibGio.g_unix_mounts_changed_since(time)
-
-    # Return value handling
-    GICrystal.to_bool(_retval)
-  end
-
-  @[Deprecated]
-  def self.unix_mounts_get : GLib::List
-    # g_unix_mounts_get: (None)
-    # @time_read: (out) (transfer full) (optional)
-    # Returns: (transfer full)
-
-    # Generator::OutArgUsedInReturnPlan
-    time_read = Pointer(UInt64).null
-    # C call
-    _retval = LibGio.g_unix_mounts_get(time_read)
-
-    # Return value handling
-    GLib::List(Gio::UnixMountEntry).new(_retval, GICrystal::Transfer::Full)
-  end
-
-  @[Deprecated]
-  def self.unix_mounts_get_from_file(table_path : ::String) : UInt64
-    # g_unix_mounts_get_from_file: (None)
-    # @table_path:
-    # @time_read_out: (out) (caller-allocates) (optional)
-    # @n_entries_out: (out) (transfer full) (caller-allocates) (optional)
-    # Returns: (transfer full) (nullable) (array length=n_entries_out element-type Interface)
-
-    # Generator::OutArgUsedInReturnPlan
-    time_read_out = Pointer(UInt64).null # Generator::CallerAllocatesPlan
-    time_read_out = UInt64.new           # Generator::OutArgUsedInReturnPlan
-    n_entries_out = 0_u64                # Generator::CallerAllocatesPlan
-    n_entries_out = UInt64.new
-    # C call
-    _retval = LibGio.g_unix_mounts_get_from_file(table_path, time_read_out, pointerof(n_entries_out))
-
-    # Return value handling
-    time_read_out unless _retval.null?
   end
 
   # Errors

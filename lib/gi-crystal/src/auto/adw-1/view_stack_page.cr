@@ -32,9 +32,9 @@ module Adw
       ptr
     end
 
-    def initialize(*, accessible_role : Gtk::AccessibleRole? = nil, badge_number : UInt32? = nil, child : Gtk::Widget? = nil, icon_name : ::String? = nil, name : ::String? = nil, needs_attention : Bool? = nil, title : ::String? = nil, use_underline : Bool? = nil, visible : Bool? = nil)
-      _names = uninitialized Pointer(LibC::Char)[9]
-      _values = StaticArray(LibGObject::Value, 9).new(LibGObject::Value.new)
+    def initialize(*, accessible_role : Gtk::AccessibleRole? = nil, badge_number : UInt32? = nil, child : Gtk::Widget? = nil, icon_name : ::String? = nil, name : ::String? = nil, needs_attention : Bool? = nil, section_title : ::String? = nil, starts_section : Bool? = nil, title : ::String? = nil, use_underline : Bool? = nil, visible : Bool? = nil)
+      _names = uninitialized Pointer(LibC::Char)[11]
+      _values = StaticArray(LibGObject::Value, 11).new(LibGObject::Value.new)
       _n = 0
 
       if !accessible_role.nil?
@@ -65,6 +65,16 @@ module Adw
       if !needs_attention.nil?
         (_names.to_unsafe + _n).value = "needs-attention".to_unsafe
         GObject::Value.init_g_value(_values.to_unsafe + _n, needs_attention)
+        _n += 1
+      end
+      if !section_title.nil?
+        (_names.to_unsafe + _n).value = "section-title".to_unsafe
+        GObject::Value.init_g_value(_values.to_unsafe + _n, section_title)
+        _n += 1
+      end
+      if !starts_section.nil?
+        (_names.to_unsafe + _n).value = "starts-section".to_unsafe
+        GObject::Value.init_g_value(_values.to_unsafe + _n, starts_section)
         _n += 1
       end
       if !title.nil?
@@ -203,6 +213,48 @@ module Adw
       GICrystal.to_bool(value)
     end
 
+    def section_title=(value : ::String) : ::String
+      unsafe_value = value
+
+      LibGObject.g_object_set(self, "section-title", unsafe_value, Pointer(Void).null)
+      value
+    end
+
+    def section_title : ::String
+      # Returns: None
+
+      value = uninitialized Pointer(LibC::Char)
+      LibGObject.g_object_get(self, "section-title", pointerof(value), Pointer(Void).null)
+      ::String.new(value)
+    end
+
+    # Set `#section_title` property to nil.
+    def section_title=(value : Nil) : Nil
+      LibGObject.g_object_set(self, "section-title", Pointer(Void).null, Pointer(Void).null)
+    end
+
+    # Same as `#section_title`, but can return nil.
+    def section_title? : ::String?
+      value = uninitialized Pointer(LibC::Char)
+      LibGObject.g_object_get(self, "section-title", pointerof(value), Pointer(Void).null)
+      ::String.new(value) if value
+    end
+
+    def starts_section=(value : Bool) : Bool
+      unsafe_value = value
+
+      LibGObject.g_object_set(self, "starts-section", unsafe_value, Pointer(Void).null)
+      value
+    end
+
+    def starts_section? : Bool
+      # Returns: None
+
+      value = uninitialized LibC::Int
+      LibGObject.g_object_get(self, "starts-section", pointerof(value), Pointer(Void).null)
+      GICrystal.to_bool(value)
+    end
+
     def title=(value : ::String) : ::String
       unsafe_value = value
 
@@ -315,6 +367,28 @@ module Adw
       GICrystal.to_bool(_retval)
     end
 
+    def section_title : ::String?
+      # adw_view_stack_page_get_section_title: (Method | Getter)
+      # Returns: (transfer none) (nullable)
+
+      # C call
+      _retval = LibAdw.adw_view_stack_page_get_section_title(to_unsafe)
+
+      # Return value handling
+      ::String.new(_retval) unless _retval.null?
+    end
+
+    def starts_section : Bool
+      # adw_view_stack_page_get_starts_section: (Method | Getter)
+      # Returns: (transfer none)
+
+      # C call
+      _retval = LibAdw.adw_view_stack_page_get_starts_section(to_unsafe)
+
+      # Return value handling
+      GICrystal.to_bool(_retval)
+    end
+
     def title : ::String?
       # adw_view_stack_page_get_title: (Method | Getter)
       # Returns: (transfer none) (nullable)
@@ -402,6 +476,35 @@ module Adw
 
       # C call
       LibAdw.adw_view_stack_page_set_needs_attention(to_unsafe, needs_attention)
+
+      # Return value handling
+    end
+
+    def section_title=(section_title : ::String?) : Nil
+      # adw_view_stack_page_set_section_title: (Method | Setter)
+      # @section_title: (nullable)
+      # Returns: (transfer none)
+
+      # Generator::NullableArrayPlan
+      section_title = if section_title.nil?
+                        Pointer(LibC::Char).null
+                      else
+                        section_title.to_unsafe
+                      end
+
+      # C call
+      LibAdw.adw_view_stack_page_set_section_title(to_unsafe, section_title)
+
+      # Return value handling
+    end
+
+    def starts_section=(starts_section : Bool) : Nil
+      # adw_view_stack_page_set_starts_section: (Method | Setter)
+      # @starts_section:
+      # Returns: (transfer none)
+
+      # C call
+      LibAdw.adw_view_stack_page_set_starts_section(to_unsafe, starts_section)
 
       # Return value handling
     end

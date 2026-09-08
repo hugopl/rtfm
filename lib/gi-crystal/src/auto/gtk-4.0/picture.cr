@@ -41,9 +41,9 @@ module Gtk
       ptr
     end
 
-    def initialize(*, accessible_role : Gtk::AccessibleRole? = nil, alternative_text : ::String? = nil, can_focus : Bool? = nil, can_shrink : Bool? = nil, can_target : Bool? = nil, content_fit : Gtk::ContentFit? = nil, css_classes : Enumerable(::String)? = nil, css_name : ::String? = nil, cursor : Gdk::Cursor? = nil, file : Gio::File? = nil, focus_on_click : Bool? = nil, focusable : Bool? = nil, halign : Gtk::Align? = nil, has_default : Bool? = nil, has_focus : Bool? = nil, has_tooltip : Bool? = nil, height_request : Int32? = nil, hexpand : Bool? = nil, hexpand_set : Bool? = nil, keep_aspect_ratio : Bool? = nil, layout_manager : Gtk::LayoutManager? = nil, limit_events : Bool? = nil, margin_bottom : Int32? = nil, margin_end : Int32? = nil, margin_start : Int32? = nil, margin_top : Int32? = nil, name : ::String? = nil, opacity : Float64? = nil, overflow : Gtk::Overflow? = nil, paintable : Gdk::Paintable? = nil, parent : Gtk::Widget? = nil, receives_default : Bool? = nil, root : Gtk::Root? = nil, scale_factor : Int32? = nil, sensitive : Bool? = nil, tooltip_markup : ::String? = nil, tooltip_text : ::String? = nil, valign : Gtk::Align? = nil, vexpand : Bool? = nil, vexpand_set : Bool? = nil, visible : Bool? = nil, width_request : Int32? = nil)
-      _names = uninitialized Pointer(LibC::Char)[42]
-      _values = StaticArray(LibGObject::Value, 42).new(LibGObject::Value.new)
+    def initialize(*, accessible_role : Gtk::AccessibleRole? = nil, alternative_text : ::String? = nil, can_focus : Bool? = nil, can_shrink : Bool? = nil, can_target : Bool? = nil, content_fit : Gtk::ContentFit? = nil, css_classes : Enumerable(::String)? = nil, css_name : ::String? = nil, cursor : Gdk::Cursor? = nil, file : Gio::File? = nil, focus_on_click : Bool? = nil, focusable : Bool? = nil, halign : Gtk::Align? = nil, has_default : Bool? = nil, has_focus : Bool? = nil, has_tooltip : Bool? = nil, height_request : Int32? = nil, hexpand : Bool? = nil, hexpand_set : Bool? = nil, isolate_contents : Bool? = nil, keep_aspect_ratio : Bool? = nil, layout_manager : Gtk::LayoutManager? = nil, limit_events : Bool? = nil, margin_bottom : Int32? = nil, margin_end : Int32? = nil, margin_start : Int32? = nil, margin_top : Int32? = nil, name : ::String? = nil, opacity : Float64? = nil, overflow : Gtk::Overflow? = nil, paintable : Gdk::Paintable? = nil, parent : Gtk::Widget? = nil, receives_default : Bool? = nil, root : Gtk::Root? = nil, scale_factor : Int32? = nil, sensitive : Bool? = nil, tooltip_markup : ::String? = nil, tooltip_text : ::String? = nil, valign : Gtk::Align? = nil, vexpand : Bool? = nil, vexpand_set : Bool? = nil, visible : Bool? = nil, width_request : Int32? = nil)
+      _names = uninitialized Pointer(LibC::Char)[43]
+      _values = StaticArray(LibGObject::Value, 43).new(LibGObject::Value.new)
       _n = 0
 
       if !accessible_role.nil?
@@ -139,6 +139,11 @@ module Gtk
       if !hexpand_set.nil?
         (_names.to_unsafe + _n).value = "hexpand-set".to_unsafe
         GObject::Value.init_g_value(_values.to_unsafe + _n, hexpand_set)
+        _n += 1
+      end
+      if !isolate_contents.nil?
+        (_names.to_unsafe + _n).value = "isolate-contents".to_unsafe
+        GObject::Value.init_g_value(_values.to_unsafe + _n, isolate_contents)
         _n += 1
       end
       if !keep_aspect_ratio.nil?
@@ -350,6 +355,21 @@ module Gtk
       Gio::AbstractFile.new(value, GICrystal::Transfer::None) unless value.null?
     end
 
+    def isolate_contents=(value : Bool) : Bool
+      unsafe_value = value
+
+      LibGObject.g_object_set(self, "isolate-contents", unsafe_value, Pointer(Void).null)
+      value
+    end
+
+    def isolate_contents? : Bool
+      # Returns: None
+
+      value = uninitialized LibC::Int
+      LibGObject.g_object_get(self, "isolate-contents", pointerof(value), Pointer(Void).null)
+      GICrystal.to_bool(value)
+    end
+
     def keep_aspect_ratio=(value : Bool) : Bool
       unsafe_value = value
 
@@ -531,6 +551,17 @@ module Gtk
       Gio::AbstractFile.new(_retval, GICrystal::Transfer::None) unless _retval.null?
     end
 
+    def isolate_contents : Bool
+      # gtk_picture_get_isolate_contents: (Method | Getter)
+      # Returns: (transfer none)
+
+      # C call
+      _retval = LibGtk.gtk_picture_get_isolate_contents(to_unsafe)
+
+      # Return value handling
+      GICrystal.to_bool(_retval)
+    end
+
     @[Deprecated]
     def keep_aspect_ratio : Bool
       # gtk_picture_get_keep_aspect_ratio: (Method | Getter)
@@ -626,6 +657,17 @@ module Gtk
 
       # C call
       LibGtk.gtk_picture_set_filename(to_unsafe, filename)
+
+      # Return value handling
+    end
+
+    def isolate_contents=(isolate_contents : Bool) : Nil
+      # gtk_picture_set_isolate_contents: (Method | Setter)
+      # @isolate_contents:
+      # Returns: (transfer none)
+
+      # C call
+      LibGtk.gtk_picture_set_isolate_contents(to_unsafe, isolate_contents)
 
       # Return value handling
     end

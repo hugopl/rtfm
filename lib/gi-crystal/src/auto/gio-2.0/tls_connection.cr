@@ -341,7 +341,7 @@ module Gio
     def channel_binding_data(type : Gio::TlsChannelBindingType) : Bool
       # g_tls_connection_get_channel_binding_data: (Method | Throws)
       # @type:
-      # @data: (out) (optional) (array element-type UInt8)
+      # @data: (out) (caller-allocates) (optional) (array element-type UInt8)
       # Returns: (transfer none)
 
       _error = Pointer(LibGLib::Error).null
@@ -661,7 +661,8 @@ module Gio
           peer_cert = Gio::TlsCertificate.new(lib_peer_cert, GICrystal::Transfer::None)
           # Generator::BuiltInTypeArgPlan
           errors = Gio::TlsCertificateFlags.new(lib_errors)
-          ::Box(Proc(Gio::TlsCertificate, Gio::TlsCertificateFlags, Bool)).unbox(_lib_box).call(peer_cert, errors)
+          _retval = ::Box(Proc(Gio::TlsCertificate, Gio::TlsCertificateFlags, Bool)).unbox(_lib_box).call(peer_cert, errors)
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,
@@ -677,7 +678,8 @@ module Gio
           peer_cert = Gio::TlsCertificate.new(lib_peer_cert, GICrystal::Transfer::None)
           # Generator::BuiltInTypeArgPlan
           errors = Gio::TlsCertificateFlags.new(lib_errors)
-          ::Box(Proc(Gio::TlsConnection, Gio::TlsCertificate, Gio::TlsCertificateFlags, Bool)).unbox(_lib_box).call(_sender, peer_cert, errors)
+          _retval = ::Box(Proc(Gio::TlsConnection, Gio::TlsCertificate, Gio::TlsCertificateFlags, Bool)).unbox(_lib_box).call(_sender, peer_cert, errors)
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,

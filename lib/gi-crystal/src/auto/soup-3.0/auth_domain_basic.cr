@@ -145,7 +145,8 @@ module Soup
           username = ::String.new(lib_username)
           # Generator::BuiltInTypeArgPlan
           password = ::String.new(lib_password)
-          ::Box(Proc(Soup::AuthDomainBasic, Soup::ServerMessage, ::String, ::String, Bool)).unbox(lib_user_data).call(domain, msg, username, password)
+          _retval = ::Box(Proc(Soup::AuthDomainBasic, Soup::ServerMessage, ::String, ::String, Bool)).unbox(lib_user_data).call(domain, msg, username, password)
+          GICrystal.to_c_bool(_retval)
         }.pointer
         user_data = GICrystal::ClosureDataManager.register(_box)
         dnotify = ->GICrystal::ClosureDataManager.deregister(Pointer(Void)).pointer

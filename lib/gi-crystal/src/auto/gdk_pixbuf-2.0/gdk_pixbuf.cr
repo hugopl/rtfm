@@ -19,9 +19,9 @@ require "./pixbuf_simple_anim_iter.cr"
 
 module GdkPixbuf
   PIXBUF_MAJOR   =  2
-  PIXBUF_MICRO   = 12
-  PIXBUF_MINOR   = 42
-  PIXBUF_VERSION = "2.42.12"
+  PIXBUF_MICRO   =  7
+  PIXBUF_MINOR   = 44
+  PIXBUF_VERSION = "2.44.7"
 
   # Callbacks
 

@@ -288,7 +288,8 @@ module Soup
           domain = Soup::AuthDomain.new(lib_domain, GICrystal::Transfer::None)
           # Generator::BuiltInTypeArgPlan
           msg = Soup::ServerMessage.new(lib_msg, GICrystal::Transfer::None)
-          ::Box(Proc(Soup::AuthDomain, Soup::ServerMessage, Bool)).unbox(lib_user_data).call(domain, msg)
+          _retval = ::Box(Proc(Soup::AuthDomain, Soup::ServerMessage, Bool)).unbox(lib_user_data).call(domain, msg)
+          GICrystal.to_c_bool(_retval)
         }.pointer
         filter_data = GICrystal::ClosureDataManager.register(_box)
         dnotify = ->GICrystal::ClosureDataManager.deregister(Pointer(Void)).pointer
@@ -319,7 +320,8 @@ module Soup
           msg = Soup::ServerMessage.new(lib_msg, GICrystal::Transfer::None)
           # Generator::BuiltInTypeArgPlan
           username = ::String.new(lib_username)
-          ::Box(Proc(Soup::AuthDomain, Soup::ServerMessage, ::String, Bool)).unbox(lib_user_data).call(domain, msg, username)
+          _retval = ::Box(Proc(Soup::AuthDomain, Soup::ServerMessage, ::String, Bool)).unbox(lib_user_data).call(domain, msg, username)
+          GICrystal.to_c_bool(_retval)
         }.pointer
         auth_data = GICrystal::ClosureDataManager.register(_box)
         dnotify = ->GICrystal::ClosureDataManager.deregister(Pointer(Void)).pointer

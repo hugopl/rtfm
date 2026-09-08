@@ -216,6 +216,19 @@ module PangoCairo
     # Return value handling
   end
 
+  def self.layout_path_for_components(cr : Cairo::Context, layout : Pango::Layout, components : Pango::RenderComponent) : Nil
+    # pango_cairo_layout_path_for_components: (None)
+    # @cr:
+    # @layout:
+    # @components:
+    # Returns: (transfer none)
+
+    # C call
+    LibPangoCairo.pango_cairo_layout_path_for_components(cr, layout, components)
+
+    # Return value handling
+  end
+
   def self.show_error_underline(cr : Cairo::Context, x : Float64, y : Float64, width : Float64, height : Float64) : Nil
     # pango_cairo_show_error_underline: (None)
     # @cr:

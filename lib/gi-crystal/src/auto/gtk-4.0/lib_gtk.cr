@@ -17,6 +17,7 @@ lib LibGtk
   type ShortcutActionFlags = UInt32
   type StateFlags = UInt32
   type StyleContextPrintFlags = UInt32
+  type SvgFeatures = UInt32
   type TextBufferNotifyFlags = UInt32
   type TextSearchFlags = UInt32
   type TreeModelFlags = UInt32
@@ -71,6 +72,8 @@ lib LibGtk
   type ImageType = UInt32
   type InputPurpose = UInt32
   type InscriptionOverflow = UInt32
+  type InterfaceColorScheme = UInt32
+  type InterfaceContrast = UInt32
   type Justification = UInt32
   type LevelBarMode = UInt32
   type License = UInt32
@@ -100,6 +103,7 @@ lib LibGtk
   type PropagationLimit = UInt32
   type PropagationPhase = UInt32
   type RecentManagerError = UInt32
+  type ReducedMotion = UInt32
   type ResponseType = Int32
   type RevealerTransitionType = UInt32
   type ScrollStep = UInt32
@@ -118,6 +122,7 @@ lib LibGtk
   type SpinType = UInt32
   type StackTransitionType = UInt32
   type StringFilterMatchMode = UInt32
+  type SvgError = UInt32
   type SymbolicColor = UInt32
   type SystemSetting = UInt32
   type TextDirection = UInt32
@@ -128,6 +133,7 @@ lib LibGtk
   type TreeViewDropPosition = UInt32
   type TreeViewGridLines = UInt32
   type Unit = UInt32
+  type WindowGravity = UInt32
   type WrapMode = UInt32
 
   # Callbacks
@@ -181,6 +187,7 @@ lib LibGtk
 
   # Interface types
   type Accessible = Void
+  type AccessibleHypertext = Void
   type AccessibleRange = Void
   type AccessibleText = Void
   type Actionable = Void
@@ -212,7 +219,18 @@ lib LibGtk
   # Structs
   type ATContextClass = Void # Struct with zero bytes
 
-  struct AccessibleInterface # 64 bytes long
+  struct AccessibleHyperlinkClass # 136 bytes long
+    parent_class : LibGObject::ObjectClass
+  end
+
+  struct AccessibleHypertextInterface # 40 bytes long
+    g_iface : LibGObject::TypeInterface
+    get_n_links : Void*
+    get_link : Void*
+    get_link_at : Void*
+  end
+
+  struct AccessibleInterface # 72 bytes long
     g_iface : LibGObject::TypeInterface
     get_at_context : Void*
     get_platform_state : Void*
@@ -220,6 +238,7 @@ lib LibGtk
     get_first_accessible_child : Void*
     get_next_accessible_sibling : Void*
     get_bounds : Void*
+    get_accessible_id : Void*
   end
 
   type AccessibleList = Void # Struct with zero bytes
@@ -229,7 +248,7 @@ lib LibGtk
     set_current_value : Void*
   end
 
-  struct AccessibleTextInterface # 80 bytes long
+  struct AccessibleTextInterface # 96 bytes long
     g_iface : LibGObject::TypeInterface
     get_contents : Void*
     get_contents_at : Void*
@@ -239,6 +258,8 @@ lib LibGtk
     get_default_attributes : Void*
     get_extents : Void*
     get_offset : Void*
+    set_caret_position : Void*
+    set_selection : Void*
   end
 
   struct AccessibleTextRange # 16 bytes long
@@ -787,7 +808,7 @@ lib LibGtk
     get_surrounding_with_selection : Void*
     activate_osk : Void*
     activate_osk_with_event : Void*
-    _gtk_reserved2 : Pointer(Void)
+    invalid_composition : Void*
     _gtk_reserved3 : Pointer(Void)
     _gtk_reserved4 : Pointer(Void)
   end
@@ -807,6 +828,10 @@ lib LibGtk
   end
 
   type IMMulticontextPrivate = Void # Struct with zero bytes
+
+  struct IconPaintableClass # 136 bytes long
+    parent_class : LibGObject::ObjectClass
+  end
 
   struct InscriptionClass # 408 bytes long
     parent_class : LibGtk::WidgetClass
@@ -978,6 +1003,10 @@ lib LibGtk
   type PasswordEntryClass = Void # Struct with zero bytes
 
   struct PictureClass # 408 bytes long
+    parent_class : LibGtk::WidgetClass
+  end
+
+  struct PopoverBinClass # 408 bytes long
     parent_class : LibGtk::WidgetClass
   end
 
@@ -1199,9 +1228,20 @@ lib LibGtk
     _gtk_reserved4 : Pointer(Void)
   end
 
-  struct SymbolicPaintableInterface # 24 bytes long
+  struct SvgClass # 136 bytes long
+    parent_class : LibGObject::ObjectClass
+  end
+
+  struct SvgLocation # 24 bytes long
+    bytes : UInt64
+    lines : UInt64
+    line_chars : UInt64
+  end
+
+  struct SymbolicPaintableInterface # 32 bytes long
     g_iface : LibGObject::TypeInterface
     snapshot_symbolic : Void*
+    snapshot_with_weight : Void*
   end
 
   struct TextBufferClass # 288 bytes long
@@ -1490,6 +1530,8 @@ lib LibGtk
   type ATContext = Void # Object struct with no fields
 
   type AboutDialog = Void # Object struct with no fields
+
+  type AccessibleHyperlink = Void # Object struct with no fields
 
   type ActionBar = Void # Object struct with no fields
 
@@ -1932,6 +1974,8 @@ lib LibGtk
     parent : LibGtk::Widget
   end
 
+  type PopoverBin = Void # Object struct with no fields
+
   type PopoverMenu = Void # Object struct with no fields
 
   type PopoverMenuBar = Void # Object struct with no fields
@@ -2054,6 +2098,8 @@ lib LibGtk
     parent_object : LibGObject::Object
   end
 
+  type Svg = Void # Object struct with no fields
+
   type Switch = Void # Object struct with no fields
 
   struct Text
@@ -2124,6 +2170,8 @@ lib LibGtk
 
   type TreeViewColumn = Void # Object struct with no fields
 
+  type TryExpression = Void # Object struct with no fields
+
   type UriLauncher = Void # Object struct with no fields
 
   type Video = Void # Object struct with no fields
@@ -2190,6 +2238,7 @@ lib LibGtk
   fun gtk_about_dialog_set_website(this : Void*, website : Pointer(LibC::Char)) : Void
   fun gtk_about_dialog_set_website_label(this : Void*, website_label : Pointer(LibC::Char)) : Void
   fun gtk_about_dialog_set_wrap_license(this : Void*, wrap_license : LibC::Int) : Void
+  fun gtk_accelerator_get_accessible_label(accelerator_key : UInt32, accelerator_mods : UInt32) : Pointer(LibC::Char)
   fun gtk_accelerator_get_default_mod_mask : UInt32
   fun gtk_accelerator_get_label(accelerator_key : UInt32, accelerator_mods : UInt32) : Pointer(LibC::Char)
   fun gtk_accelerator_get_label_with_keycode(display : Pointer(Void), accelerator_key : UInt32, keycode : UInt32, accelerator_mods : UInt32) : Pointer(LibC::Char)
@@ -2201,6 +2250,7 @@ lib LibGtk
   fun gtk_accessible_announce(this : Void*, message : Pointer(LibC::Char), priority : UInt32) : Void
   fun gtk_accessible_announcement_priority_get_type : UInt64
   fun gtk_accessible_autocomplete_get_type : UInt64
+  fun gtk_accessible_get_accessible_id(this : Void*) : Pointer(LibC::Char)
   fun gtk_accessible_get_accessible_parent(this : Void*) : Pointer(Void)
   fun gtk_accessible_get_accessible_role(this : Void*) : UInt32
   fun gtk_accessible_get_at_context(this : Void*) : Pointer(Void)
@@ -2209,6 +2259,10 @@ lib LibGtk
   fun gtk_accessible_get_next_accessible_sibling(this : Void*) : Pointer(Void)
   fun gtk_accessible_get_platform_state(this : Void*, state : UInt32) : LibC::Int
   fun gtk_accessible_get_type : UInt64
+  fun gtk_accessible_hyperlink_get_type : UInt64
+  fun gtk_accessible_hyperlink_new(parent : Pointer(Void), index : UInt32, uri : Pointer(LibC::Char), bounds : Pointer(Void)) : Pointer(Void)
+  fun gtk_accessible_hyperlink_set_platform_state(this : Void*, state : UInt32, enabled : LibC::Int) : Void
+  fun gtk_accessible_hypertext_get_type : UInt64
   fun gtk_accessible_invalid_state_get_type : UInt64
   fun gtk_accessible_list_get_objects(this : Void*) : Pointer(LibGLib::List)
   fun gtk_accessible_list_get_type : UInt64
@@ -2567,6 +2621,7 @@ lib LibGtk
   fun gtk_calendar_mark_day(this : Void*, day : UInt32) : Void
   fun gtk_calendar_new : Pointer(Void)
   fun gtk_calendar_select_day(this : Void*, date : Pointer(Void)) : Void
+  fun gtk_calendar_set_date(this : Void*, date : Pointer(Void)) : Void
   fun gtk_calendar_set_day(this : Void*, day : Int32) : Void
   fun gtk_calendar_set_month(this : Void*, month : Int32) : Void
   fun gtk_calendar_set_show_day_names(this : Void*, value : LibC::Int) : Void
@@ -3022,6 +3077,7 @@ lib LibGtk
   fun gtk_directory_list_set_file(this : Void*, file : Pointer(Void)) : Void
   fun gtk_directory_list_set_io_priority(this : Void*, io_priority : Int32) : Void
   fun gtk_directory_list_set_monitored(this : Void*, monitored : LibC::Int) : Void
+  fun gtk_disable_portal_interfaces(portal_interfaces : Pointer(Pointer(LibC::Char))) : Void
   fun gtk_disable_portals : Void
   fun gtk_disable_setlocale : Void
   fun gtk_distribute_natural_allocation(extra_space : Int32, n_requested_sizes : UInt32, sizes : Pointer(LibGtk::RequestedSize)) : Int32
@@ -3193,6 +3249,7 @@ lib LibGtk
   fun gtk_entry_get_input_purpose(this : Void*) : UInt32
   fun gtk_entry_get_invisible_char(this : Void*) : UInt32
   fun gtk_entry_get_max_length(this : Void*) : Int32
+  fun gtk_entry_get_menu_entry_icon_text(this : Void*, icon_pos : UInt32) : Pointer(LibC::Char)
   fun gtk_entry_get_overwrite_mode(this : Void*) : LibC::Int
   fun gtk_entry_get_placeholder_text(this : Void*) : Pointer(LibC::Char)
   fun gtk_entry_get_progress_fraction(this : Void*) : Float64
@@ -3226,6 +3283,7 @@ lib LibGtk
   fun gtk_entry_set_input_purpose(this : Void*, purpose : UInt32) : Void
   fun gtk_entry_set_invisible_char(this : Void*, ch : UInt32) : Void
   fun gtk_entry_set_max_length(this : Void*, max : Int32) : Void
+  fun gtk_entry_set_menu_entry_icon_text(this : Void*, icon_pos : UInt32, text : Pointer(LibC::Char)) : Void
   fun gtk_entry_set_overwrite_mode(this : Void*, overwrite : LibC::Int) : Void
   fun gtk_entry_set_placeholder_text(this : Void*, text : Pointer(LibC::Char)) : Void
   fun gtk_entry_set_progress_fraction(this : Void*, fraction : Float64) : Void
@@ -3376,6 +3434,7 @@ lib LibGtk
   fun gtk_file_dialog_set_modal(this : Void*, modal : LibC::Int) : Void
   fun gtk_file_dialog_set_title(this : Void*, title : Pointer(LibC::Char)) : Void
   fun gtk_file_filter_add_mime_type(this : Void*, mime_type : Pointer(LibC::Char)) : Void
+  fun gtk_file_filter_add_mime_types(this : Void*, mime_types : Pointer(Pointer(LibC::Char))) : Void
   fun gtk_file_filter_add_pattern(this : Void*, pattern : Pointer(LibC::Char)) : Void
   fun gtk_file_filter_add_pixbuf_formats(this : Void*) : Void
   fun gtk_file_filter_add_suffix(this : Void*, suffix : Pointer(LibC::Char)) : Void
@@ -3407,10 +3466,12 @@ lib LibGtk
   fun gtk_filter_list_model_get_model(this : Void*) : Pointer(Void)
   fun gtk_filter_list_model_get_pending(this : Void*) : UInt32
   fun gtk_filter_list_model_get_type : UInt64
+  fun gtk_filter_list_model_get_watch_items(this : Void*) : LibC::Int
   fun gtk_filter_list_model_new(model : Pointer(Void), filter : Pointer(Void)) : Pointer(Void)
   fun gtk_filter_list_model_set_filter(this : Void*, filter : Pointer(Void)) : Void
   fun gtk_filter_list_model_set_incremental(this : Void*, incremental : LibC::Int) : Void
   fun gtk_filter_list_model_set_model(this : Void*, model : Pointer(Void)) : Void
+  fun gtk_filter_list_model_set_watch_items(this : Void*, watch_items : LibC::Int) : Void
   fun gtk_filter_match(this : Void*, item : Pointer(Void)) : LibC::Int
   fun gtk_filter_match_get_type : UInt64
   fun gtk_fixed_get_child_position(this : Void*, widget : Pointer(Void), x : Pointer(Float64), y : Pointer(Float64)) : Void
@@ -3915,6 +3976,8 @@ lib LibGtk
   fun gtk_inscription_set_wrap_mode(this : Void*, wrap_mode : UInt32) : Void
   fun gtk_inscription_set_xalign(this : Void*, xalign : Float32) : Void
   fun gtk_inscription_set_yalign(this : Void*, yalign : Float32) : Void
+  fun gtk_interface_color_scheme_get_type : UInt64
+  fun gtk_interface_contrast_get_type : UInt64
   fun gtk_is_initialized : LibC::Int
   fun gtk_justification_get_type : UInt64
   fun gtk_keyval_trigger_get_keyval(this : Void*) : UInt32
@@ -4450,6 +4513,7 @@ lib LibGtk
   fun gtk_picture_get_can_shrink(this : Void*) : LibC::Int
   fun gtk_picture_get_content_fit(this : Void*) : UInt32
   fun gtk_picture_get_file(this : Void*) : Pointer(Void)
+  fun gtk_picture_get_isolate_contents(this : Void*) : LibC::Int
   fun gtk_picture_get_keep_aspect_ratio(this : Void*) : LibC::Int
   fun gtk_picture_get_paintable(this : Void*) : Pointer(Void)
   fun gtk_picture_get_type : UInt64
@@ -4464,11 +4528,24 @@ lib LibGtk
   fun gtk_picture_set_content_fit(this : Void*, content_fit : UInt32) : Void
   fun gtk_picture_set_file(this : Void*, file : Pointer(Void)) : Void
   fun gtk_picture_set_filename(this : Void*, filename : Pointer(LibC::Char)) : Void
+  fun gtk_picture_set_isolate_contents(this : Void*, isolate_contents : LibC::Int) : Void
   fun gtk_picture_set_keep_aspect_ratio(this : Void*, keep_aspect_ratio : LibC::Int) : Void
   fun gtk_picture_set_paintable(this : Void*, paintable : Pointer(Void)) : Void
   fun gtk_picture_set_pixbuf(this : Void*, pixbuf : Pointer(Void)) : Void
   fun gtk_picture_set_resource(this : Void*, resource_path : Pointer(LibC::Char)) : Void
   fun gtk_policy_type_get_type : UInt64
+  fun gtk_popover_bin_get_child(this : Void*) : Pointer(Void)
+  fun gtk_popover_bin_get_handle_input(this : Void*) : LibC::Int
+  fun gtk_popover_bin_get_menu_model(this : Void*) : Pointer(Void)
+  fun gtk_popover_bin_get_popover(this : Void*) : Pointer(Void)
+  fun gtk_popover_bin_get_type : UInt64
+  fun gtk_popover_bin_new : Pointer(Void)
+  fun gtk_popover_bin_popdown(this : Void*) : Void
+  fun gtk_popover_bin_popup(this : Void*) : Void
+  fun gtk_popover_bin_set_child(this : Void*, child : Pointer(Void)) : Void
+  fun gtk_popover_bin_set_handle_input(this : Void*, handle_input : LibC::Int) : Void
+  fun gtk_popover_bin_set_menu_model(this : Void*, model : Pointer(Void)) : Void
+  fun gtk_popover_bin_set_popover(this : Void*, popover : Pointer(Void)) : Void
   fun gtk_popover_get_autohide(this : Void*) : LibC::Int
   fun gtk_popover_get_cascade_popdown(this : Void*) : LibC::Int
   fun gtk_popover_get_child(this : Void*) : Pointer(Void)
@@ -4824,6 +4901,7 @@ lib LibGtk
   fun gtk_recent_manager_new : Pointer(Void)
   fun gtk_recent_manager_purge_items(this : Void*, error : LibGLib::Error**) : Int32
   fun gtk_recent_manager_remove_item(this : Void*, uri : Pointer(LibC::Char), error : LibGLib::Error**) : LibC::Int
+  fun gtk_reduced_motion_get_type : UInt64
   fun gtk_render_activity(context : Pointer(Void), cr : Pointer(Void), x : Float64, y : Float64, width : Float64, height : Float64) : Void
   fun gtk_render_arrow(context : Pointer(Void), cr : Pointer(Void), angle : Float64, x : Float64, y : Float64, size : Float64) : Void
   fun gtk_render_background(context : Pointer(Void), cr : Pointer(Void), x : Float64, y : Float64, width : Float64, height : Float64) : Void
@@ -5091,6 +5169,7 @@ lib LibGtk
   fun gtk_snapshot_append_linear_gradient(this : Void*, bounds : Pointer(Void), start_point : Pointer(Void), end_point : Pointer(Void), stops : Pointer(LibGsk::ColorStop), n_stops : UInt64) : Void
   fun gtk_snapshot_append_node(this : Void*, node : Pointer(Void)) : Void
   fun gtk_snapshot_append_outset_shadow(this : Void*, outline : Pointer(Void), color : Pointer(Void), dx : Float32, dy : Float32, spread : Float32, blur_radius : Float32) : Void
+  fun gtk_snapshot_append_paste(this : Void*, bounds : Pointer(Void), nth : UInt64) : Void
   fun gtk_snapshot_append_radial_gradient(this : Void*, bounds : Pointer(Void), center : Pointer(Void), hradius : Float32, vradius : Float32, start : Float32, _end : Float32, stops : Pointer(LibGsk::ColorStop), n_stops : UInt64) : Void
   fun gtk_snapshot_append_repeating_linear_gradient(this : Void*, bounds : Pointer(Void), start_point : Pointer(Void), end_point : Pointer(Void), stops : Pointer(LibGsk::ColorStop), n_stops : UInt64) : Void
   fun gtk_snapshot_append_repeating_radial_gradient(this : Void*, bounds : Pointer(Void), center : Pointer(Void), hradius : Float32, vradius : Float32, start : Float32, _end : Float32, stops : Pointer(LibGsk::ColorStop), n_stops : UInt64) : Void
@@ -5106,9 +5185,13 @@ lib LibGtk
   fun gtk_snapshot_push_blur(this : Void*, radius : Float64) : Void
   fun gtk_snapshot_push_clip(this : Void*, bounds : Pointer(Void)) : Void
   fun gtk_snapshot_push_color_matrix(this : Void*, color_matrix : Pointer(Void), color_offset : Pointer(Void)) : Void
+  fun gtk_snapshot_push_component_transfer(this : Void*, red : Pointer(Void), green : Pointer(Void), blue : Pointer(Void), alpha : Pointer(Void)) : Void
+  fun gtk_snapshot_push_composite(this : Void*, op : UInt32) : Void
+  fun gtk_snapshot_push_copy(this : Void*) : Void
   fun gtk_snapshot_push_cross_fade(this : Void*, progress : Float64) : Void
   fun gtk_snapshot_push_fill(this : Void*, path : Pointer(Void), fill_rule : UInt32) : Void
   fun gtk_snapshot_push_gl_shader(this : Void*, shader : Pointer(Void), bounds : Pointer(Void), take_args : Pointer(Void)) : Void
+  fun gtk_snapshot_push_isolation(this : Void*, features : Int32) : Void
   fun gtk_snapshot_push_mask(this : Void*, mask_mode : UInt32) : Void
   fun gtk_snapshot_push_opacity(this : Void*, opacity : Float64) : Void
   fun gtk_snapshot_push_repeat(this : Void*, bounds : Pointer(Void), child_bounds : Pointer(Void)) : Void
@@ -5297,6 +5380,31 @@ lib LibGtk
   fun gtk_style_context_set_state(this : Void*, flags : UInt32) : Void
   fun gtk_style_context_to_string(this : Void*, flags : UInt32) : Pointer(LibC::Char)
   fun gtk_style_provider_get_type : UInt64
+  fun gtk_svg_error_get_attribute(error : Pointer(LibGLib::Error)) : Pointer(LibC::Char)
+  fun gtk_svg_error_get_element(error : Pointer(LibGLib::Error)) : Pointer(LibC::Char)
+  fun gtk_svg_error_get_end(error : Pointer(LibGLib::Error)) : Pointer(Void)
+  fun gtk_svg_error_get_start(error : Pointer(LibGLib::Error)) : Pointer(Void)
+  fun gtk_svg_error_get_type : UInt64
+  fun gtk_svg_error_quark : UInt32
+  fun gtk_svg_features_get_type : UInt64
+  fun gtk_svg_get_features(this : Void*) : UInt32
+  fun gtk_svg_get_state(this : Void*) : UInt32
+  fun gtk_svg_get_state_names(this : Void*, length : Pointer(UInt32)) : Pointer(Pointer(LibC::Char))
+  fun gtk_svg_get_type : UInt64
+  fun gtk_svg_get_weight(this : Void*) : Float64
+  fun gtk_svg_load_from_bytes(this : Void*, bytes : Pointer(Void)) : Void
+  fun gtk_svg_load_from_resource(this : Void*, path : Pointer(LibC::Char)) : Void
+  fun gtk_svg_new : Pointer(Void)
+  fun gtk_svg_new_from_bytes(bytes : Pointer(Void)) : Pointer(Void)
+  fun gtk_svg_new_from_resource(path : Pointer(LibC::Char)) : Pointer(Void)
+  fun gtk_svg_pause(this : Void*) : Void
+  fun gtk_svg_play(this : Void*) : Void
+  fun gtk_svg_serialize(this : Void*) : Pointer(Void)
+  fun gtk_svg_set_features(this : Void*, features : UInt32) : Void
+  fun gtk_svg_set_frame_clock(this : Void*, clock : Pointer(Void)) : Void
+  fun gtk_svg_set_state(this : Void*, state : UInt32) : Void
+  fun gtk_svg_set_weight(this : Void*, weight : Float64) : Void
+  fun gtk_svg_write_to_file(this : Void*, filename : Pointer(LibC::Char), error : LibGLib::Error**) : LibC::Int
   fun gtk_switch_get_active(this : Void*) : LibC::Int
   fun gtk_switch_get_state(this : Void*) : LibC::Int
   fun gtk_switch_get_type : UInt64
@@ -5306,6 +5414,7 @@ lib LibGtk
   fun gtk_symbolic_color_get_type : UInt64
   fun gtk_symbolic_paintable_get_type : UInt64
   fun gtk_symbolic_paintable_snapshot_symbolic(this : Void*, snapshot : Pointer(Void), width : Float64, height : Float64, colors : Pointer(LibGdk::RGBA), n_colors : UInt64) : Void
+  fun gtk_symbolic_paintable_snapshot_with_weight(this : Void*, snapshot : Pointer(Void), width : Float64, height : Float64, colors : Pointer(LibGdk::RGBA), n_colors : UInt64, weight : Float64) : Void
   fun gtk_system_setting_get_type : UInt64
   fun gtk_test_accessible_assertion_message_role(domain : Pointer(LibC::Char), file : Pointer(LibC::Char), line : Int32, func : Pointer(LibC::Char), expr : Pointer(LibC::Char), accessible : Pointer(Void), expected_role : UInt32, actual_role : UInt32) : Void
   fun gtk_test_accessible_has_property(accessible : Pointer(Void), property : UInt32) : LibC::Int
@@ -5951,7 +6060,10 @@ lib LibGtk
   fun gtk_tree_view_set_tooltip_row(this : Void*, tooltip : Pointer(Void), path : Pointer(Void)) : Void
   fun gtk_tree_view_unset_rows_drag_dest(this : Void*) : Void
   fun gtk_tree_view_unset_rows_drag_source(this : Void*) : Void
+  fun gtk_try_expression_get_type : UInt64
+  fun gtk_try_expression_new(n_expressions : UInt32, expressions : Pointer(Pointer(LibGtk::Expression))) : Pointer(Void)
   fun gtk_unit_get_type : UInt64
+  fun gtk_uri_launcher_can_launch(this : Void*, parent : Pointer(Void)) : LibC::Int
   fun gtk_uri_launcher_get_type : UInt64
   fun gtk_uri_launcher_get_uri(this : Void*) : Pointer(LibC::Char)
   fun gtk_uri_launcher_launch(this : Void*, parent : Pointer(Void), cancellable : Pointer(Void), callback : Void*, user_data : Pointer(Void)) : Void
@@ -6199,6 +6311,7 @@ lib LibGtk
   fun gtk_window_get_destroy_with_parent(this : Void*) : LibC::Int
   fun gtk_window_get_focus(this : Void*) : Pointer(Void)
   fun gtk_window_get_focus_visible(this : Void*) : LibC::Int
+  fun gtk_window_get_gravity(this : Void*) : UInt32
   fun gtk_window_get_group(this : Void*) : Pointer(Void)
   fun gtk_window_get_handle_menubar_accel(this : Void*) : LibC::Int
   fun gtk_window_get_hide_on_close(this : Void*) : LibC::Int
@@ -6211,6 +6324,7 @@ lib LibGtk
   fun gtk_window_get_toplevels : Pointer(Void)
   fun gtk_window_get_transient_for(this : Void*) : Pointer(Void)
   fun gtk_window_get_type : UInt64
+  fun gtk_window_gravity_get_type : UInt64
   fun gtk_window_group_add_window(this : Void*, window : Pointer(Void)) : Void
   fun gtk_window_group_get_type : UInt64
   fun gtk_window_group_list_windows(this : Void*) : Pointer(LibGLib::List)
@@ -6243,6 +6357,7 @@ lib LibGtk
   fun gtk_window_set_display(this : Void*, display : Pointer(Void)) : Void
   fun gtk_window_set_focus(this : Void*, focus : Pointer(Void)) : Void
   fun gtk_window_set_focus_visible(this : Void*, setting : LibC::Int) : Void
+  fun gtk_window_set_gravity(this : Void*, gravity : UInt32) : Void
   fun gtk_window_set_handle_menubar_accel(this : Void*, handle_menubar_accel : LibC::Int) : Void
   fun gtk_window_set_hide_on_close(this : Void*, setting : LibC::Int) : Void
   fun gtk_window_set_icon_name(this : Void*, name : Pointer(LibC::Char)) : Void

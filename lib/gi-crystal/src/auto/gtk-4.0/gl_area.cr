@@ -614,7 +614,9 @@ module Gtk
       def connect(handler : Proc(Gdk::GLContext), *, after : Bool = false) : GObject::SignalConnection
         _box = ::Box.box(handler)
         handler = ->(_lib_sender : Pointer(Void), _lib_box : Pointer(Void)) {
-          ::Box(Proc(Gdk::GLContext)).unbox(_lib_box).call
+          _retval = ::Box(Proc(Gdk::GLContext)).unbox(_lib_box).call
+          LibGObject.g_object_ref(_retval) if _retval
+          _retval.to_unsafe
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,
@@ -626,7 +628,9 @@ module Gtk
         _box = ::Box.box(handler)
         handler = ->(_lib_sender : Pointer(Void), _lib_box : Pointer(Void)) {
           _sender = Gtk::GLArea.new(_lib_sender, GICrystal::Transfer::None)
-          ::Box(Proc(Gtk::GLArea, Gdk::GLContext)).unbox(_lib_box).call(_sender)
+          _retval = ::Box(Proc(Gtk::GLArea, Gdk::GLContext)).unbox(_lib_box).call(_sender)
+          LibGObject.g_object_ref(_retval) if _retval
+          _retval.to_unsafe
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,
@@ -657,7 +661,8 @@ module Gtk
         handler = ->(_lib_sender : Pointer(Void), lib_context : Pointer(Void), _lib_box : Pointer(Void)) {
           # Generator::BuiltInTypeArgPlan
           context = Gdk::GLContext.new(lib_context, GICrystal::Transfer::None)
-          ::Box(Proc(Gdk::GLContext, Bool)).unbox(_lib_box).call(context)
+          _retval = ::Box(Proc(Gdk::GLContext, Bool)).unbox(_lib_box).call(context)
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,
@@ -671,7 +676,8 @@ module Gtk
           _sender = Gtk::GLArea.new(_lib_sender, GICrystal::Transfer::None)
           # Generator::BuiltInTypeArgPlan
           context = Gdk::GLContext.new(lib_context, GICrystal::Transfer::None)
-          ::Box(Proc(Gtk::GLArea, Gdk::GLContext, Bool)).unbox(_lib_box).call(_sender, context)
+          _retval = ::Box(Proc(Gtk::GLArea, Gdk::GLContext, Bool)).unbox(_lib_box).call(_sender, context)
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,

@@ -1031,7 +1031,8 @@ module Gtk
         handler = ->(_lib_sender : Pointer(Void), lib_page : Int32, _lib_box : Pointer(Void)) {
           # NoStrategy
           page = lib_page
-          ::Box(Proc(Int32, Bool)).unbox(_lib_box).call(page)
+          _retval = ::Box(Proc(Int32, Bool)).unbox(_lib_box).call(page)
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,
@@ -1045,7 +1046,8 @@ module Gtk
           _sender = Gtk::Notebook.new(_lib_sender, GICrystal::Transfer::None)
           # NoStrategy
           page = lib_page
-          ::Box(Proc(Gtk::Notebook, Int32, Bool)).unbox(_lib_box).call(_sender, page)
+          _retval = ::Box(Proc(Gtk::Notebook, Int32, Bool)).unbox(_lib_box).call(_sender, page)
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,
@@ -1076,7 +1078,8 @@ module Gtk
         handler = ->(_lib_sender : Pointer(Void), lib_page : Pointer(Void), _lib_box : Pointer(Void)) {
           # Generator::BuiltInTypeArgPlan
           page = Gtk::Widget.new(lib_page, GICrystal::Transfer::None)
-          ::Box(Proc(Gtk::Widget, Gtk::Notebook)).unbox(_lib_box).call(page)
+          _retval = ::Box(Proc(Gtk::Widget, Gtk::Notebook)).unbox(_lib_box).call(page)
+          _retval.nil? ? Pointer(Void).null : _retval.to_unsafe
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,
@@ -1090,7 +1093,8 @@ module Gtk
           _sender = Gtk::Notebook.new(_lib_sender, GICrystal::Transfer::None)
           # Generator::BuiltInTypeArgPlan
           page = Gtk::Widget.new(lib_page, GICrystal::Transfer::None)
-          ::Box(Proc(Gtk::Notebook, Gtk::Widget, Gtk::Notebook)).unbox(_lib_box).call(_sender, page)
+          _retval = ::Box(Proc(Gtk::Notebook, Gtk::Widget, Gtk::Notebook)).unbox(_lib_box).call(_sender, page)
+          _retval.nil? ? Pointer(Void).null : _retval.to_unsafe
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,
@@ -1121,7 +1125,8 @@ module Gtk
         handler = ->(_lib_sender : Pointer(Void), lib_tab : UInt32, _lib_box : Pointer(Void)) {
           # Generator::BuiltInTypeArgPlan
           tab = Gtk::NotebookTab.new(lib_tab)
-          ::Box(Proc(Gtk::NotebookTab, Bool)).unbox(_lib_box).call(tab)
+          _retval = ::Box(Proc(Gtk::NotebookTab, Bool)).unbox(_lib_box).call(tab)
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,
@@ -1135,7 +1140,8 @@ module Gtk
           _sender = Gtk::Notebook.new(_lib_sender, GICrystal::Transfer::None)
           # Generator::BuiltInTypeArgPlan
           tab = Gtk::NotebookTab.new(lib_tab)
-          ::Box(Proc(Gtk::Notebook, Gtk::NotebookTab, Bool)).unbox(_lib_box).call(_sender, tab)
+          _retval = ::Box(Proc(Gtk::Notebook, Gtk::NotebookTab, Bool)).unbox(_lib_box).call(_sender, tab)
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,
@@ -1360,7 +1366,8 @@ module Gtk
           direction = Gtk::DirectionType.new(lib_direction)
           # Generator::BuiltInTypeArgPlan
           move_to_last = GICrystal.to_bool(lib_move_to_last)
-          ::Box(Proc(Gtk::DirectionType, Bool, Bool)).unbox(_lib_box).call(direction, move_to_last)
+          _retval = ::Box(Proc(Gtk::DirectionType, Bool, Bool)).unbox(_lib_box).call(direction, move_to_last)
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,
@@ -1376,7 +1383,8 @@ module Gtk
           direction = Gtk::DirectionType.new(lib_direction)
           # Generator::BuiltInTypeArgPlan
           move_to_last = GICrystal.to_bool(lib_move_to_last)
-          ::Box(Proc(Gtk::Notebook, Gtk::DirectionType, Bool, Bool)).unbox(_lib_box).call(_sender, direction, move_to_last)
+          _retval = ::Box(Proc(Gtk::Notebook, Gtk::DirectionType, Bool, Bool)).unbox(_lib_box).call(_sender, direction, move_to_last)
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,
@@ -1407,7 +1415,8 @@ module Gtk
         handler = ->(_lib_sender : Pointer(Void), lib_move_focus : LibC::Int, _lib_box : Pointer(Void)) {
           # Generator::BuiltInTypeArgPlan
           move_focus = GICrystal.to_bool(lib_move_focus)
-          ::Box(Proc(Bool, Bool)).unbox(_lib_box).call(move_focus)
+          _retval = ::Box(Proc(Bool, Bool)).unbox(_lib_box).call(move_focus)
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,
@@ -1421,7 +1430,8 @@ module Gtk
           _sender = Gtk::Notebook.new(_lib_sender, GICrystal::Transfer::None)
           # Generator::BuiltInTypeArgPlan
           move_focus = GICrystal.to_bool(lib_move_focus)
-          ::Box(Proc(Gtk::Notebook, Bool, Bool)).unbox(_lib_box).call(_sender, move_focus)
+          _retval = ::Box(Proc(Gtk::Notebook, Bool, Bool)).unbox(_lib_box).call(_sender, move_focus)
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,

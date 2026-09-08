@@ -303,7 +303,8 @@ module Gtk
           drag = Gdk::Drag.new(lib_drag, GICrystal::Transfer::None)
           # Generator::BuiltInTypeArgPlan
           reason = Gdk::DragCancelReason.new(lib_reason)
-          ::Box(Proc(Gdk::Drag, Gdk::DragCancelReason, Bool)).unbox(_lib_box).call(drag, reason)
+          _retval = ::Box(Proc(Gdk::Drag, Gdk::DragCancelReason, Bool)).unbox(_lib_box).call(drag, reason)
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,
@@ -319,7 +320,8 @@ module Gtk
           drag = Gdk::Drag.new(lib_drag, GICrystal::Transfer::None)
           # Generator::BuiltInTypeArgPlan
           reason = Gdk::DragCancelReason.new(lib_reason)
-          ::Box(Proc(Gtk::DragSource, Gdk::Drag, Gdk::DragCancelReason, Bool)).unbox(_lib_box).call(_sender, drag, reason)
+          _retval = ::Box(Proc(Gtk::DragSource, Gdk::Drag, Gdk::DragCancelReason, Bool)).unbox(_lib_box).call(_sender, drag, reason)
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,
@@ -401,7 +403,9 @@ module Gtk
           x = lib_x
           # NoStrategy
           y = lib_y
-          ::Box(Proc(Float64, Float64, Gdk::ContentProvider)).unbox(_lib_box).call(x, y)
+          _retval = ::Box(Proc(Float64, Float64, Gdk::ContentProvider)).unbox(_lib_box).call(x, y)
+          LibGObject.g_object_ref(_retval) if _retval
+          _retval.nil? ? Pointer(Void).null : _retval.to_unsafe
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,
@@ -417,7 +421,9 @@ module Gtk
           x = lib_x
           # NoStrategy
           y = lib_y
-          ::Box(Proc(Gtk::DragSource, Float64, Float64, Gdk::ContentProvider)).unbox(_lib_box).call(_sender, x, y)
+          _retval = ::Box(Proc(Gtk::DragSource, Float64, Float64, Gdk::ContentProvider)).unbox(_lib_box).call(_sender, x, y)
+          LibGObject.g_object_ref(_retval) if _retval
+          _retval.nil? ? Pointer(Void).null : _retval.to_unsafe
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,

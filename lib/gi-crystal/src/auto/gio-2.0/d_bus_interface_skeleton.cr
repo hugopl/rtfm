@@ -245,7 +245,8 @@ module Gio
         handler = ->(_lib_sender : Pointer(Void), lib_invocation : Pointer(Void), _lib_box : Pointer(Void)) {
           # Generator::BuiltInTypeArgPlan
           invocation = Gio::DBusMethodInvocation.new(lib_invocation, GICrystal::Transfer::None)
-          ::Box(Proc(Gio::DBusMethodInvocation, Bool)).unbox(_lib_box).call(invocation)
+          _retval = ::Box(Proc(Gio::DBusMethodInvocation, Bool)).unbox(_lib_box).call(invocation)
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,
@@ -259,7 +260,8 @@ module Gio
           _sender = Gio::DBusInterfaceSkeleton.new(_lib_sender, GICrystal::Transfer::None)
           # Generator::BuiltInTypeArgPlan
           invocation = Gio::DBusMethodInvocation.new(lib_invocation, GICrystal::Transfer::None)
-          ::Box(Proc(Gio::DBusInterfaceSkeleton, Gio::DBusMethodInvocation, Bool)).unbox(_lib_box).call(_sender, invocation)
+          _retval = ::Box(Proc(Gio::DBusInterfaceSkeleton, Gio::DBusMethodInvocation, Bool)).unbox(_lib_box).call(_sender, invocation)
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,

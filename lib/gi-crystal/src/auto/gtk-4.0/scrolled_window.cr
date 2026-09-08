@@ -1073,7 +1073,8 @@ module Gtk
           scroll = Gtk::ScrollType.new(lib_scroll)
           # Generator::BuiltInTypeArgPlan
           horizontal = GICrystal.to_bool(lib_horizontal)
-          ::Box(Proc(Gtk::ScrollType, Bool, Bool)).unbox(_lib_box).call(scroll, horizontal)
+          _retval = ::Box(Proc(Gtk::ScrollType, Bool, Bool)).unbox(_lib_box).call(scroll, horizontal)
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,
@@ -1089,7 +1090,8 @@ module Gtk
           scroll = Gtk::ScrollType.new(lib_scroll)
           # Generator::BuiltInTypeArgPlan
           horizontal = GICrystal.to_bool(lib_horizontal)
-          ::Box(Proc(Gtk::ScrolledWindow, Gtk::ScrollType, Bool, Bool)).unbox(_lib_box).call(_sender, scroll, horizontal)
+          _retval = ::Box(Proc(Gtk::ScrolledWindow, Gtk::ScrollType, Bool, Bool)).unbox(_lib_box).call(_sender, scroll, horizontal)
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,

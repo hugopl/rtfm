@@ -23,6 +23,7 @@ lib LibAdw
   type NavigationDirection = UInt32
   type PackDirection = UInt32
   type ResponseAppearance = UInt32
+  type SidebarMode = UInt32
   type SqueezerTransitionType = UInt32
   type ToastPriority = UInt32
   type ToolbarStyle = UInt32
@@ -31,6 +32,7 @@ lib LibAdw
 
   # Callbacks
   alias AnimationTargetFunc = Float64, Pointer(Void) -> Void
+  alias SidebarSectionCreateItemFunc = Pointer(LibGObject::Object), Pointer(Void) -> Pointer(LibAdw::SidebarItem)
 
   # Interface types
   type Swipeable = Void
@@ -216,6 +218,8 @@ lib LibAdw
     parent_class : LibGtk::WidgetClass
   end
 
+  type NoneAnimationTargetClass = Void # Struct with zero bytes
+
   struct OverlaySplitViewClass # 408 bytes long
     parent_class : LibGtk::WidgetClass
   end
@@ -250,6 +254,35 @@ lib LibAdw
   end
 
   type PropertyAnimationTargetClass = Void # Struct with zero bytes
+
+  struct ShortcutLabelClass # 408 bytes long
+    parent_class : LibGtk::WidgetClass
+  end
+
+  struct ShortcutsDialogClass # 456 bytes long
+    parent_class : LibAdw::DialogClass
+  end
+
+  struct ShortcutsItemClass # 136 bytes long
+    parent_class : LibGObject::ObjectClass
+  end
+
+  struct ShortcutsSectionClass # 136 bytes long
+    parent_class : LibGObject::ObjectClass
+  end
+
+  struct SidebarClass # 408 bytes long
+    parent_class : LibGtk::WidgetClass
+  end
+
+  struct SidebarItemClass # 168 bytes long
+    parent_class : LibGObject::ObjectClass
+    padding : Pointer(Void)[4]
+  end
+
+  struct SidebarSectionClass # 136 bytes long
+    parent_class : LibGObject::ObjectClass
+  end
 
   struct SpinRowClass # 552 bytes long
     parent_class : LibAdw::ActionRowClass
@@ -364,6 +397,10 @@ lib LibAdw
   end
 
   struct ViewSwitcherClass # 408 bytes long
+    parent_class : LibGtk::WidgetClass
+  end
+
+  struct ViewSwitcherSidebarClass # 408 bytes long
     parent_class : LibGtk::WidgetClass
   end
 
@@ -499,6 +536,8 @@ lib LibAdw
 
   type NavigationView = Void # Object struct with no fields
 
+  type NoneAnimationTarget = Void # Object struct with no fields
+
   type OverlaySplitView = Void # Object struct with no fields
 
   type PasswordEntryRow = Void # Object struct with no fields
@@ -524,6 +563,22 @@ lib LibAdw
   end
 
   type PropertyAnimationTarget = Void # Object struct with no fields
+
+  type ShortcutLabel = Void # Object struct with no fields
+
+  type ShortcutsDialog = Void # Object struct with no fields
+
+  type ShortcutsItem = Void # Object struct with no fields
+
+  type ShortcutsSection = Void # Object struct with no fields
+
+  type Sidebar = Void # Object struct with no fields
+
+  struct SidebarItem
+    parent_instance : LibGObject::Object
+  end
+
+  type SidebarSection = Void # Object struct with no fields
 
   type SpinRow = Void # Object struct with no fields
 
@@ -579,6 +634,8 @@ lib LibAdw
 
   type ViewSwitcherBar = Void # Object struct with no fields
 
+  type ViewSwitcherSidebar = Void # Object struct with no fields
+
   type ViewSwitcherTitle = Void # Object struct with no fields
 
   struct Window
@@ -597,6 +654,7 @@ lib LibAdw
   fun adw_about_dialog_add_legal_section(this : Void*, title : Pointer(LibC::Char), copyright : Pointer(LibC::Char), license_type : UInt32, license : Pointer(LibC::Char)) : Void
   fun adw_about_dialog_add_link(this : Void*, title : Pointer(LibC::Char), url : Pointer(LibC::Char)) : Void
   fun adw_about_dialog_add_other_app(this : Void*, appid : Pointer(LibC::Char), name : Pointer(LibC::Char), summary : Pointer(LibC::Char)) : Void
+  fun adw_about_dialog_get_appdata_resource_path(this : Void*) : Pointer(LibC::Char)
   fun adw_about_dialog_get_application_icon(this : Void*) : Pointer(LibC::Char)
   fun adw_about_dialog_get_application_name(this : Void*) : Pointer(LibC::Char)
   fun adw_about_dialog_get_artists(this : Void*) : Pointer(Pointer(LibC::Char))
@@ -1246,6 +1304,8 @@ lib LibAdw
   fun adw_navigation_view_set_hhomogeneous(this : Void*, hhomogeneous : LibC::Int) : Void
   fun adw_navigation_view_set_pop_on_escape(this : Void*, pop_on_escape : LibC::Int) : Void
   fun adw_navigation_view_set_vhomogeneous(this : Void*, vhomogeneous : LibC::Int) : Void
+  fun adw_none_animation_target_get_type : UInt64
+  fun adw_none_animation_target_new : Pointer(Void)
   fun adw_overlay_split_view_get_collapsed(this : Void*) : LibC::Int
   fun adw_overlay_split_view_get_content(this : Void*) : Pointer(Void)
   fun adw_overlay_split_view_get_enable_hide_gesture(this : Void*) : LibC::Int
@@ -1289,8 +1349,10 @@ lib LibAdw
   fun adw_preferences_dialog_set_visible_page(this : Void*, page : Pointer(Void)) : Void
   fun adw_preferences_dialog_set_visible_page_name(this : Void*, name : Pointer(LibC::Char)) : Void
   fun adw_preferences_group_add(this : Void*, child : Pointer(Void)) : Void
+  fun adw_preferences_group_bind_model(this : Void*, model : Pointer(Void), create_row_func : Void*, user_data : Pointer(Void), user_data_free_func : Void*) : Void
   fun adw_preferences_group_get_description(this : Void*) : Pointer(LibC::Char)
   fun adw_preferences_group_get_header_suffix(this : Void*) : Pointer(Void)
+  fun adw_preferences_group_get_row(this : Void*, index : UInt32) : Pointer(Void)
   fun adw_preferences_group_get_separate_rows(this : Void*) : LibC::Int
   fun adw_preferences_group_get_title(this : Void*) : Pointer(LibC::Char)
   fun adw_preferences_group_get_type : UInt64
@@ -1304,11 +1366,13 @@ lib LibAdw
   fun adw_preferences_page_get_banner(this : Void*) : Pointer(Void)
   fun adw_preferences_page_get_description(this : Void*) : Pointer(LibC::Char)
   fun adw_preferences_page_get_description_centered(this : Void*) : LibC::Int
+  fun adw_preferences_page_get_group(this : Void*, index : UInt32) : Pointer(Void)
   fun adw_preferences_page_get_icon_name(this : Void*) : Pointer(LibC::Char)
   fun adw_preferences_page_get_name(this : Void*) : Pointer(LibC::Char)
   fun adw_preferences_page_get_title(this : Void*) : Pointer(LibC::Char)
   fun adw_preferences_page_get_type : UInt64
   fun adw_preferences_page_get_use_underline(this : Void*) : LibC::Int
+  fun adw_preferences_page_insert(this : Void*, group : Pointer(Void), index : Int32) : Void
   fun adw_preferences_page_new : Pointer(Void)
   fun adw_preferences_page_remove(this : Void*, group : Pointer(Void)) : Void
   fun adw_preferences_page_scroll_to_top(this : Void*) : Void
@@ -1353,6 +1417,99 @@ lib LibAdw
   fun adw_property_animation_target_new_for_pspec(object : Pointer(Void), pspec : Pointer(Void)) : Pointer(Void)
   fun adw_response_appearance_get_type : UInt64
   fun adw_rgba_to_standalone(rgba : Pointer(Void), dark : LibC::Int, standalone_rgba : Pointer(Void)) : Void
+  fun adw_shortcut_label_get_accelerator(this : Void*) : Pointer(LibC::Char)
+  fun adw_shortcut_label_get_disabled_text(this : Void*) : Pointer(LibC::Char)
+  fun adw_shortcut_label_get_type : UInt64
+  fun adw_shortcut_label_new(accelerator : Pointer(LibC::Char)) : Pointer(Void)
+  fun adw_shortcut_label_set_accelerator(this : Void*, accelerator : Pointer(LibC::Char)) : Void
+  fun adw_shortcut_label_set_disabled_text(this : Void*, disabled_text : Pointer(LibC::Char)) : Void
+  fun adw_shortcuts_dialog_add(this : Void*, section : Pointer(Void)) : Void
+  fun adw_shortcuts_dialog_get_type : UInt64
+  fun adw_shortcuts_dialog_new : Pointer(Void)
+  fun adw_shortcuts_item_get_accelerator(this : Void*) : Pointer(LibC::Char)
+  fun adw_shortcuts_item_get_action_name(this : Void*) : Pointer(LibC::Char)
+  fun adw_shortcuts_item_get_direction(this : Void*) : UInt32
+  fun adw_shortcuts_item_get_subtitle(this : Void*) : Pointer(LibC::Char)
+  fun adw_shortcuts_item_get_title(this : Void*) : Pointer(LibC::Char)
+  fun adw_shortcuts_item_get_type : UInt64
+  fun adw_shortcuts_item_new(title : Pointer(LibC::Char), accelerator : Pointer(LibC::Char)) : Pointer(Void)
+  fun adw_shortcuts_item_new_from_action(title : Pointer(LibC::Char), action_name : Pointer(LibC::Char)) : Pointer(Void)
+  fun adw_shortcuts_item_set_accelerator(this : Void*, accelerator : Pointer(LibC::Char)) : Void
+  fun adw_shortcuts_item_set_action_name(this : Void*, action_name : Pointer(LibC::Char)) : Void
+  fun adw_shortcuts_item_set_direction(this : Void*, direction : UInt32) : Void
+  fun adw_shortcuts_item_set_subtitle(this : Void*, subtitle : Pointer(LibC::Char)) : Void
+  fun adw_shortcuts_item_set_title(this : Void*, title : Pointer(LibC::Char)) : Void
+  fun adw_shortcuts_section_add(this : Void*, item : Pointer(Void)) : Void
+  fun adw_shortcuts_section_get_title(this : Void*) : Pointer(LibC::Char)
+  fun adw_shortcuts_section_get_type : UInt64
+  fun adw_shortcuts_section_new(title : Pointer(LibC::Char)) : Pointer(Void)
+  fun adw_shortcuts_section_set_title(this : Void*, title : Pointer(LibC::Char)) : Void
+  fun adw_sidebar_append(this : Void*, section : Pointer(Void)) : Void
+  fun adw_sidebar_get_drop_preload(this : Void*) : LibC::Int
+  fun adw_sidebar_get_filter(this : Void*) : Pointer(Void)
+  fun adw_sidebar_get_item(this : Void*, index : UInt32) : Pointer(Void)
+  fun adw_sidebar_get_items(this : Void*) : Pointer(Void)
+  fun adw_sidebar_get_menu_model(this : Void*) : Pointer(Void)
+  fun adw_sidebar_get_mode(this : Void*) : UInt32
+  fun adw_sidebar_get_placeholder(this : Void*) : Pointer(Void)
+  fun adw_sidebar_get_section(this : Void*, index : UInt32) : Pointer(Void)
+  fun adw_sidebar_get_sections(this : Void*) : Pointer(Void)
+  fun adw_sidebar_get_selected(this : Void*) : UInt32
+  fun adw_sidebar_get_selected_item(this : Void*) : Pointer(Void)
+  fun adw_sidebar_get_type : UInt64
+  fun adw_sidebar_insert(this : Void*, section : Pointer(Void), position : Int32) : Void
+  fun adw_sidebar_item_get_drag_motion_activate(this : Void*) : LibC::Int
+  fun adw_sidebar_item_get_enabled(this : Void*) : LibC::Int
+  fun adw_sidebar_item_get_icon_name(this : Void*) : Pointer(LibC::Char)
+  fun adw_sidebar_item_get_icon_paintable(this : Void*) : Pointer(Void)
+  fun adw_sidebar_item_get_index(this : Void*) : UInt32
+  fun adw_sidebar_item_get_section(this : Void*) : Pointer(Void)
+  fun adw_sidebar_item_get_section_index(this : Void*) : UInt32
+  fun adw_sidebar_item_get_subtitle(this : Void*) : Pointer(LibC::Char)
+  fun adw_sidebar_item_get_suffix(this : Void*) : Pointer(Void)
+  fun adw_sidebar_item_get_title(this : Void*) : Pointer(LibC::Char)
+  fun adw_sidebar_item_get_tooltip(this : Void*) : Pointer(LibC::Char)
+  fun adw_sidebar_item_get_type : UInt64
+  fun adw_sidebar_item_get_use_underline(this : Void*) : LibC::Int
+  fun adw_sidebar_item_get_visible(this : Void*) : LibC::Int
+  fun adw_sidebar_item_new(title : Pointer(LibC::Char)) : Pointer(Void)
+  fun adw_sidebar_item_set_drag_motion_activate(this : Void*, drag_motion_activate : LibC::Int) : Void
+  fun adw_sidebar_item_set_enabled(this : Void*, enabled : LibC::Int) : Void
+  fun adw_sidebar_item_set_icon_name(this : Void*, icon_name : Pointer(LibC::Char)) : Void
+  fun adw_sidebar_item_set_icon_paintable(this : Void*, paintable : Pointer(Void)) : Void
+  fun adw_sidebar_item_set_subtitle(this : Void*, subtitle : Pointer(LibC::Char)) : Void
+  fun adw_sidebar_item_set_suffix(this : Void*, suffix : Pointer(Void)) : Void
+  fun adw_sidebar_item_set_title(this : Void*, title : Pointer(LibC::Char)) : Void
+  fun adw_sidebar_item_set_tooltip(this : Void*, tooltip : Pointer(LibC::Char)) : Void
+  fun adw_sidebar_item_set_use_underline(this : Void*, use_underline : LibC::Int) : Void
+  fun adw_sidebar_item_set_visible(this : Void*, visible : LibC::Int) : Void
+  fun adw_sidebar_mode_get_type : UInt64
+  fun adw_sidebar_new : Pointer(Void)
+  fun adw_sidebar_prepend(this : Void*, section : Pointer(Void)) : Void
+  fun adw_sidebar_remove(this : Void*, section : Pointer(Void)) : Void
+  fun adw_sidebar_remove_all(this : Void*) : Void
+  fun adw_sidebar_section_append(this : Void*, item : Pointer(Void)) : Void
+  fun adw_sidebar_section_bind_model(this : Void*, model : Pointer(Void), create_item_func : Void*, user_data : Pointer(Void), user_data_free_func : Void*) : Void
+  fun adw_sidebar_section_get_item(this : Void*, index : UInt32) : Pointer(Void)
+  fun adw_sidebar_section_get_items(this : Void*) : Pointer(Void)
+  fun adw_sidebar_section_get_menu_model(this : Void*) : Pointer(Void)
+  fun adw_sidebar_section_get_sidebar(this : Void*) : Pointer(Void)
+  fun adw_sidebar_section_get_title(this : Void*) : Pointer(LibC::Char)
+  fun adw_sidebar_section_get_type : UInt64
+  fun adw_sidebar_section_insert(this : Void*, item : Pointer(Void), position : Int32) : Void
+  fun adw_sidebar_section_new : Pointer(Void)
+  fun adw_sidebar_section_prepend(this : Void*, item : Pointer(Void)) : Void
+  fun adw_sidebar_section_remove(this : Void*, item : Pointer(Void)) : Void
+  fun adw_sidebar_section_remove_all(this : Void*) : Void
+  fun adw_sidebar_section_set_menu_model(this : Void*, menu_model : Pointer(Void)) : Void
+  fun adw_sidebar_section_set_title(this : Void*, title : Pointer(LibC::Char)) : Void
+  fun adw_sidebar_set_drop_preload(this : Void*, preload : LibC::Int) : Void
+  fun adw_sidebar_set_filter(this : Void*, filter : Pointer(Void)) : Void
+  fun adw_sidebar_set_menu_model(this : Void*, menu_model : Pointer(Void)) : Void
+  fun adw_sidebar_set_mode(this : Void*, mode : UInt32) : Void
+  fun adw_sidebar_set_placeholder(this : Void*, placeholder : Pointer(Void)) : Void
+  fun adw_sidebar_set_selected(this : Void*, selected : UInt32) : Void
+  fun adw_sidebar_setup_drop_target(this : Void*, actions : UInt32, types : Pointer(UInt64), n_types : UInt64) : Void
   fun adw_spin_row_configure(this : Void*, adjustment : Pointer(Void), climb_rate : Float64, digits : UInt32) : Void
   fun adw_spin_row_get_adjustment(this : Void*) : Pointer(Void)
   fun adw_spin_row_get_climb_rate(this : Void*) : Float64
@@ -1678,6 +1835,7 @@ lib LibAdw
   fun adw_toast_set_title(this : Void*, title : Pointer(LibC::Char)) : Void
   fun adw_toast_set_use_markup(this : Void*, use_markup : LibC::Int) : Void
   fun adw_toggle_get_child(this : Void*) : Pointer(Void)
+  fun adw_toggle_get_description(this : Void*) : Pointer(LibC::Char)
   fun adw_toggle_get_enabled(this : Void*) : LibC::Int
   fun adw_toggle_get_icon_name(this : Void*) : Pointer(LibC::Char)
   fun adw_toggle_get_index(this : Void*) : UInt32
@@ -1705,6 +1863,7 @@ lib LibAdw
   fun adw_toggle_group_set_homogeneous(this : Void*, homogeneous : LibC::Int) : Void
   fun adw_toggle_new : Pointer(Void)
   fun adw_toggle_set_child(this : Void*, child : Pointer(Void)) : Void
+  fun adw_toggle_set_description(this : Void*, description : Pointer(LibC::Char)) : Void
   fun adw_toggle_set_enabled(this : Void*, enabled : LibC::Int) : Void
   fun adw_toggle_set_icon_name(this : Void*, icon_name : Pointer(LibC::Char)) : Void
   fun adw_toggle_set_label(this : Void*, label : Pointer(LibC::Char)) : Void
@@ -1754,6 +1913,8 @@ lib LibAdw
   fun adw_view_stack_page_get_icon_name(this : Void*) : Pointer(LibC::Char)
   fun adw_view_stack_page_get_name(this : Void*) : Pointer(LibC::Char)
   fun adw_view_stack_page_get_needs_attention(this : Void*) : LibC::Int
+  fun adw_view_stack_page_get_section_title(this : Void*) : Pointer(LibC::Char)
+  fun adw_view_stack_page_get_starts_section(this : Void*) : LibC::Int
   fun adw_view_stack_page_get_title(this : Void*) : Pointer(LibC::Char)
   fun adw_view_stack_page_get_type : UInt64
   fun adw_view_stack_page_get_use_underline(this : Void*) : LibC::Int
@@ -1762,6 +1923,8 @@ lib LibAdw
   fun adw_view_stack_page_set_icon_name(this : Void*, icon_name : Pointer(LibC::Char)) : Void
   fun adw_view_stack_page_set_name(this : Void*, name : Pointer(LibC::Char)) : Void
   fun adw_view_stack_page_set_needs_attention(this : Void*, needs_attention : LibC::Int) : Void
+  fun adw_view_stack_page_set_section_title(this : Void*, section_title : Pointer(LibC::Char)) : Void
+  fun adw_view_stack_page_set_starts_section(this : Void*, starts_section : LibC::Int) : Void
   fun adw_view_stack_page_set_title(this : Void*, title : Pointer(LibC::Char)) : Void
   fun adw_view_stack_page_set_use_underline(this : Void*, use_underline : LibC::Int) : Void
   fun adw_view_stack_page_set_visible(this : Void*, visible : LibC::Int) : Void
@@ -1788,6 +1951,16 @@ lib LibAdw
   fun adw_view_switcher_policy_get_type : UInt64
   fun adw_view_switcher_set_policy(this : Void*, policy : UInt32) : Void
   fun adw_view_switcher_set_stack(this : Void*, stack : Pointer(Void)) : Void
+  fun adw_view_switcher_sidebar_get_filter(this : Void*) : Pointer(Void)
+  fun adw_view_switcher_sidebar_get_mode(this : Void*) : UInt32
+  fun adw_view_switcher_sidebar_get_placeholder(this : Void*) : Pointer(Void)
+  fun adw_view_switcher_sidebar_get_stack(this : Void*) : Pointer(Void)
+  fun adw_view_switcher_sidebar_get_type : UInt64
+  fun adw_view_switcher_sidebar_new : Pointer(Void)
+  fun adw_view_switcher_sidebar_set_filter(this : Void*, filter : Pointer(Void)) : Void
+  fun adw_view_switcher_sidebar_set_mode(this : Void*, mode : UInt32) : Void
+  fun adw_view_switcher_sidebar_set_placeholder(this : Void*, placeholder : Pointer(Void)) : Void
+  fun adw_view_switcher_sidebar_set_stack(this : Void*, stack : Pointer(Void)) : Void
   fun adw_view_switcher_title_get_stack(this : Void*) : Pointer(Void)
   fun adw_view_switcher_title_get_subtitle(this : Void*) : Pointer(LibC::Char)
   fun adw_view_switcher_title_get_title(this : Void*) : Pointer(LibC::Char)
@@ -1834,6 +2007,7 @@ lib LibAdw
   fun adw_wrap_box_new : Pointer(Void)
   fun adw_wrap_box_prepend(this : Void*, child : Pointer(Void)) : Void
   fun adw_wrap_box_remove(this : Void*, child : Pointer(Void)) : Void
+  fun adw_wrap_box_remove_all(this : Void*) : Void
   fun adw_wrap_box_reorder_child_after(this : Void*, child : Pointer(Void), sibling : Pointer(Void)) : Void
   fun adw_wrap_box_set_align(this : Void*, align : Float32) : Void
   fun adw_wrap_box_set_child_spacing(this : Void*, child_spacing : Int32) : Void

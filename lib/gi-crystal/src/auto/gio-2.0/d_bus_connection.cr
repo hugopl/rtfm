@@ -441,7 +441,9 @@ module Gio
           message = Gio::DBusMessage.new(lib_message, GICrystal::Transfer::Full)
           # Generator::BuiltInTypeArgPlan
           incoming = GICrystal.to_bool(lib_incoming)
-          ::Box(Proc(Gio::DBusConnection, Gio::DBusMessage, Bool, Gio::DBusMessage)).unbox(lib_user_data).call(connection, message, incoming)
+          _retval = ::Box(Proc(Gio::DBusConnection, Gio::DBusMessage, Bool, Gio::DBusMessage)).unbox(lib_user_data).call(connection, message, incoming)
+          LibGObject.g_object_ref(_retval) if _retval
+          _retval.nil? ? Pointer(Void).null : _retval.to_unsafe
         }.pointer
         user_data = GICrystal::ClosureDataManager.register(_box)
         user_data_free_func = ->GICrystal::ClosureDataManager.deregister(Pointer(Void)).pointer

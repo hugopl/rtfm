@@ -32,14 +32,24 @@ module Adw
       ptr
     end
 
-    def initialize(*, enum_type : UInt64? = nil)
-      _names = uninitialized Pointer(LibC::Char)[1]
-      _values = StaticArray(LibGObject::Value, 1).new(LibGObject::Value.new)
+    def initialize(*, enum_type : UInt64? = nil, item_type : UInt64? = nil, n_items : UInt32? = nil)
+      _names = uninitialized Pointer(LibC::Char)[3]
+      _values = StaticArray(LibGObject::Value, 3).new(LibGObject::Value.new)
       _n = 0
 
       if !enum_type.nil?
         (_names.to_unsafe + _n).value = "enum-type".to_unsafe
         GObject::Value.init_g_value(_values.to_unsafe + _n, enum_type)
+        _n += 1
+      end
+      if !item_type.nil?
+        (_names.to_unsafe + _n).value = "item-type".to_unsafe
+        GObject::Value.init_g_value(_values.to_unsafe + _n, item_type)
+        _n += 1
+      end
+      if !n_items.nil?
+        (_names.to_unsafe + _n).value = "n-items".to_unsafe
+        GObject::Value.init_g_value(_values.to_unsafe + _n, n_items)
         _n += 1
       end
 
@@ -76,6 +86,22 @@ module Adw
 
       value = uninitialized UInt64
       LibGObject.g_object_get(self, "enum-type", pointerof(value), Pointer(Void).null)
+      value
+    end
+
+    def item_type : UInt64
+      # Returns: None
+
+      value = uninitialized UInt64
+      LibGObject.g_object_get(self, "item-type", pointerof(value), Pointer(Void).null)
+      value
+    end
+
+    def n_items : UInt32
+      # Returns: None
+
+      value = uninitialized UInt32
+      LibGObject.g_object_get(self, "n-items", pointerof(value), Pointer(Void).null)
       value
     end
 

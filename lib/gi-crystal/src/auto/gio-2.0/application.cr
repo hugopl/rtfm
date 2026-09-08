@@ -577,7 +577,9 @@ module Gio
              end
 
       # C call
-      _retval = LibGio.g_application_run(to_unsafe, argc, argv)
+      _retval = GICrystal.run_blocking("g_application_run") do
+        LibGio.g_application_run(to_unsafe, argc, argv)
+      end
 
       # Return value handling
       _retval
@@ -846,7 +848,8 @@ module Gio
         handler = ->(_lib_sender : Pointer(Void), lib_command_line : Pointer(Void), _lib_box : Pointer(Void)) {
           # Generator::BuiltInTypeArgPlan
           command_line = Gio::ApplicationCommandLine.new(lib_command_line, GICrystal::Transfer::None)
-          ::Box(Proc(Gio::ApplicationCommandLine, Int32)).unbox(_lib_box).call(command_line)
+          _retval = ::Box(Proc(Gio::ApplicationCommandLine, Int32)).unbox(_lib_box).call(command_line)
+          _retval
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,
@@ -860,7 +863,8 @@ module Gio
           _sender = Gio::Application.new(_lib_sender, GICrystal::Transfer::None)
           # Generator::BuiltInTypeArgPlan
           command_line = Gio::ApplicationCommandLine.new(lib_command_line, GICrystal::Transfer::None)
-          ::Box(Proc(Gio::Application, Gio::ApplicationCommandLine, Int32)).unbox(_lib_box).call(_sender, command_line)
+          _retval = ::Box(Proc(Gio::Application, Gio::ApplicationCommandLine, Int32)).unbox(_lib_box).call(_sender, command_line)
+          _retval
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,
@@ -891,7 +895,8 @@ module Gio
         handler = ->(_lib_sender : Pointer(Void), lib_options : Pointer(Void), _lib_box : Pointer(Void)) {
           # Generator::BuiltInTypeArgPlan
           options = GLib::VariantDict.new(lib_options, GICrystal::Transfer::None)
-          ::Box(Proc(GLib::VariantDict, Int32)).unbox(_lib_box).call(options)
+          _retval = ::Box(Proc(GLib::VariantDict, Int32)).unbox(_lib_box).call(options)
+          _retval
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,
@@ -905,7 +910,8 @@ module Gio
           _sender = Gio::Application.new(_lib_sender, GICrystal::Transfer::None)
           # Generator::BuiltInTypeArgPlan
           options = GLib::VariantDict.new(lib_options, GICrystal::Transfer::None)
-          ::Box(Proc(Gio::Application, GLib::VariantDict, Int32)).unbox(_lib_box).call(_sender, options)
+          _retval = ::Box(Proc(Gio::Application, GLib::VariantDict, Int32)).unbox(_lib_box).call(_sender, options)
+          _retval
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,
@@ -934,7 +940,8 @@ module Gio
       def connect(handler : Proc(Bool), *, after : Bool = false) : GObject::SignalConnection
         _box = ::Box.box(handler)
         handler = ->(_lib_sender : Pointer(Void), _lib_box : Pointer(Void)) {
-          ::Box(Proc(Bool)).unbox(_lib_box).call
+          _retval = ::Box(Proc(Bool)).unbox(_lib_box).call
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,
@@ -946,7 +953,8 @@ module Gio
         _box = ::Box.box(handler)
         handler = ->(_lib_sender : Pointer(Void), _lib_box : Pointer(Void)) {
           _sender = Gio::Application.new(_lib_sender, GICrystal::Transfer::None)
-          ::Box(Proc(Gio::Application, Bool)).unbox(_lib_box).call(_sender)
+          _retval = ::Box(Proc(Gio::Application, Bool)).unbox(_lib_box).call(_sender)
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,

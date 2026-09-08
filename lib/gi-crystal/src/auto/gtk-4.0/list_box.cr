@@ -387,7 +387,9 @@ module Gtk
         create_widget_func = ->(lib_item : Pointer(Void), lib_user_data : Pointer(Void)) {
           # Generator::BuiltInTypeArgPlan
           item = GObject::Object.new(lib_item, GICrystal::Transfer::None)
-          ::Box(Proc(GObject::Object, Gtk::Widget)).unbox(lib_user_data).call(item)
+          _retval = ::Box(Proc(GObject::Object, Gtk::Widget)).unbox(lib_user_data).call(item)
+          LibGObject.g_object_ref(_retval) if _retval
+          _retval.to_unsafe
         }.pointer
         user_data = GICrystal::ClosureDataManager.register(_box)
         user_data_free_func = ->GICrystal::ClosureDataManager.deregister(Pointer(Void)).pointer
@@ -686,7 +688,8 @@ module Gtk
         filter_func = ->(lib_row : Pointer(Void), lib_user_data : Pointer(Void)) {
           # Generator::BuiltInTypeArgPlan
           row = Gtk::ListBoxRow.new(lib_row, GICrystal::Transfer::None)
-          ::Box(Proc(Gtk::ListBoxRow, Bool)).unbox(lib_user_data).call(row)
+          _retval = ::Box(Proc(Gtk::ListBoxRow, Bool)).unbox(lib_user_data).call(row)
+          GICrystal.to_c_bool(_retval)
         }.pointer
         user_data = GICrystal::ClosureDataManager.register(_box)
         destroy = ->GICrystal::ClosureDataManager.deregister(Pointer(Void)).pointer
@@ -786,7 +789,8 @@ module Gtk
           row1 = Gtk::ListBoxRow.new(lib_row1, GICrystal::Transfer::None)
           # Generator::BuiltInTypeArgPlan
           row2 = Gtk::ListBoxRow.new(lib_row2, GICrystal::Transfer::None)
-          ::Box(Proc(Gtk::ListBoxRow, Gtk::ListBoxRow, Int32)).unbox(lib_user_data).call(row1, row2)
+          _retval = ::Box(Proc(Gtk::ListBoxRow, Gtk::ListBoxRow, Int32)).unbox(lib_user_data).call(row1, row2)
+          _retval
         }.pointer
         user_data = GICrystal::ClosureDataManager.register(_box)
         destroy = ->GICrystal::ClosureDataManager.deregister(Pointer(Void)).pointer

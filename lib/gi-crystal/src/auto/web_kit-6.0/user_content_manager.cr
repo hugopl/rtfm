@@ -278,7 +278,8 @@ module WebKit
           value = JavaScriptCore::Value.new(lib_value, GICrystal::Transfer::None)
           # Generator::BuiltInTypeArgPlan
           reply = WebKit::ScriptMessageReply.new(lib_reply, GICrystal::Transfer::None)
-          ::Box(Proc(JavaScriptCore::Value, WebKit::ScriptMessageReply, Bool)).unbox(_lib_box).call(value, reply)
+          _retval = ::Box(Proc(JavaScriptCore::Value, WebKit::ScriptMessageReply, Bool)).unbox(_lib_box).call(value, reply)
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,
@@ -294,7 +295,8 @@ module WebKit
           value = JavaScriptCore::Value.new(lib_value, GICrystal::Transfer::None)
           # Generator::BuiltInTypeArgPlan
           reply = WebKit::ScriptMessageReply.new(lib_reply, GICrystal::Transfer::None)
-          ::Box(Proc(WebKit::UserContentManager, JavaScriptCore::Value, WebKit::ScriptMessageReply, Bool)).unbox(_lib_box).call(_sender, value, reply)
+          _retval = ::Box(Proc(WebKit::UserContentManager, JavaScriptCore::Value, WebKit::ScriptMessageReply, Bool)).unbox(_lib_box).call(_sender, value, reply)
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,

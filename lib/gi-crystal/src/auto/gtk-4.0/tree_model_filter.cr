@@ -264,7 +264,8 @@ module Gtk
           model = Gtk::AbstractTreeModel.new(lib_model, GICrystal::Transfer::None)
           # Generator::BuiltInTypeArgPlan
           iter = Gtk::TreeIter.new(lib_iter, GICrystal::Transfer::None)
-          ::Box(Proc(Gtk::TreeModel, Gtk::TreeIter, Bool)).unbox(lib_data).call(model, iter)
+          _retval = ::Box(Proc(Gtk::TreeModel, Gtk::TreeIter, Bool)).unbox(lib_data).call(model, iter)
+          GICrystal.to_c_bool(_retval)
         }.pointer
         data = GICrystal::ClosureDataManager.register(_box)
         destroy = ->GICrystal::ClosureDataManager.deregister(Pointer(Void)).pointer

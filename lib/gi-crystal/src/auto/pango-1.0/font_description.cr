@@ -98,6 +98,17 @@ module Pango
       # Return value handling
     end
 
+    def color : Pango::FontColor
+      # pango_font_description_get_color: (Method)
+      # Returns: (transfer none)
+
+      # C call
+      _retval = LibPango.pango_font_description_get_color(to_unsafe)
+
+      # Return value handling
+      Pango::FontColor.new(_retval)
+    end
+
     def family : ::String?
       # pango_font_description_get_family: (Method)
       # Returns: (transfer none) (nullable)
@@ -219,6 +230,17 @@ module Pango
       Pango::Weight.new(_retval)
     end
 
+    def width : Pango::Width
+      # pango_font_description_get_width: (Method)
+      # Returns: (transfer none)
+
+      # C call
+      _retval = LibPango.pango_font_description_get_width(to_unsafe)
+
+      # Return value handling
+      Pango::Width.new(_retval)
+    end
+
     def hash : UInt32
       # pango_font_description_hash: (Method)
       # Returns: (transfer none)
@@ -268,6 +290,17 @@ module Pango
 
       # C call
       LibPango.pango_font_description_set_absolute_size(to_unsafe, size)
+
+      # Return value handling
+    end
+
+    def color=(color : Pango::FontColor) : Nil
+      # pango_font_description_set_color: (Method)
+      # @color:
+      # Returns: (transfer none)
+
+      # C call
+      LibPango.pango_font_description_set_color(to_unsafe, color)
 
       # Return value handling
     end
@@ -414,6 +447,17 @@ module Pango
 
       # C call
       LibPango.pango_font_description_set_weight(to_unsafe, weight)
+
+      # Return value handling
+    end
+
+    def width=(width : Pango::Width) : Nil
+      # pango_font_description_set_width: (Method)
+      # @width:
+      # Returns: (transfer none)
+
+      # C call
+      LibPango.pango_font_description_set_width(to_unsafe, width)
 
       # Return value handling
     end

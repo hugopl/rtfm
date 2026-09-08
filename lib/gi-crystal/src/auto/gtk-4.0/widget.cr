@@ -915,7 +915,8 @@ module Gtk
           widget = Gtk::Widget.new(lib_widget, GICrystal::Transfer::None)
           # Generator::BuiltInTypeArgPlan
           frame_clock = Gdk::FrameClock.new(lib_frame_clock, GICrystal::Transfer::None)
-          ::Box(Proc(Gtk::Widget, Gdk::FrameClock, Bool)).unbox(lib_user_data).call(widget, frame_clock)
+          _retval = ::Box(Proc(Gtk::Widget, Gdk::FrameClock, Bool)).unbox(lib_user_data).call(widget, frame_clock)
+          GICrystal.to_c_bool(_retval)
         }.pointer
         user_data = GICrystal::ClosureDataManager.register(_box)
         notify = ->GICrystal::ClosureDataManager.deregister(Pointer(Void)).pointer
@@ -2947,7 +2948,8 @@ module Gtk
         handler = ->(_lib_sender : Pointer(Void), lib_direction : UInt32, _lib_box : Pointer(Void)) {
           # Generator::BuiltInTypeArgPlan
           direction = Gtk::DirectionType.new(lib_direction)
-          ::Box(Proc(Gtk::DirectionType, Bool)).unbox(_lib_box).call(direction)
+          _retval = ::Box(Proc(Gtk::DirectionType, Bool)).unbox(_lib_box).call(direction)
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,
@@ -2961,7 +2963,8 @@ module Gtk
           _sender = Gtk::Widget.new(_lib_sender, GICrystal::Transfer::None)
           # Generator::BuiltInTypeArgPlan
           direction = Gtk::DirectionType.new(lib_direction)
-          ::Box(Proc(Gtk::Widget, Gtk::DirectionType, Bool)).unbox(_lib_box).call(_sender, direction)
+          _retval = ::Box(Proc(Gtk::Widget, Gtk::DirectionType, Bool)).unbox(_lib_box).call(_sender, direction)
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,
@@ -3033,7 +3036,8 @@ module Gtk
         handler = ->(_lib_sender : Pointer(Void), lib_group_cycling : LibC::Int, _lib_box : Pointer(Void)) {
           # Generator::BuiltInTypeArgPlan
           group_cycling = GICrystal.to_bool(lib_group_cycling)
-          ::Box(Proc(Bool, Bool)).unbox(_lib_box).call(group_cycling)
+          _retval = ::Box(Proc(Bool, Bool)).unbox(_lib_box).call(group_cycling)
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,
@@ -3047,7 +3051,8 @@ module Gtk
           _sender = Gtk::Widget.new(_lib_sender, GICrystal::Transfer::None)
           # Generator::BuiltInTypeArgPlan
           group_cycling = GICrystal.to_bool(lib_group_cycling)
-          ::Box(Proc(Gtk::Widget, Bool, Bool)).unbox(_lib_box).call(_sender, group_cycling)
+          _retval = ::Box(Proc(Gtk::Widget, Bool, Bool)).unbox(_lib_box).call(_sender, group_cycling)
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,
@@ -3129,7 +3134,8 @@ module Gtk
           keyboard_mode = GICrystal.to_bool(lib_keyboard_mode)
           # Generator::BuiltInTypeArgPlan
           tooltip = Gtk::Tooltip.new(lib_tooltip, GICrystal::Transfer::None)
-          ::Box(Proc(Int32, Int32, Bool, Gtk::Tooltip, Bool)).unbox(_lib_box).call(x, y, keyboard_mode, tooltip)
+          _retval = ::Box(Proc(Int32, Int32, Bool, Gtk::Tooltip, Bool)).unbox(_lib_box).call(x, y, keyboard_mode, tooltip)
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,
@@ -3149,7 +3155,8 @@ module Gtk
           keyboard_mode = GICrystal.to_bool(lib_keyboard_mode)
           # Generator::BuiltInTypeArgPlan
           tooltip = Gtk::Tooltip.new(lib_tooltip, GICrystal::Transfer::None)
-          ::Box(Proc(Gtk::Widget, Int32, Int32, Bool, Gtk::Tooltip, Bool)).unbox(_lib_box).call(_sender, x, y, keyboard_mode, tooltip)
+          _retval = ::Box(Proc(Gtk::Widget, Int32, Int32, Bool, Gtk::Tooltip, Bool)).unbox(_lib_box).call(_sender, x, y, keyboard_mode, tooltip)
+          GICrystal.to_c_bool(_retval)
         }.pointer
 
         handler_id = LibGObject.g_signal_connect_data(@source, name, handler,

@@ -82,6 +82,46 @@ typedef void (*TestSubjectSimpleFunc)(TestSubject* subject, int number, gpointer
 typedef void (*TestSubjectCallbackWithPointer)(gpointer data, GObject* object, gboolean boolean);
 
 /**
+ * TestSubjectObjectFunc:
+ * @user_data: (closure): user data
+ *
+ * Returns: (transfer none) (nullable): An object.
+ *
+ * Used to test conversion of callback return values.
+ */
+typedef GObject* (*TestSubjectObjectFunc)(gpointer user_data);
+
+/**
+ * TestSubjectBoolFunc:
+ * @user_data: (closure): user data
+ *
+ * Returns: A boolean.
+ *
+ * Used to test conversion of callback return values.
+ */
+typedef gboolean (*TestSubjectBoolFunc)(gpointer user_data);
+
+/**
+ * test_subject_call_object_func:
+ * @func: (scope call): a callback returning an object.
+ * @user_data: (closure func): user data passed to @func
+ * @destroy: destroy notifier for @user_data
+ * Returns: (transfer none) (nullable): whatever @func returned.
+ */
+GObject* test_subject_call_object_func(TestSubject* self, TestSubjectObjectFunc func, gpointer user_data,
+                                       GDestroyNotify destroy);
+
+/**
+ * test_subject_call_bool_func:
+ * @func: (scope call): a callback returning a boolean.
+ * @user_data: (closure func): user data passed to @func
+ * @destroy: destroy notifier for @user_data
+ * Returns: whatever @func returned.
+ */
+gboolean test_subject_call_bool_func(TestSubject* self, TestSubjectBoolFunc func, gpointer user_data,
+                                     GDestroyNotify destroy);
+
+/**
  * test_subject_new_from_whatever:
  * @value:
  * Returns: (transfer full): Obj instance with value set on string property
@@ -471,6 +511,25 @@ void test_subject_raise_file_error(TestSubject* self, GError** error);
  * Used to test GError translation into exceptions, this time with more arguments.
  */
 void test_subject_raise_file_error2(TestSubject* self, int foo, GError** error);
+
+/**
+ * test_subject_current_thread:
+ *
+ * Used to test the `blocks` binding.yml attribute.
+ *
+ * Returns: An identifier of the thread this function ran on.
+ */
+guint64 test_subject_current_thread();
+
+/**
+ * test_subject_block_thread:
+ * @microseconds: How long to block the thread.
+ *
+ * Blocks the thread it runs on, used to test the `blocks` binding.yml attribute.
+ *
+ * Returns: An identifier of the thread this function ran on.
+ */
+guint64 test_subject_block_thread(guint microseconds);
 
 /**
  * test_subject_return_myself_as_interface:

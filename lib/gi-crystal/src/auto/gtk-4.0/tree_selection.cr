@@ -271,7 +271,8 @@ module Gtk
           path = Gtk::TreePath.new(lib_path, GICrystal::Transfer::None)
           # Generator::BuiltInTypeArgPlan
           path_currently_selected = GICrystal.to_bool(lib_path_currently_selected)
-          ::Box(Proc(Gtk::TreeSelection, Gtk::TreeModel, Gtk::TreePath, Bool, Bool)).unbox(lib_data).call(selection, model, path, path_currently_selected)
+          _retval = ::Box(Proc(Gtk::TreeSelection, Gtk::TreeModel, Gtk::TreePath, Bool, Bool)).unbox(lib_data).call(selection, model, path, path_currently_selected)
+          GICrystal.to_c_bool(_retval)
         }.pointer
         data = GICrystal::ClosureDataManager.register(_box)
         destroy = ->GICrystal::ClosureDataManager.deregister(Pointer(Void)).pointer

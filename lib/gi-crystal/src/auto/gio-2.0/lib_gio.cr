@@ -26,6 +26,7 @@ lib LibGio
   type FileMeasureFlags = UInt32
   type FileMonitorFlags = UInt32
   type FileQueryInfoFlags = UInt32
+  type IOModuleScopeFlags = UInt32
   type IOStreamSpliceFlags = UInt32
   type MountMountFlags = UInt32
   type MountUnmountFlags = UInt32
@@ -38,6 +39,8 @@ lib LibGio
   type SubprocessFlags = UInt32
   type TestDBusFlags = UInt32
   type TlsCertificateFlags = UInt32
+  type TlsCertificateRequestFlags = UInt32
+  type TlsDatabaseLookupFlags = UInt32
   type TlsDatabaseVerifyFlags = UInt32
   type TlsPasswordFlags = UInt32
 
@@ -52,6 +55,7 @@ lib LibGio
   type DataStreamByteOrder = UInt32
   type DataStreamNewlineType = UInt32
   type DriveStartStopType = UInt32
+  type EcnCodePoint = UInt32
   type EmblemOrigin = UInt32
   type FileAttributeStatus = UInt32
   type FileAttributeType = UInt32
@@ -59,7 +63,6 @@ lib LibGio
   type FileType = UInt32
   type FilesystemPreviewType = UInt32
   type IOErrorEnum = UInt32
-  type IOModuleScopeFlags = UInt32
   type MemoryMonitorWarningLevel = UInt32
   type MountOperationResult = UInt32
   type NetworkConnectivity = UInt32
@@ -75,10 +78,8 @@ lib LibGio
   type SocketProtocol = Int32
   type SocketType = UInt32
   type TlsAuthenticationMode = UInt32
-  type TlsCertificateRequestFlags = UInt32
   type TlsChannelBindingError = UInt32
   type TlsChannelBindingType = UInt32
-  type TlsDatabaseLookupFlags = UInt32
   type TlsError = UInt32
   type TlsInteractionResult = UInt32
   type TlsProtocolVersion = UInt32
@@ -104,7 +105,6 @@ lib LibGio
   alias DBusSubtreeEnumerateFunc = Pointer(LibGio::DBusConnection), Pointer(LibC::Char), Pointer(LibC::Char), Pointer(Void) -> Pointer(Pointer(LibC::Char))
   alias DBusSubtreeIntrospectFunc = Pointer(LibGio::DBusConnection), Pointer(LibC::Char), Pointer(LibC::Char), Pointer(LibC::Char), Pointer(Void) -> Pointer(Pointer(LibGio::DBusInterfaceInfo))
   alias DatagramBasedSourceFunc = Pointer(LibGio::DatagramBased), UInt32, Pointer(Void) -> LibC::Int
-  alias DesktopAppLaunchCallback = Pointer(LibGio::DesktopAppInfo), Int32, Pointer(Void) -> Void
   alias FileMeasureProgressCallback = LibC::Int, UInt64, UInt64, UInt64, Pointer(Void) -> Void
   alias FileProgressCallback = Int64, Int64, Pointer(Void) -> Void
   alias FileReadMoreCallback = Pointer(LibC::Char), Int64, Pointer(Void) -> LibC::Int
@@ -132,13 +132,11 @@ lib LibGio
   type DBusObjectManager = Void
   type DatagramBased = Void
   type DebugController = Void
-  type DesktopAppInfoLookup = Void
   type Drive = Void
   type DtlsClientConnection = Void
   type DtlsConnection = Void
   type DtlsServerConnection = Void
   type File = Void
-  type FileDescriptorBased = Void
   type Icon = Void
   type Initable = Void
   type ListModel = Void
@@ -407,7 +405,8 @@ lib LibGio
     get_vtable : Void*
     get_properties : Void*
     flush : Void*
-    vfunc_padding : Pointer(Void)[8]
+    method_dispatch : Pointer(Void)
+    vfunc_padding : Pointer(Void)[7]
     g_authorize_method : Void*
     signal_padding : Pointer(Void)[8]
   end
@@ -561,15 +560,6 @@ lib LibGio
     g_iface : LibGObject::TypeInterface
   end
 
-  struct DesktopAppInfoClass # 136 bytes long
-    parent_class : LibGObject::ObjectClass
-  end
-
-  struct DesktopAppInfoLookupIface # 24 bytes long
-    g_iface : LibGObject::TypeInterface
-    get_default_for_uri_scheme : Void*
-  end
-
   struct DriveIface # 272 bytes long
     g_iface : LibGObject::TypeInterface
     changed : Void*
@@ -648,11 +638,6 @@ lib LibGio
   end
 
   type FileAttributeMatcher = Void # Struct with zero bytes
-
-  struct FileDescriptorBasedIface # 24 bytes long
-    g_iface : LibGObject::TypeInterface
-    get_fd : Void*
-  end
 
   struct FileEnumeratorClass # 240 bytes long
     parent_class : LibGObject::ObjectClass
@@ -909,6 +894,14 @@ lib LibGio
   end
 
   type IOStreamPrivate = Void # Struct with zero bytes
+
+  struct IPTosMessageClass # 216 bytes long
+    parent_class : LibGio::SocketControlMessageClass
+  end
+
+  struct IPv6TclassMessageClass # 216 bytes long
+    parent_class : LibGio::SocketControlMessageClass
+  end
 
   struct IconIface # 56 bytes long
     g_iface : LibGObject::TypeInterface
@@ -1597,42 +1590,6 @@ lib LibGio
 
   type UnixFDListPrivate = Void # Struct with zero bytes
 
-  struct UnixFDMessageClass # 232 bytes long
-    parent_class : LibGio::SocketControlMessageClass
-    _g_reserved1 : Pointer(Void)
-    _g_reserved2 : Pointer(Void)
-  end
-
-  type UnixFDMessagePrivate = Void # Struct with zero bytes
-
-  struct UnixInputStreamClass # 288 bytes long
-    parent_class : LibGio::InputStreamClass
-    _g_reserved1 : Pointer(Void)
-    _g_reserved2 : Pointer(Void)
-    _g_reserved3 : Pointer(Void)
-    _g_reserved4 : Pointer(Void)
-    _g_reserved5 : Pointer(Void)
-  end
-
-  type UnixInputStreamPrivate = Void # Struct with zero bytes
-
-  type UnixMountEntry = Void # Struct with zero bytes
-
-  type UnixMountMonitorClass = Void # Struct with zero bytes
-
-  type UnixMountPoint = Void # Struct with zero bytes
-
-  struct UnixOutputStreamClass # 336 bytes long
-    parent_class : LibGio::OutputStreamClass
-    _g_reserved1 : Pointer(Void)
-    _g_reserved2 : Pointer(Void)
-    _g_reserved3 : Pointer(Void)
-    _g_reserved4 : Pointer(Void)
-    _g_reserved5 : Pointer(Void)
-  end
-
-  type UnixOutputStreamPrivate = Void # Struct with zero bytes
-
   struct UnixSocketAddressClass # 160 bytes long
     parent_class : LibGio::SocketAddressClass
   end
@@ -1831,8 +1788,6 @@ lib LibGio
     parent_instance : LibGObject::Object
   end
 
-  type DesktopAppInfo = Void # Object struct with no fields
-
   type Emblem = Void # Object struct with no fields
 
   struct EmblemedIcon
@@ -1887,6 +1842,10 @@ lib LibGio
     parent_instance : LibGObject::Object
     priv : Pointer(LibGio::IOStreamPrivate)
   end
+
+  type IPTosMessage = Void # Object struct with no fields
+
+  type IPv6TclassMessage = Void # Object struct with no fields
 
   struct InetAddress
     parent_instance : LibGObject::Object
@@ -2123,23 +2082,6 @@ lib LibGio
   struct UnixFDList
     parent_instance : LibGObject::Object
     priv : Pointer(LibGio::UnixFDListPrivate)
-  end
-
-  struct UnixFDMessage
-    parent_instance : LibGio::SocketControlMessage
-    priv : Pointer(LibGio::UnixFDMessagePrivate)
-  end
-
-  struct UnixInputStream
-    parent_instance : LibGio::InputStream
-    priv : Pointer(LibGio::UnixInputStreamPrivate)
-  end
-
-  type UnixMountMonitor = Void # Object struct with no fields
-
-  struct UnixOutputStream
-    parent_instance : LibGio::OutputStream
-    priv : Pointer(LibGio::UnixOutputStreamPrivate)
   end
 
   struct UnixSocketAddress
@@ -2760,33 +2702,6 @@ lib LibGio
   fun g_debug_controller_get_debug_enabled(this : Void*) : LibC::Int
   fun g_debug_controller_get_type : UInt64
   fun g_debug_controller_set_debug_enabled(this : Void*, debug_enabled : LibC::Int) : Void
-  fun g_desktop_app_info_get_action_name(this : Void*, action_name : Pointer(LibC::Char)) : Pointer(LibC::Char)
-  fun g_desktop_app_info_get_boolean(this : Void*, key : Pointer(LibC::Char)) : LibC::Int
-  fun g_desktop_app_info_get_categories(this : Void*) : Pointer(LibC::Char)
-  fun g_desktop_app_info_get_filename(this : Void*) : Pointer(LibC::Char)
-  fun g_desktop_app_info_get_generic_name(this : Void*) : Pointer(LibC::Char)
-  fun g_desktop_app_info_get_implementations(interface : Pointer(LibC::Char)) : Pointer(LibGLib::List)
-  fun g_desktop_app_info_get_is_hidden(this : Void*) : LibC::Int
-  fun g_desktop_app_info_get_keywords(this : Void*) : Pointer(Pointer(LibC::Char))
-  fun g_desktop_app_info_get_locale_string(this : Void*, key : Pointer(LibC::Char)) : Pointer(LibC::Char)
-  fun g_desktop_app_info_get_nodisplay(this : Void*) : LibC::Int
-  fun g_desktop_app_info_get_show_in(this : Void*, desktop_env : Pointer(LibC::Char)) : LibC::Int
-  fun g_desktop_app_info_get_startup_wm_class(this : Void*) : Pointer(LibC::Char)
-  fun g_desktop_app_info_get_string(this : Void*, key : Pointer(LibC::Char)) : Pointer(LibC::Char)
-  fun g_desktop_app_info_get_string_list(this : Void*, key : Pointer(LibC::Char), length : Pointer(UInt64)) : Pointer(Pointer(LibC::Char))
-  fun g_desktop_app_info_get_type : UInt64
-  fun g_desktop_app_info_has_key(this : Void*, key : Pointer(LibC::Char)) : LibC::Int
-  fun g_desktop_app_info_launch_action(this : Void*, action_name : Pointer(LibC::Char), launch_context : Pointer(Void)) : Void
-  fun g_desktop_app_info_launch_uris_as_manager(this : Void*, uris : Pointer(LibGLib::List), launch_context : Pointer(Void), spawn_flags : UInt32, user_setup : Void*, user_setup_data : Pointer(Void), pid_callback : Void*, pid_callback_data : Pointer(Void), error : LibGLib::Error**) : LibC::Int
-  fun g_desktop_app_info_launch_uris_as_manager_with_fds(this : Void*, uris : Pointer(LibGLib::List), launch_context : Pointer(Void), spawn_flags : UInt32, user_setup : Void*, user_setup_data : Pointer(Void), pid_callback : Void*, pid_callback_data : Pointer(Void), stdin_fd : Int32, stdout_fd : Int32, stderr_fd : Int32, error : LibGLib::Error**) : LibC::Int
-  fun g_desktop_app_info_list_actions(this : Void*) : Pointer(Pointer(LibC::Char))
-  fun g_desktop_app_info_lookup_get_default_for_uri_scheme(this : Void*, uri_scheme : Pointer(LibC::Char)) : Pointer(Void)
-  fun g_desktop_app_info_lookup_get_type : UInt64
-  fun g_desktop_app_info_new(desktop_id : Pointer(LibC::Char)) : Pointer(Void)
-  fun g_desktop_app_info_new_from_filename(filename : Pointer(LibC::Char)) : Pointer(Void)
-  fun g_desktop_app_info_new_from_keyfile(key_file : Pointer(Void)) : Pointer(Void)
-  fun g_desktop_app_info_search(search_string : Pointer(LibC::Char)) : Pointer(Pointer(Pointer(LibC::Char)))
-  fun g_desktop_app_info_set_desktop_env(desktop_env : Pointer(LibC::Char)) : Void
   fun g_drive_can_eject(this : Void*) : LibC::Int
   fun g_drive_can_poll_for_media(this : Void*) : LibC::Int
   fun g_drive_can_start(this : Void*) : LibC::Int
@@ -2857,6 +2772,7 @@ lib LibGio
   fun g_dtls_server_connection_get_type : UInt64
   fun g_dtls_server_connection_new(base_socket : Pointer(Void), certificate : Pointer(Void), error : LibGLib::Error**) : Pointer(Void)
   fun g_dtls_server_connection_new(base_socket : Pointer(Void), certificate : Pointer(Void), error : LibGLib::Error**) : Pointer(Void)
+  fun g_ecn_code_point_get_type : UInt64
   fun g_emblem_get_icon(this : Void*) : Pointer(Void)
   fun g_emblem_get_origin(this : Void*) : UInt32
   fun g_emblem_get_type : UInt64
@@ -2908,8 +2824,6 @@ lib LibGio
   fun g_file_delete(this : Void*, cancellable : Pointer(Void), error : LibGLib::Error**) : LibC::Int
   fun g_file_delete_async(this : Void*, io_priority : Int32, cancellable : Pointer(Void), callback : Void*, user_data : Pointer(Void)) : Void
   fun g_file_delete_finish(this : Void*, result : Pointer(Void), error : LibGLib::Error**) : LibC::Int
-  fun g_file_descriptor_based_get_fd(this : Void*) : Int32
-  fun g_file_descriptor_based_get_type : UInt64
   fun g_file_dup(this : Void*) : Pointer(Void)
   fun g_file_eject_mountable(this : Void*, flags : UInt32, cancellable : Pointer(Void), callback : Void*, user_data : Pointer(Void)) : Void
   fun g_file_eject_mountable_finish(this : Void*, result : Pointer(Void), error : LibGLib::Error**) : LibC::Int
@@ -3180,6 +3094,7 @@ lib LibGio
   fun g_icon_to_string(this : Void*) : Pointer(LibC::Char)
   fun g_inet_address_equal(this : Void*, other_address : Pointer(Void)) : LibC::Int
   fun g_inet_address_get_family(this : Void*) : UInt32
+  fun g_inet_address_get_flowinfo(this : Void*) : UInt32
   fun g_inet_address_get_is_any(this : Void*) : LibC::Int
   fun g_inet_address_get_is_link_local(this : Void*) : LibC::Int
   fun g_inet_address_get_is_loopback(this : Void*) : LibC::Int
@@ -3191,6 +3106,7 @@ lib LibGio
   fun g_inet_address_get_is_multicast(this : Void*) : LibC::Int
   fun g_inet_address_get_is_site_local(this : Void*) : LibC::Int
   fun g_inet_address_get_native_size(this : Void*) : UInt64
+  fun g_inet_address_get_scope_id(this : Void*) : UInt32
   fun g_inet_address_get_type : UInt64
   fun g_inet_address_mask_equal(this : Void*, mask2 : Pointer(Void)) : LibC::Int
   fun g_inet_address_mask_get_address(this : Void*) : Pointer(Void)
@@ -3203,6 +3119,7 @@ lib LibGio
   fun g_inet_address_mask_to_string(this : Void*) : Pointer(LibC::Char)
   fun g_inet_address_new_any(family : UInt32) : Pointer(Void)
   fun g_inet_address_new_from_bytes(bytes : Pointer(UInt8), family : UInt32) : Pointer(Void)
+  fun g_inet_address_new_from_bytes_with_ipv6_info(bytes : Pointer(UInt8), family : UInt32, flowinfo : UInt32, scope_id : UInt32) : Pointer(Void)
   fun g_inet_address_new_from_string(string : Pointer(LibC::Char)) : Pointer(Void)
   fun g_inet_address_new_loopback(family : UInt32) : Pointer(Void)
   fun g_inet_address_to_string(this : Void*) : Pointer(LibC::Char)
@@ -3281,6 +3198,14 @@ lib LibGio
   fun g_io_stream_splice_async(this : Void*, stream2 : Pointer(Void), flags : UInt32, io_priority : Int32, cancellable : Pointer(Void), callback : Void*, user_data : Pointer(Void)) : Void
   fun g_io_stream_splice_finish(result : Pointer(Void), error : LibGLib::Error**) : LibC::Int
   fun g_io_stream_splice_flags_get_type : UInt64
+  fun g_ip_tos_message_get_dscp(this : Void*) : UInt8
+  fun g_ip_tos_message_get_ecn(this : Void*) : UInt32
+  fun g_ip_tos_message_get_type : UInt64
+  fun g_ip_tos_message_new(dscp : UInt8, ecn : UInt32) : Pointer(Void)
+  fun g_ipv6_tclass_message_get_dscp(this : Void*) : UInt8
+  fun g_ipv6_tclass_message_get_ecn(this : Void*) : UInt32
+  fun g_ipv6_tclass_message_get_type : UInt64
+  fun g_ipv6_tclass_message_new(dscp : UInt8, ecn : UInt32) : Pointer(Void)
   fun g_keyfile_settings_backend_new(filename : Pointer(LibC::Char), root_path : Pointer(LibC::Char), root_group : Pointer(LibC::Char)) : Pointer(Void)
   fun g_list_model_get_item_type(this : Void*) : UInt64
   fun g_list_model_get_n_items(this : Void*) : UInt32
@@ -4140,92 +4065,6 @@ lib LibGio
   fun g_unix_fd_list_new_from_array(fds : Pointer(Int32), n_fds : Int32) : Pointer(Void)
   fun g_unix_fd_list_peek_fds(this : Void*, length : Pointer(Int32)) : Pointer(Int32)
   fun g_unix_fd_list_steal_fds(this : Void*, length : Pointer(Int32)) : Pointer(Int32)
-  fun g_unix_fd_message_append_fd(this : Void*, fd : Int32, error : LibGLib::Error**) : LibC::Int
-  fun g_unix_fd_message_get_fd_list(this : Void*) : Pointer(Void)
-  fun g_unix_fd_message_get_type : UInt64
-  fun g_unix_fd_message_new : Pointer(Void)
-  fun g_unix_fd_message_new_with_fd_list(fd_list : Pointer(Void)) : Pointer(Void)
-  fun g_unix_fd_message_steal_fds(this : Void*, length : Pointer(Int32)) : Pointer(Int32)
-  fun g_unix_input_stream_get_close_fd(this : Void*) : LibC::Int
-  fun g_unix_input_stream_get_fd(this : Void*) : Int32
-  fun g_unix_input_stream_get_type : UInt64
-  fun g_unix_input_stream_new(fd : Int32, close_fd : LibC::Int) : Pointer(Void)
-  fun g_unix_input_stream_set_close_fd(this : Void*, close_fd : LibC::Int) : Void
-  fun g_unix_is_mount_path_system_internal(mount_path : Pointer(LibC::Char)) : LibC::Int
-  fun g_unix_is_system_device_path(device_path : Pointer(LibC::Char)) : LibC::Int
-  fun g_unix_is_system_fs_type(fs_type : Pointer(LibC::Char)) : LibC::Int
-  fun g_unix_mount_at(mount_path : Pointer(LibC::Char), time_read : Pointer(UInt64)) : Pointer(Void)
-  fun g_unix_mount_compare(mount1 : Pointer(Void), mount2 : Pointer(Void)) : Int32
-  fun g_unix_mount_copy(mount_entry : Pointer(Void)) : Pointer(Void)
-  fun g_unix_mount_entries_changed_since(time : UInt64) : LibC::Int
-  fun g_unix_mount_entries_get(time_read : Pointer(UInt64)) : Pointer(LibGLib::List)
-  fun g_unix_mount_entries_get_from_file(table_path : Pointer(LibC::Char), time_read_out : Pointer(UInt64), n_entries_out : Pointer(UInt64)) : Pointer(Pointer(LibGio::UnixMountEntry))
-  fun g_unix_mount_entry_at(mount_path : Pointer(LibC::Char), time_read : Pointer(UInt64)) : Pointer(Void)
-  fun g_unix_mount_entry_at(mount_path : Pointer(LibC::Char), time_read : Pointer(UInt64)) : Pointer(Void)
-  fun g_unix_mount_entry_compare(this : Void*, mount2 : Pointer(Void)) : Int32
-  fun g_unix_mount_entry_copy(this : Void*) : Pointer(Void)
-  fun g_unix_mount_entry_for(file_path : Pointer(LibC::Char), time_read : Pointer(UInt64)) : Pointer(Void)
-  fun g_unix_mount_entry_for(file_path : Pointer(LibC::Char), time_read : Pointer(UInt64)) : Pointer(Void)
-  fun g_unix_mount_entry_free(this : Void*) : Void
-  fun g_unix_mount_entry_get_device_path(this : Void*) : Pointer(LibC::Char)
-  fun g_unix_mount_entry_get_fs_type(this : Void*) : Pointer(LibC::Char)
-  fun g_unix_mount_entry_get_mount_path(this : Void*) : Pointer(LibC::Char)
-  fun g_unix_mount_entry_get_options(this : Void*) : Pointer(LibC::Char)
-  fun g_unix_mount_entry_get_root_path(this : Void*) : Pointer(LibC::Char)
-  fun g_unix_mount_entry_get_type : UInt64
-  fun g_unix_mount_entry_guess_can_eject(this : Void*) : LibC::Int
-  fun g_unix_mount_entry_guess_icon(this : Void*) : Pointer(Void)
-  fun g_unix_mount_entry_guess_name(this : Void*) : Pointer(LibC::Char)
-  fun g_unix_mount_entry_guess_should_display(this : Void*) : LibC::Int
-  fun g_unix_mount_entry_guess_symbolic_icon(this : Void*) : Pointer(Void)
-  fun g_unix_mount_entry_is_readonly(this : Void*) : LibC::Int
-  fun g_unix_mount_entry_is_system_internal(this : Void*) : LibC::Int
-  fun g_unix_mount_for(file_path : Pointer(LibC::Char), time_read : Pointer(UInt64)) : Pointer(Void)
-  fun g_unix_mount_free(mount_entry : Pointer(Void)) : Void
-  fun g_unix_mount_get_device_path(mount_entry : Pointer(Void)) : Pointer(LibC::Char)
-  fun g_unix_mount_get_fs_type(mount_entry : Pointer(Void)) : Pointer(LibC::Char)
-  fun g_unix_mount_get_mount_path(mount_entry : Pointer(Void)) : Pointer(LibC::Char)
-  fun g_unix_mount_get_options(mount_entry : Pointer(Void)) : Pointer(LibC::Char)
-  fun g_unix_mount_get_root_path(mount_entry : Pointer(Void)) : Pointer(LibC::Char)
-  fun g_unix_mount_guess_can_eject(mount_entry : Pointer(Void)) : LibC::Int
-  fun g_unix_mount_guess_icon(mount_entry : Pointer(Void)) : Pointer(Void)
-  fun g_unix_mount_guess_name(mount_entry : Pointer(Void)) : Pointer(LibC::Char)
-  fun g_unix_mount_guess_should_display(mount_entry : Pointer(Void)) : LibC::Int
-  fun g_unix_mount_guess_symbolic_icon(mount_entry : Pointer(Void)) : Pointer(Void)
-  fun g_unix_mount_is_readonly(mount_entry : Pointer(Void)) : LibC::Int
-  fun g_unix_mount_is_system_internal(mount_entry : Pointer(Void)) : LibC::Int
-  fun g_unix_mount_monitor_get : Pointer(Void)
-  fun g_unix_mount_monitor_get_type : UInt64
-  fun g_unix_mount_monitor_new : Pointer(Void)
-  fun g_unix_mount_monitor_set_rate_limit(this : Void*, limit_msec : Int32) : Void
-  fun g_unix_mount_point_at(mount_path : Pointer(LibC::Char), time_read : Pointer(UInt64)) : Pointer(Void)
-  fun g_unix_mount_point_at(mount_path : Pointer(LibC::Char), time_read : Pointer(UInt64)) : Pointer(Void)
-  fun g_unix_mount_point_compare(this : Void*, mount2 : Pointer(Void)) : Int32
-  fun g_unix_mount_point_copy(this : Void*) : Pointer(Void)
-  fun g_unix_mount_point_free(this : Void*) : Void
-  fun g_unix_mount_point_get_device_path(this : Void*) : Pointer(LibC::Char)
-  fun g_unix_mount_point_get_fs_type(this : Void*) : Pointer(LibC::Char)
-  fun g_unix_mount_point_get_mount_path(this : Void*) : Pointer(LibC::Char)
-  fun g_unix_mount_point_get_options(this : Void*) : Pointer(LibC::Char)
-  fun g_unix_mount_point_get_type : UInt64
-  fun g_unix_mount_point_guess_can_eject(this : Void*) : LibC::Int
-  fun g_unix_mount_point_guess_icon(this : Void*) : Pointer(Void)
-  fun g_unix_mount_point_guess_name(this : Void*) : Pointer(LibC::Char)
-  fun g_unix_mount_point_guess_symbolic_icon(this : Void*) : Pointer(Void)
-  fun g_unix_mount_point_is_loopback(this : Void*) : LibC::Int
-  fun g_unix_mount_point_is_readonly(this : Void*) : LibC::Int
-  fun g_unix_mount_point_is_user_mountable(this : Void*) : LibC::Int
-  fun g_unix_mount_points_changed_since(time : UInt64) : LibC::Int
-  fun g_unix_mount_points_get(time_read : Pointer(UInt64)) : Pointer(LibGLib::List)
-  fun g_unix_mount_points_get_from_file(table_path : Pointer(LibC::Char), time_read_out : Pointer(UInt64), n_points_out : Pointer(UInt64)) : Pointer(Pointer(LibGio::UnixMountPoint))
-  fun g_unix_mounts_changed_since(time : UInt64) : LibC::Int
-  fun g_unix_mounts_get(time_read : Pointer(UInt64)) : Pointer(LibGLib::List)
-  fun g_unix_mounts_get_from_file(table_path : Pointer(LibC::Char), time_read_out : Pointer(UInt64), n_entries_out : Pointer(UInt64)) : Pointer(Pointer(LibGio::UnixMountEntry))
-  fun g_unix_output_stream_get_close_fd(this : Void*) : LibC::Int
-  fun g_unix_output_stream_get_fd(this : Void*) : Int32
-  fun g_unix_output_stream_get_type : UInt64
-  fun g_unix_output_stream_new(fd : Int32, close_fd : LibC::Int) : Pointer(Void)
-  fun g_unix_output_stream_set_close_fd(this : Void*, close_fd : LibC::Int) : Void
   fun g_unix_socket_address_abstract_names_supported : LibC::Int
   fun g_unix_socket_address_get_address_type(this : Void*) : UInt32
   fun g_unix_socket_address_get_is_abstract(this : Void*) : LibC::Int
@@ -4276,9 +4115,11 @@ lib LibGio
   fun g_volume_should_automount(this : Void*) : LibC::Int
   fun g_zlib_compressor_format_get_type : UInt64
   fun g_zlib_compressor_get_file_info(this : Void*) : Pointer(Void)
+  fun g_zlib_compressor_get_os(this : Void*) : Int32
   fun g_zlib_compressor_get_type : UInt64
   fun g_zlib_compressor_new(format : UInt32, level : Int32) : Pointer(Void)
   fun g_zlib_compressor_set_file_info(this : Void*, file_info : Pointer(Void)) : Void
+  fun g_zlib_compressor_set_os(this : Void*, os : Int32) : Void
   fun g_zlib_decompressor_get_file_info(this : Void*) : Pointer(Void)
   fun g_zlib_decompressor_get_type : UInt64
   fun g_zlib_decompressor_new(format : UInt32) : Pointer(Void)

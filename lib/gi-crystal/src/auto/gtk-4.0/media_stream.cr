@@ -212,13 +212,6 @@ module Gtk
       GICrystal.to_bool(value)
     end
 
-    def prepared=(value : Bool) : Bool
-      unsafe_value = value
-
-      LibGObject.g_object_set(self, "prepared", unsafe_value, Pointer(Void).null)
-      value
-    end
-
     def prepared? : Bool
       # Returns: None
 

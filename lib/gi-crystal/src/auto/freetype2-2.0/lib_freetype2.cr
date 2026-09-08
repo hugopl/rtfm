@@ -19,5 +19,4 @@ lib LibFreetype2
   # Objects
 
   # All C Functions
-
 end

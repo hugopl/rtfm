@@ -6,8 +6,31 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 Changes that change the generated API have a ⚠️.
 
-## [0.25.0] 2025-01-30
+## [0.26.0] 2026-09-08
+### Added
+- New `blocks` attribute for methods on `binding.yml`, when true the generated binding calls the C
+  function inside a `Fiber::ExecutionContext::Isolated` context instead of calling it directly.
 
+### Changed
+- Requires Crystal compiler >= 1.21.0.
+- `Gio::Application#run` is declared with `blocks: true`, so fibers keep running while the application
+  main loop is running, without any flag or change in user code. Note the main loop and the callbacks it
+  invokes no longer run on the process main thread.
+- `ClosureDataManager` is now always thread safe, it used to be only with `-Dpreview_mt`, which is not
+  how threads are enabled since Crystal 1.21.
+
+### Fixed
+- Return values of callbacks and signal handlers are now converted back to their C representation, the
+  Crystal value used to be handed to C as-is. This fixes crashes on any method taking a callback that
+  returns an object (e.g. `Gtk::ListBox#bind_model`) and wrong values on callbacks/signal handlers
+  returning booleans or enums.
+
+## [0.25.1] 2025-09-05
+### Fixed
+- Fix ClosureDataManager corruption when building with -Dpreview_mt, thanks @refi64 (#179)
+- Fix incomplete type declaration for `ListStore#splice`, thanks @BigBoyBarney (#181)
+
+## [0.25.0] 2025-01-30
 ### Added
 - Support MSYS2, thanks @HertzDevil (#169)
 

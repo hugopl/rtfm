@@ -87,6 +87,23 @@ module Gsk
       Gsk::Transform.new(_retval, GICrystal::Transfer::Full)
     end
 
+    def matrix_2d(xx : Float32, yx : Float32, xy : Float32, yy : Float32, dx : Float32, dy : Float32) : Gsk::Transform?
+      # gsk_transform_matrix_2d: (Method)
+      # @xx:
+      # @yx:
+      # @xy:
+      # @yy:
+      # @dx:
+      # @dy:
+      # Returns: (transfer full) (nullable)
+
+      # C call
+      _retval = LibGsk.gsk_transform_matrix_2d(to_unsafe, xx, yx, xy, yy, dx, dy)
+
+      # Return value handling
+      Gsk::Transform.new(_retval, GICrystal::Transfer::Full) unless _retval.null?
+    end
+
     def perspective(depth : Float32) : Gsk::Transform
       # gsk_transform_perspective: (Method)
       # @depth:

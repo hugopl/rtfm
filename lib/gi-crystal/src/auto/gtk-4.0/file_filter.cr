@@ -171,6 +171,24 @@ module Gtk
       # Return value handling
     end
 
+    def add_mime_types(mime_types : Enumerable(::String)) : Nil
+      # gtk_file_filter_add_mime_types: (Method)
+      # @mime_types: (array zero-terminated=1 element-type Utf8)
+      # Returns: (transfer none)
+
+      # Generator::ArrayArgPlan
+      mime_types = mime_types.to_a.map(&.to_unsafe).to_unsafe.as(Pointer(Pointer(LibC::Char)))
+
+      # C call
+      LibGtk.gtk_file_filter_add_mime_types(to_unsafe, mime_types)
+
+      # Return value handling
+    end
+
+    def add_mime_types(*mime_types : ::String)
+      add_mime_types(mime_types)
+    end
+
     def add_pattern(pattern : ::String) : Nil
       # gtk_file_filter_add_pattern: (Method)
       # @pattern:
@@ -182,6 +200,7 @@ module Gtk
       # Return value handling
     end
 
+    @[Deprecated]
     def add_pixbuf_formats : Nil
       # gtk_file_filter_add_pixbuf_formats: (Method)
       # Returns: (transfer none)

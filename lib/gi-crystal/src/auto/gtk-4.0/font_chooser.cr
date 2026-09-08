@@ -307,7 +307,8 @@ module Gtk
           family = Pango::FontFamily.new(lib_family, GICrystal::Transfer::None)
           # Generator::BuiltInTypeArgPlan
           face = Pango::FontFace.new(lib_face, GICrystal::Transfer::None)
-          ::Box(Proc(Pango::FontFamily, Pango::FontFace, Bool)).unbox(lib_data).call(family, face)
+          _retval = ::Box(Proc(Pango::FontFamily, Pango::FontFace, Bool)).unbox(lib_data).call(family, face)
+          GICrystal.to_c_bool(_retval)
         }.pointer
         user_data = GICrystal::ClosureDataManager.register(_box)
         destroy = ->GICrystal::ClosureDataManager.deregister(Pointer(Void)).pointer
