@@ -60,6 +60,7 @@ class ApplicationWindow < Adw::ApplicationWindow
     actions = {
       {name: "new_tab", shortcut: "<primary>T", closure: ->new_tab},
       {name: "close_tab", shortcut: "<primary>W", closure: ->close_tab},
+      {name: "page_search", shortcut: "<primary>F", closure: -> { page_search.start_search }},
     }
 
     actions.each do |action|

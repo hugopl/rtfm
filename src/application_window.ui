@@ -11,6 +11,12 @@
     </section>
     <section>
       <item>
+        <attribute name="label" translatable="yes">_Find in Page</attribute>
+        <attribute name="action">win.page_search</attribute>
+      </item>
+    </section>
+    <section>
+      <item>
         <attribute name="label" translatable="yes">_Add Docset...</attribute>
         <attribute name="action">app.add_docset</attribute>
       </item>

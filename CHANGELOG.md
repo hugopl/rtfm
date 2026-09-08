@@ -4,6 +4,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+### Changed
+- Rewritten the find in page bar to behave like the web browsers ones: search as
+  you type, a `current/total` match counter, wrap around navigation with
+  Enter/Shift+Enter, F3/Shift+F3 and Ctrl+G/Ctrl+Shift+G, a match case toggle and
+  Escape to close the bar, clear the highlights and give the focus back to the page.
+
+### Fixed
+- Find in page next/previous match shortcuts and buttons were swapped or bound to
+  non existent actions, so they did nothing.
+- Highlights of a finished search were kept on the page after closing the find bar.
+
 ## [0.6.2] - 2025-04-02
 ### Fixed
 - Fix compilation after a [GTK change](https://gitlab.gnome.org/GNOME/gtk/-/merge_requests/7836).
