@@ -15,6 +15,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Find in page next/previous match shortcuts and buttons were swapped or bound to
   non existent actions, so they did nothing.
 - Highlights of a finished search were kept on the page after closing the find bar.
+- `make docsets` no longer fails when the distro doesn't ship the Crystal API docs
+  (e.g. Arch Linux dropped them), they are generated from the stdlib sources instead.
 
 ## [0.6.2] - 2025-04-02
 ### Fixed
