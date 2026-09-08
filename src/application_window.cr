@@ -41,7 +41,6 @@ class ApplicationWindow < Adw::ApplicationWindow
 
       notify_signal["focus-widget"].connect do
         widget = self.focus_widget
-        Log.info { "Focus Widget: #{widget}" }
       end
     {% end %}
   end

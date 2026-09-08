@@ -5,6 +5,10 @@ class DocsetRepository
   include Enumerable(DocsetMetadata)
 
   @metadatas : Array(DocsetMetadata)
+  # Called when a docset is installed/uninstalled, so the search providers can
+  # be kept in sync without the repository knowing anything about the UI.
+  property on_added : Proc(DocsetMetadata, Nil)?
+  property on_removed : Proc(DocsetMetadata, Nil)?
 
   class_property lookup_dirs = [
     GLib.user_data_dir.join("rtfm/docsets"),
@@ -64,10 +68,31 @@ class DocsetRepository
     end
   end
 
-  def installed?(name : String, version : String? = nil) : Bool
-    @metadatas.any? do |metadata|
-      metadata.name == name && (version.nil? || metadata.version == version)
+  # Metadata of the installed *name* *version*, `nil` when it's not installed.
+  def find(name : String, version : String? = nil) : DocsetMetadata?
+    @metadatas.find do |metadata|
+      metadata.name == name && (version.nil? || version.empty? || metadata.version == version)
     end
+  end
+
+  def installed?(name : String, version : String? = nil) : Bool
+    !find(name, version).nil?
+  end
+
+  # Called when a docset is installed, so it can be searched without
+  # restarting the application.
+  def add(metadata : DocsetMetadata) : Nil
+    remove(find(metadata.name, metadata.version))
+    @metadatas << metadata
+    @metadatas.sort!
+    @on_added.try(&.call(metadata))
+  end
+
+  def remove(metadata : DocsetMetadata?) : Nil
+    return if metadata.nil? || !@metadatas.includes?(metadata)
+
+    @metadatas.delete(metadata)
+    @on_removed.try(&.call(metadata))
   end
 
   def default_docset : DocsetMetadata

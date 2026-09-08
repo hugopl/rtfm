@@ -8,9 +8,29 @@ class LocatorProvidersModel < GObject::Object
   private def initialize
     super()
 
-    DocsetRepository.instance.each do |metadata|
+    repository = DocsetRepository.instance
+    repository.each do |metadata|
       @providers << DocsetLocatorProvider.new(metadata)
     end
+    repository.on_added = ->add(DocsetMetadata)
+    repository.on_removed = ->remove(DocsetMetadata)
+  end
+
+  # Docsets installed while the application is running are searchable right
+  # away, no need to restart it.
+  def add(metadata : DocsetMetadata) : Nil
+    @providers << DocsetLocatorProvider.new(metadata)
+    items_changed(@providers.size.to_u32 - 1, 0, 1)
+  end
+
+  def remove(metadata : DocsetMetadata) : Nil
+    index = @providers.index do |provider|
+      provider.is_a?(DocsetLocatorProvider) && provider.metadata == metadata
+    end
+    return if index.nil?
+
+    @providers.delete_at(index)
+    items_changed(index.to_u32, 1, 0)
   end
 
   def self.instance

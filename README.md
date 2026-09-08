@@ -14,7 +14,7 @@ Kapeli kindly allowed rtfm to use them.
 Tasks needed to be done before I ask anyone to use this:
 
 - [ ] Refactor Fzy API to remove some bad and slow stuff I wrote just to have something working.
-- [ ] Add UI to download docset.
+- [x] Add UI to download docset.
 - [ ] Have a nice set of icons.
 - [ ] Have button/shortcut to enable/disable fuzzy search.
 - [ ] Ubuntu package.

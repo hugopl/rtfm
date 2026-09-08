@@ -74,3 +74,8 @@ themeselector checkbutton.theme-selector radio:checked {
   background-color: @theme_selected_bg_color;
   color: @theme_selected_fg_color;
 }
+
+/* The versions list on the docsets dialog blends with the dialog background. */
+listview.versions-list {
+  background-color: transparent;
+}

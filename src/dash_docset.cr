@@ -20,8 +20,13 @@ class DashDocset < GObject::Object
   getter size : UInt64 = 0
   # Extra terms the docset can be searched by, e.g. `python3` for `Python 3`.
   getter keywords = [] of String
+  # Who maintains the docset and where to find them, only user contributed
+  # docsets carry this info, the ones maintained by Dash have no author.
+  getter author : String = ""
+  getter author_url : String = ""
 
-  @icon_data : Bytes?
+  # Icon shipped in the feed, saved along the docset when it's installed.
+  getter icon_data : Bytes?
   @icon : Gdk::Texture?
   @icon_decoded = false
 
@@ -40,6 +45,7 @@ class DashDocset < GObject::Object
       when "icon"     then icon = pull.read_string
       when "icon2x"   then icon2x = pull.read_string
       when "extra"    then read_extra(pull)
+      when "author"   then read_author(pull)
       else                 pull.skip
       end
     end
@@ -67,14 +73,27 @@ class DashDocset < GObject::Object
 
   private def read_extra(pull : JSON::PullParser) : Nil
     pull.read_object do |key|
-      if key == "keywords"
-        @keywords = Array(String).new(pull)
-      else
-        pull.skip
+      case key
+      when "keywords" then @keywords = Array(String).new(pull)
+      when "author"   then read_author(pull)
+      else                 pull.skip
       end
     end
   rescue JSON::ParseException
-    # The feed uses `extra` for whatever Dash needs, we only care about keywords.
+    # The feed uses `extra` for whatever Dash needs, we only care about
+    # keywords and the author.
+  end
+
+  private def read_author(pull : JSON::PullParser) : Nil
+    pull.read_object do |key|
+      case key
+      when "name" then @author = pull.read_string
+      when "link" then @author_url = pull.read_string
+      else             pull.skip
+      end
+    end
+  rescue JSON::ParseException
+    # Author is optional and Dash uses it only on user contributed docsets.
   end
 
   # The version that gets installed when the user doesn't pick one.
@@ -90,6 +109,27 @@ class DashDocset < GObject::Object
   def label : String
     version = latest_version
     version ? "#{@title} v#{version}" : @title
+  end
+
+  # What's available for download, e.g. `12 versions` or `v1.0.0`. It's empty for
+  # the docsets that ship a single unversioned build.
+  def versions_summary : String
+    if multiple_versions?
+      "#{@versions.size} versions"
+    else
+      latest_version.try { |version| "v#{version}" } || ""
+    end
+  end
+
+  # Human readable size of the docset archive, e.g. `18.9MB`.
+  def human_size : String
+    @size.humanize_bytes(format: :JEDEC)
+  end
+
+  # Short description of what's available for download, e.g. `12 versions · 18.9MB`.
+  def summary : String
+    versions = versions_summary
+    versions.empty? ? human_size : "#{versions} · #{human_size}"
   end
 
   # Text used to fuzzy search the docset.

@@ -71,7 +71,18 @@ class Docset
     @entries.each
   end
 
-  # CREATE TABLE searchIndex(id INTEGER PRIMARY KEY, name TEXT, type TEXT, path TEXT);
+  # Docsets generated from Apple documentation — e.g. the Python ones — have no
+  # `searchIndex` table, they use the Core Data schema Dash inherited from
+  # Xcode, where the entries are spread over a bunch of `Z*` tables.
+  CORE_DATA_QUERY = <<-SQL
+    SELECT ZTOKENNAME, ZTYPENAME, ZPATH, ZANCHOR
+      FROM ZTOKEN
+      JOIN ZTOKENMETAINFORMATION ON ZTOKEN.ZMETAINFORMATION = ZTOKENMETAINFORMATION.Z_PK
+      JOIN ZFILEPATH ON ZTOKENMETAINFORMATION.ZFILE = ZFILEPATH.Z_PK
+      JOIN ZTOKENTYPE ON ZTOKEN.ZTOKENTYPE = ZTOKENTYPE.Z_PK
+     ORDER BY ZTOKENNAME;
+    SQL
+
   private def load_docset : Array(Doc)
     db_file = @metadata.path.join("Contents", "Resources", "docSet.dsidx")
     Log.info { "Loading #{@metadata.title} database from #{db_file}." }
@@ -79,20 +90,47 @@ class Docset
 
     entries = nil
     DB.open "sqlite3://#{db_file}" do |db|
-      n_docs = db.scalar("SELECT COUNT(*) FROM searchIndex").as(Int64)
-      entries = Array(Doc).new(n_docs)
-      db.query("select name, type, path from searchIndex order by name;") do |rs|
-        rs.each do
-          name = rs.read(String)
-          kind = Doc::Kind.parse(rs.read(String))
-          path = rs.read(String)
-          entries << Doc.new(name, kind, path.to_s)
-        end
-      end
+      entries = table?(db, "searchIndex") ? load_search_index(db) : load_core_data(db)
     end
     entries ||= [] of Doc
     elapsed = Time.instant - start_time
     Log.info { "Loaded #{entries.size} entries in #{elapsed}" }
+    entries
+  end
+
+  private def table?(db, name : String) : Bool
+    db.scalar("SELECT COUNT(*) FROM sqlite_master WHERE type = 'table' AND name = ?", name).as(Int64) > 0
+  end
+
+  # CREATE TABLE searchIndex(id INTEGER PRIMARY KEY, name TEXT, type TEXT, path TEXT);
+  private def load_search_index(db) : Array(Doc)
+    n_docs = db.scalar("SELECT COUNT(*) FROM searchIndex").as(Int64)
+    entries = Array(Doc).new(n_docs)
+    db.query("select name, type, path from searchIndex order by name;") do |rs|
+      rs.each do
+        name = rs.read(String)
+        kind = Doc::Kind.parse(rs.read(String))
+        path = rs.read(String)
+        entries << Doc.new(name, kind, path.to_s)
+      end
+    end
+    entries
+  end
+
+  private def load_core_data(db) : Array(Doc)
+    entries = Array(Doc).new
+    db.query(CORE_DATA_QUERY) do |rs|
+      rs.each do
+        name = rs.read(String?)
+        type = rs.read(String?)
+        path = rs.read(String?)
+        anchor = rs.read(String?)
+        next if name.nil? || type.nil? || path.nil?
+
+        path = "#{path}##{anchor}" unless anchor.nil? || anchor.empty?
+        entries << Doc.new(name, Doc::Kind.parse(type), path)
+      end
+    end
     entries
   end
 end

@@ -1,5 +1,6 @@
 require "./dash_docset_version"
 require "./docset_action"
+require "./docset_repository"
 
 # Row of the versions pane, one per version of the selected docset available for
 # download. Installed versions are marked with an icon and can be uninstalled.
@@ -7,6 +8,7 @@ class DashDocsetVersionRow < Gtk::Box
   @version = Gtk::Label.new(xalign: 0.0, hexpand: true, ellipsize: Pango::EllipsizeMode::End)
   @installed_icon = Gtk::Image.new(icon_name: "object-select-symbolic", tooltip_text: "Installed", visible: false)
   @button = Gtk::Button.new(valign: Gtk::Align::Center)
+  @item : DashDocsetVersion?
 
   def initialize
     super(orientation: Gtk::Orientation::Horizontal, spacing: 12)
@@ -17,20 +19,15 @@ class DashDocsetVersionRow < Gtk::Box
   end
 
   def version=(item : DashDocsetVersion) : Nil
-    @version.label = "v#{item.version}"
-    @installed_icon.visible = item.installed?
+    @item = item
+    @version.label = item.label
+    @installed_icon.visible = DocsetRepository.instance.installed?(item.name, item.version)
+    DocsetAction.setup(@button, item.name, item.version)
+  end
 
-    # The target must be set before the action, otherwise GTK complains the
-    # action parameter doesn't match the (still unset) target.
-    @button.action_target_value = DocsetAction.target(item.name, item.version)
-    if item.installed?
-      @button.label = "Uninstall"
-      @button.css_classes = {"flat", "destructive-action"}
-      @button.action_name = DocsetAction::UNINSTALL
-    else
-      @button.label = "Install"
-      @button.css_classes = {"flat", "suggested-action"}
-      @button.action_name = DocsetAction::INSTALL
-    end
+  # Same as `DashDocsetRow#refresh`, GTK doesn't bind the row again when the
+  # docset is installed/uninstalled.
+  def refresh : Nil
+    @item.try { |item| self.version = item }
   end
 end

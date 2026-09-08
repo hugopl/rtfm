@@ -21,6 +21,7 @@ private FEED = <<-JSON
       "sourceId": "com.kapeli",
       "revision": "1",
       "versions": ["1.0.0"],
+      "extra": { "author": { "name": "John Doe", "link": "https://example.com/john" } },
       "size": 115622,
       "tarix": true
     }
@@ -54,6 +55,24 @@ describe DashFeed do
     docset.multiple_versions?.should eq(false)
     docset.latest_version.should eq("1.0.0")
     docset.label.should eq("Ack (cheatsheet) v1.0.0")
+  end
+
+  it "parses the docset author when the feed has one" do
+    docset = DashFeed.parse(FEED).first
+    docset.author.should eq("John Doe")
+    docset.author_url.should eq("https://example.com/john")
+  end
+
+  it "has no author for the docsets maintained by Dash" do
+    docset = DashFeed.parse(FEED).last
+    docset.author.should eq("")
+    docset.author_url.should eq("")
+  end
+
+  it "summarizes what's available for download" do
+    docsets = DashFeed.parse(FEED)
+    docsets.first.summary.should eq("v1.0.0 · 113KB")
+    docsets.last.summary.should eq("2 versions · 18.9MB")
   end
 
   it "searches docsets by their keywords" do

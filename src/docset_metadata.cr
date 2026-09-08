@@ -62,6 +62,12 @@ class DocsetMetadata < GObject::Object
     @docset ||= Docset.new(self)
   end
 
+  # Docsets shipped by the distro, or installed by another user, can't be
+  # uninstalled, removing them is a job for the system administrator.
+  def removable? : Bool
+    File::Info.writable?(@path) && File::Info.writable?(@path.parent)
+  end
+
   def <=>(other : self)
     cmp = title <=> other.title
     if cmp.zero?

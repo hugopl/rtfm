@@ -1,7 +1,7 @@
 class DocsetLocatorProvider < LocatorProvider
   Log = ::Log.for(DocsetLocatorProvider)
 
-  @metadata : DocsetMetadata
+  getter metadata : DocsetMetadata
 
   @haystacks : Tuple(Array(Fzy::Hay(Doc)), Array(Fzy::Hay(Doc)))?
   @last_results = [] of Fzy::Match(Doc)

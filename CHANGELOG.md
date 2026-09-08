@@ -10,8 +10,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   that used to tell the user to copy docsets by hand. It has an _All_ tab listing
   all the docsets available for download — grouped by docset, with a pane listing
   the versions available for the selected one — and an _Installed_ tab listing the
-  docsets already installed. Both tabs are searchable. Installing/uninstalling
-  docsets isn't implemented yet, the buttons are there but do nothing.
+  docsets already installed. Both tabs are searchable. Selecting a docset shows
+  its details — author, download size, identifier and the terms it can be searched
+  by — on top of the pane, with the list of versions right below it.
+- Docsets are downloaded and installed from the docsets dialog, with a progress
+  bar at the bottom of the dialog and a cancel button. Installed docsets can be
+  searched right away, without restarting the application, and can be
+  uninstalled from the same dialog, unless they were installed by the system
+  administrator.
+- Support for the docsets using the Core Data schema, e.g. Python, so their
+  entries can be searched like the ones using the `searchIndex` table.
 
 ### Changed
 - Updated gi-crystal to 0.26.0, so fibers keep running while the application main

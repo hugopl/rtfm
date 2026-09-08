@@ -9,6 +9,9 @@ targets:
     main: src/main.cr
 
 dependencies:
+  crystar:
+    github: naqvis/crystar
+    version: ~>0.4.0
   fzy:
     github: hugopl/fzy
     version: ~>0.6.0
