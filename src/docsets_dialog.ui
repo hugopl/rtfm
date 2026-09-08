@@ -1,0 +1,265 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <requires lib="gtk" version="4.0"/>
+  <requires lib="adw" version="1.5"/>
+
+  <template class="DocsetsDialog" parent="AdwDialog">
+    <property name="title" translatable="yes">Docsets</property>
+    <property name="content-width">920</property>
+    <property name="content-height">640</property>
+    <property name="child">
+      <object class="AdwToolbarView">
+        <child type="top">
+          <object class="AdwHeaderBar">
+            <property name="title-widget">
+              <object class="AdwViewSwitcher" id="view_switcher">
+                <property name="stack">view_stack</property>
+                <property name="policy">wide</property>
+              </object>
+            </property>
+          </object>
+        </child>
+
+        <property name="content">
+          <object class="AdwViewStack" id="view_stack">
+
+            <!-- All docsets available for download -->
+            <child>
+              <object class="AdwViewStackPage">
+                <property name="name">all</property>
+                <property name="title" translatable="yes">All</property>
+                <property name="icon-name">folder-download-symbolic</property>
+                <property name="child">
+                  <object class="AdwNavigationSplitView" id="all_split_view">
+                    <property name="min-sidebar-width">340</property>
+                    <property name="max-sidebar-width">460</property>
+                    <property name="sidebar-width-fraction">0.45</property>
+                    <property name="sidebar">
+                      <object class="AdwNavigationPage">
+                        <property name="title" translatable="yes">Docsets</property>
+                        <property name="child">
+                          <object class="GtkBox">
+                            <property name="orientation">vertical</property>
+                            <child>
+                              <object class="GtkSearchEntry" id="all_entry">
+                                <property name="margin-start">6</property>
+                                <property name="margin-end">6</property>
+                                <property name="margin-top">6</property>
+                                <property name="margin-bottom">6</property>
+                                <property name="search-delay">50</property>
+                                <property name="placeholder-text" translatable="yes">Search docsets</property>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="GtkStack" id="all_stack">
+                                <property name="vexpand">1</property>
+                                <child>
+                                  <object class="GtkStackPage">
+                                    <property name="name">loading</property>
+                                    <property name="child">
+                                      <object class="AdwStatusPage">
+                                        <property name="title" translatable="yes">Loading Docsets</property>
+                                        <property name="description" translatable="yes">Fetching the list of docsets available for download…</property>
+                                        <property name="child">
+                                          <object class="AdwSpinner">
+                                            <property name="halign">center</property>
+                                            <property name="width-request">32</property>
+                                            <property name="height-request">32</property>
+                                          </object>
+                                        </property>
+                                      </object>
+                                    </property>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="GtkStackPage">
+                                    <property name="name">list</property>
+                                    <property name="child">
+                                      <object class="GtkScrolledWindow">
+                                        <property name="hscrollbar-policy">never</property>
+                                        <property name="child">
+                                          <object class="GtkListView" id="all_view">
+                                            <property name="single-click-activate">1</property>
+                                            <style><class name="navigation-sidebar"/></style>
+                                          </object>
+                                        </property>
+                                      </object>
+                                    </property>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="GtkStackPage">
+                                    <property name="name">empty</property>
+                                    <property name="child">
+                                      <object class="AdwStatusPage">
+                                        <property name="icon-name">edit-find-symbolic</property>
+                                        <property name="title" translatable="yes">No Docsets Found</property>
+                                        <property name="description" translatable="yes">Try a different search term.</property>
+                                      </object>
+                                    </property>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="GtkStackPage">
+                                    <property name="name">error</property>
+                                    <property name="child">
+                                      <object class="AdwStatusPage" id="all_error_page">
+                                        <property name="icon-name">network-error-symbolic</property>
+                                        <property name="title" translatable="yes">Unable to Fetch Docsets</property>
+                                        <property name="child">
+                                          <object class="GtkButton" id="retry_button">
+                                            <property name="label" translatable="yes">_Try Again</property>
+                                            <property name="use-underline">1</property>
+                                            <property name="halign">center</property>
+                                            <style><class name="pill"/><class name="suggested-action"/></style>
+                                          </object>
+                                        </property>
+                                      </object>
+                                    </property>
+                                  </object>
+                                </child>
+                              </object>
+                            </child>
+                          </object>
+                        </property>
+                      </object>
+                    </property>
+
+                    <property name="content">
+                      <object class="AdwNavigationPage" id="versions_page">
+                        <property name="title" translatable="yes">Versions</property>
+                        <property name="child">
+                          <object class="GtkStack" id="versions_stack">
+                            <child>
+                              <object class="GtkStackPage">
+                                <property name="name">empty</property>
+                                <property name="child">
+                                  <object class="AdwStatusPage" id="versions_placeholder">
+                                    <property name="icon-name">view-list-symbolic</property>
+                                    <property name="title" translatable="yes">No Docset Selected</property>
+                                    <property name="description" translatable="yes">Select a docset with more than one version available to pick which version to install.</property>
+                                  </object>
+                                </property>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="GtkStackPage">
+                                <property name="name">versions</property>
+                                <property name="child">
+                                  <object class="GtkBox">
+                                    <property name="orientation">vertical</property>
+                                    <child>
+                                      <object class="GtkLabel" id="versions_title">
+                                        <property name="xalign">0</property>
+                                        <property name="ellipsize">3</property>
+                                        <property name="margin-start">12</property>
+                                        <property name="margin-end">12</property>
+                                        <property name="margin-top">12</property>
+                                        <property name="margin-bottom">6</property>
+                                        <style><class name="title-4"/></style>
+                                      </object>
+                                    </child>
+                                    <child>
+                                      <object class="GtkScrolledWindow">
+                                        <property name="vexpand">1</property>
+                                        <property name="hscrollbar-policy">never</property>
+                                        <property name="child">
+                                          <object class="GtkListView" id="versions_view">
+                                            <style><class name="navigation-sidebar"/></style>
+                                          </object>
+                                        </property>
+                                      </object>
+                                    </child>
+                                  </object>
+                                </property>
+                              </object>
+                            </child>
+                          </object>
+                        </property>
+                      </object>
+                    </property>
+                  </object>
+                </property>
+              </object>
+            </child>
+
+            <!-- Docsets already installed -->
+            <child>
+              <object class="AdwViewStackPage">
+                <property name="name">installed</property>
+                <property name="title" translatable="yes">Installed</property>
+                <property name="icon-name">object-select-symbolic</property>
+                <property name="child">
+                  <object class="GtkBox">
+                    <property name="orientation">vertical</property>
+                    <child>
+                      <object class="GtkSearchEntry" id="installed_entry">
+                        <property name="margin-start">12</property>
+                        <property name="margin-end">12</property>
+                        <property name="margin-top">6</property>
+                        <property name="margin-bottom">6</property>
+                        <property name="search-delay">50</property>
+                        <property name="placeholder-text" translatable="yes">Search installed docsets</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkStack" id="installed_stack">
+                        <property name="vexpand">1</property>
+                        <child>
+                          <object class="GtkStackPage">
+                            <property name="name">list</property>
+                            <property name="child">
+                              <object class="GtkScrolledWindow">
+                                <property name="hscrollbar-policy">never</property>
+                                <property name="child">
+                                  <object class="GtkListView" id="installed_view">
+                                    <property name="margin-start">12</property>
+                                    <property name="margin-end">12</property>
+                                    <property name="margin-bottom">12</property>
+                                    <style><class name="background"/></style>
+                                  </object>
+                                </property>
+                              </object>
+                            </property>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkStackPage">
+                            <property name="name">empty</property>
+                            <property name="child">
+                              <object class="AdwStatusPage" id="installed_empty_page">
+                                <property name="icon-name">system-search-symbolic</property>
+                                <property name="title" translatable="yes">No Docsets Installed</property>
+                              </object>
+                            </property>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                  </object>
+                </property>
+              </object>
+            </child>
+          </object>
+        </property>
+
+        <!-- Kapeli allowed rtfm to use the Dash docsets as long as Dash is credited. -->
+        <child type="bottom">
+          <object class="GtkBox">
+            <property name="halign">center</property>
+            <property name="margin-top">6</property>
+            <property name="margin-bottom">6</property>
+            <child>
+              <object class="GtkLinkButton">
+                <property name="uri">https://kapeli.com/dash</property>
+                <property name="label" translatable="yes">Docsets provided by Dash, the macOS Documentation Browser</property>
+                <property name="tooltip-text">https://kapeli.com/dash</property>
+                <style><class name="caption"/></style>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+    </property>
+  </template>
+</interface>

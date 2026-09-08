@@ -5,6 +5,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Added
+- Docsets dialog, opened by the _Add docset_ menu entry, replacing the message box
+  that used to tell the user to copy docsets by hand. It has an _All_ tab listing
+  all the docsets available for download — grouped by docset, with a pane listing
+  the versions available for the selected one — and an _Installed_ tab listing the
+  docsets already installed. Both tabs are searchable. Installing/uninstalling
+  docsets isn't implemented yet, the buttons are there but do nothing.
+
 ### Changed
 - Updated gi-crystal to 0.26.0, so fibers keep running while the application main
   loop is running. Requires Crystal 1.21 or newer.

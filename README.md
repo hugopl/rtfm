@@ -8,6 +8,9 @@ APIs. It's written in [Crystal](https://crystal-lang.org/) using
 
 <img align="center" src="./screenshots/v0.4.1.png" />
 
+Docsets provided by [Dash, the macOS Documentation Browser](https://kapeli.com/dash),
+Kapeli kindly allowed rtfm to use them.
+
 Tasks needed to be done before I ask anyone to use this:
 
 - [ ] Refactor Fzy API to remove some bad and slow stuff I wrote just to have something working.

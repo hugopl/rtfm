@@ -57,6 +57,19 @@ class DocsetRepository
     candidate
   end
 
+  # Versions of *name* currently installed, e.g. all the installed Python 3 versions.
+  def installed_versions(name : String) : Array(String)
+    @metadatas.compact_map do |metadata|
+      metadata.version if metadata.name == name
+    end
+  end
+
+  def installed?(name : String, version : String? = nil) : Bool
+    @metadatas.any? do |metadata|
+      metadata.name == name && (version.nil? || metadata.version == version)
+    end
+  end
+
   def default_docset : DocsetMetadata
     get("Crystal").not_nil!
   end
