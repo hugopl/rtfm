@@ -75,7 +75,7 @@ class Docset
   private def load_docset : Array(Doc)
     db_file = @metadata.path.join("Contents", "Resources", "docSet.dsidx")
     Log.info { "Loading #{@metadata.title} database from #{db_file}." }
-    start_time = Time.monotonic
+    start_time = Time.instant
 
     entries = nil
     DB.open "sqlite3://#{db_file}" do |db|
@@ -91,7 +91,7 @@ class Docset
       end
     end
     entries ||= [] of Doc
-    elapsed = Time.monotonic - start_time
+    elapsed = Time.instant - start_time
     Log.info { "Loaded #{entries.size} entries in #{elapsed}" }
     entries
   end
